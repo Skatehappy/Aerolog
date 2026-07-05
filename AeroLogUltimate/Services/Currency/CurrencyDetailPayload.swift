@@ -29,6 +29,8 @@ struct QualifyingEvent: Codable, Equatable, Identifiable, Sendable {
     var date: Date
     var description: String
     var flightSyncID: UUID?
+    /// Numeric value for currency math (landings, approaches, holds). Never parse `contribution`.
+    var count: Int
     var contribution: String
 
     init(
@@ -36,12 +38,14 @@ struct QualifyingEvent: Codable, Equatable, Identifiable, Sendable {
         date: Date,
         description: String,
         flightSyncID: UUID? = nil,
+        count: Int = 0,
         contribution: String
     ) {
         self.id = id
         self.date = date
         self.description = description
         self.flightSyncID = flightSyncID
+        self.count = count
         self.contribution = contribution
     }
 }

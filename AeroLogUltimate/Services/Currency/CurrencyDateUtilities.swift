@@ -45,4 +45,22 @@ enum CurrencyDateUtilities {
         let anchor = sorted[requiredCount - 1]
         return calendar.date(byAdding: .day, value: windowDays, to: startOfDay(anchor))
     }
+
+    /// Expiration for calendar-month rolling windows (e.g. 61.57(c) instrument approaches).
+    static func rollingExpirationMonths(
+        eventDates: [Date],
+        requiredCount: Int,
+        windowMonths: Int
+    ) -> Date? {
+        guard requiredCount > 0, !eventDates.isEmpty else { return nil }
+        let sorted = eventDates.sorted(by: >)
+        guard sorted.count >= requiredCount else {
+            if let oldest = sorted.last {
+                return calendar.date(byAdding: .month, value: windowMonths, to: startOfDay(oldest))
+            }
+            return nil
+        }
+        let anchor = sorted[requiredCount - 1]
+        return calendar.date(byAdding: .month, value: windowMonths, to: startOfDay(anchor))
+    }
 }

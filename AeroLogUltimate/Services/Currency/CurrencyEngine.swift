@@ -153,6 +153,7 @@ struct CurrencyEngine {
                     date: flight.flightDate,
                     description: "\(approach.approachType.displayName) at \(approach.airportICAO ?? "—")",
                     flightSyncID: flight.syncMetadata?.syncID,
+                    count: approach.approachCount,
                     contribution: "\(approach.approachCount) approach(es)"
                 ))
             }
@@ -162,6 +163,7 @@ struct CurrencyEngine {
                     date: flight.flightDate,
                     description: "Holding procedures",
                     flightSyncID: flight.syncMetadata?.syncID,
+                    count: flight.holds,
                     contribution: "\(flight.holds) hold(s)"
                 ))
             }
@@ -171,8 +173,13 @@ struct CurrencyEngine {
         let holdsMet = holdCount >= requiredHolds
         let isCurrent = approachesMet && holdsMet
 
-        let expiresAt: Date? = if isCurrent, let oldestApproachFlight = instrumentFlights.min(by: { $0.flightDate < $1.flightDate }) {
-            CurrencyDateUtilities.calendar.date(byAdding: .month, value: windowMonths, to: CurrencyDateUtilities.startOfDay(oldestApproachFlight.flightDate))
+        let expiresAt: Date? = if isCurrent {
+            instrumentExpirationDate(
+                flights: instrumentFlights,
+                requiredApproaches: requiredApproaches,
+                requiredHolds: requiredHolds,
+                windowMonths: windowMonths
+            )
         } else {
             nil
         }
@@ -475,7 +482,7 @@ struct CurrencyEngine {
                 && matchesTypeRating($0, designator: designator)
         }
 
-        let hours = matching.reduce(0) { $0 + $1.picTime + ($1.role == .pic ? $1.totalTime : 0) }
+        let hours = matching.reduce(0) { $0 + max($1.picTime, $1.totalTime) }
 
         let isCurrent = designator.isEmpty ? !matching.isEmpty : (requiredHours > 0 ? hours >= requiredHours : !matching.isEmpty)
         let lastDate = matching.map(\.flightDate).max()
@@ -626,9 +633,7 @@ struct CurrencyEngine {
         requirement: CurrencyRequirement,
         unitLabel: String
     ) -> CurrencyTuple {
-        let total = events.reduce(0) { sum, event in
-            sum + (Int(event.contribution.split(separator: " ").first ?? "0") ?? 0)
-        }
+        let total = events.reduce(0) { $0 + $1.count }
 
         let isCurrent = total >= required
         let eventDates = events.map(\.date)
@@ -692,9 +697,54 @@ struct CurrencyEngine {
                     date: flight.flightDate,
                     description: "\(flight.departureICAO) → \(flight.arrivalICAO)",
                     flightSyncID: flight.syncMetadata?.syncID,
+                    count: count,
                     contribution: "\(count) landing(s)"
                 )
             }
+    }
+
+    /// 61.57(c): currency lapses when the 6th-most-recent approach (or required hold) ages out of the window.
+    private func instrumentExpirationDate(
+        flights: [Flight],
+        requiredApproaches: Int,
+        requiredHolds: Int,
+        windowMonths: Int
+    ) -> Date? {
+        var approachDates: [Date] = []
+        for flight in flights {
+            for approach in flight.approaches ?? [] {
+                for _ in 0..<approach.approachCount {
+                    approachDates.append(flight.flightDate)
+                }
+            }
+        }
+
+        let approachExpires = CurrencyDateUtilities.rollingExpirationMonths(
+            eventDates: approachDates,
+            requiredCount: requiredApproaches,
+            windowMonths: windowMonths
+        )
+
+        let holdDates = flights
+            .filter { $0.holds > 0 }
+            .flatMap { flight in Array(repeating: flight.flightDate, count: flight.holds) }
+
+        let holdExpires = CurrencyDateUtilities.rollingExpirationMonths(
+            eventDates: holdDates,
+            requiredCount: requiredHolds,
+            windowMonths: windowMonths
+        )
+
+        switch (approachExpires, holdExpires) {
+        case let (approaches?, holds?):
+            return min(approaches, holds)
+        case let (approaches?, nil):
+            return approaches
+        case let (nil, holds?):
+            return holds
+        case (nil, nil):
+            return nil
+        }
     }
 
     private func resolveStatus(
