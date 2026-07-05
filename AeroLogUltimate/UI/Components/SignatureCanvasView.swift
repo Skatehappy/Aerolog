@@ -3,41 +3,18 @@ import SwiftUI
 import UIKit
 
 /// Apple Pencil signature capture canvas using PencilKit.
-struct SignatureCanvasView: UIViewRepresentable {
+struct SignatureCanvasView: View {
     @Binding var drawing: PKDrawing
     var inkColor: UIColor = .label
+    var preferPencilOnly: Bool = false
 
-    func makeUIView(context: Context) -> PKCanvasView {
-        let canvas = PKCanvasView()
-        canvas.drawing = drawing
-        canvas.delegate = context.coordinator
-        canvas.drawingPolicy = .anyInput
-        canvas.tool = PKInkingTool(.pen, color: inkColor, width: 3)
-        canvas.backgroundColor = .clear
-        canvas.isOpaque = false
-        return canvas
-    }
-
-    func updateUIView(_ uiView: PKCanvasView, context: Context) {
-        if uiView.drawing != drawing {
-            uiView.drawing = drawing
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(drawing: $drawing)
-    }
-
-    final class Coordinator: NSObject, PKCanvasViewDelegate {
-        @Binding var drawing: PKDrawing
-
-        init(drawing: Binding<PKDrawing>) {
-            _drawing = drawing
-        }
-
-        func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-            drawing = canvasView.drawing
-        }
+    var body: some View {
+        PencilCanvasView(
+            drawing: $drawing,
+            inkColor: inkColor,
+            preferPencilOnly: preferPencilOnly,
+            backgroundColor: .clear
+        )
     }
 }
 

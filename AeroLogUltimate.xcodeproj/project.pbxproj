@@ -156,6 +156,16 @@
 		A100000100000000000000B9 /* DisplayPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000B9 /* DisplayPreferencesView.swift */; };
 		A100000100000000000000BB /* PilotProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000BB /* PilotProfileSettingsView.swift */; };
 		A100000100000000000000BD /* DataManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000BD /* DataManagementTests.swift */; };
+		A100000100000000000000BE /* AviationTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000BE /* AviationTheme.swift */; };
+		A100000100000000000000C0 /* IPadAdaptiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C0 /* IPadAdaptiveLayout.swift */; };
+		A100000100000000000000C2 /* AppShortcutCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C2 /* AppShortcutCenter.swift */; };
+		A100000100000000000000C4 /* AppCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C4 /* AppCommands.swift */; };
+		A100000100000000000000C6 /* PencilCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C6 /* PencilCanvasView.swift */; };
+		A100000100000000000000C8 /* PencilNotesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C8 /* PencilNotesSheet.swift */; };
+		A100000100000000000000CA /* AviationDetailPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000CA /* AviationDetailPlaceholder.swift */; };
+		A100000100000000000000CC /* SidebarTabRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000CC /* SidebarTabRow.swift */; };
+		A100000100000000000000CE /* SearchDebouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000CE /* SearchDebouncer.swift */; };
+		A100000100000000000000D0 /* iPadOptimizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D0 /* iPadOptimizationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -319,6 +329,16 @@
 		A200000100000000000000B9 /* DisplayPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayPreferencesView.swift; sourceTree = "<group>"; };
 		A200000100000000000000BB /* PilotProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotProfileSettingsView.swift; sourceTree = "<group>"; };
 		A200000100000000000000BD /* DataManagementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagementTests.swift; sourceTree = "<group>"; };
+		A200000100000000000000BE /* AviationTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AviationTheme.swift; sourceTree = "<group>"; };
+		A200000100000000000000C0 /* IPadAdaptiveLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPadAdaptiveLayout.swift; sourceTree = "<group>"; };
+		A200000100000000000000C2 /* AppShortcutCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShortcutCenter.swift; sourceTree = "<group>"; };
+		A200000100000000000000C4 /* AppCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommands.swift; sourceTree = "<group>"; };
+		A200000100000000000000C6 /* PencilCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilCanvasView.swift; sourceTree = "<group>"; };
+		A200000100000000000000C8 /* PencilNotesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilNotesSheet.swift; sourceTree = "<group>"; };
+		A200000100000000000000CA /* AviationDetailPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AviationDetailPlaceholder.swift; sourceTree = "<group>"; };
+		A200000100000000000000CC /* SidebarTabRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarTabRow.swift; sourceTree = "<group>"; };
+		A200000100000000000000CE /* SearchDebouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDebouncer.swift; sourceTree = "<group>"; };
+		A200000100000000000000D0 /* iPadOptimizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPadOptimizationTests.swift; sourceTree = "<group>"; };
 		A50000010000000000000001 /* AeroLogUltimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroLogUltimate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50000010000000000000002 /* AeroLogUltimateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroLogUltimateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -377,6 +397,7 @@
 				A2000001000000000000008C /* ReportAnalyticsEngineTests.swift */,
 				A200000100000000000000A0 /* TrainingProgressEngineTests.swift */,
 				A200000100000000000000BD /* DataManagementTests.swift */,
+				A200000100000000000000D0 /* iPadOptimizationTests.swift */,
 			);
 			path = AeroLogUltimateTests;
 			sourceTree = "<group>";
@@ -535,8 +556,26 @@
 			isa = PBXGroup;
 			children = (
 				A70000010000000000000017 /* Components */,
+				A70000010000000000000025 /* Theme */,
+				A70000010000000000000026 /* Layout */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000025 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				A200000100000000000000BE /* AviationTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000026 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				A200000100000000000000C0 /* IPadAdaptiveLayout.swift */,
+			);
+			path = Layout;
 			sourceTree = "<group>";
 		};
 		A70000010000000000000014 /* Utilities */ = {
@@ -549,6 +588,7 @@
 				A20000010000000000000044 /* MediaTransferable.swift */,
 				A2000001000000000000006A /* EndorsementExtensions.swift */,
 				A20000010000000000000082 /* ReportExtensions.swift */,
+				A200000100000000000000CE /* SearchDebouncer.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -592,6 +632,10 @@
 				A2000001000000000000008F /* AnalyticsChartViews.swift */,
 				A2000001000000000000008A /* StatisticRow.swift */,
 				A2000001000000000000008B /* ShareSheet.swift */,
+				A200000100000000000000C6 /* PencilCanvasView.swift */,
+				A200000100000000000000C8 /* PencilNotesSheet.swift */,
+				A200000100000000000000CA /* AviationDetailPlaceholder.swift */,
+				A200000100000000000000CC /* SidebarTabRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -647,6 +691,8 @@
 				A20000010000000000000009 /* AppTab.swift */,
 				A2000001000000000000000A /* AppRoute.swift */,
 				A2000001000000000000000B /* NavigationCoordinator.swift */,
+				A200000100000000000000C2 /* AppShortcutCenter.swift */,
+				A200000100000000000000C4 /* AppCommands.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -994,6 +1040,15 @@
 				A100000100000000000000B7 /* SyncSettingsView.swift in Sources */,
 				A100000100000000000000B9 /* DisplayPreferencesView.swift in Sources */,
 				A100000100000000000000BB /* PilotProfileSettingsView.swift in Sources */,
+				A100000100000000000000BE /* AviationTheme.swift in Sources */,
+				A100000100000000000000C0 /* IPadAdaptiveLayout.swift in Sources */,
+				A100000100000000000000C2 /* AppShortcutCenter.swift in Sources */,
+				A100000100000000000000C4 /* AppCommands.swift in Sources */,
+				A100000100000000000000C6 /* PencilCanvasView.swift in Sources */,
+				A100000100000000000000C8 /* PencilNotesSheet.swift in Sources */,
+				A100000100000000000000CA /* AviationDetailPlaceholder.swift in Sources */,
+				A100000100000000000000CC /* SidebarTabRow.swift in Sources */,
+				A100000100000000000000CE /* SearchDebouncer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1009,6 +1064,7 @@
 				A1000001000000000000008C /* ReportAnalyticsEngineTests.swift in Sources */,
 				A100000100000000000000A0 /* TrainingProgressEngineTests.swift in Sources */,
 				A100000100000000000000BD /* DataManagementTests.swift in Sources */,
+				A100000100000000000000D0 /* iPadOptimizationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

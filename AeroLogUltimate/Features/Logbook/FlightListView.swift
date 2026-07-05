@@ -9,26 +9,34 @@ struct FlightListView: View {
     @Query(sort: \Flight.flightDate, order: .reverse) private var allFlights: [Flight]
 
     @Binding var selectedFlight: Flight?
+    var newFlightRequest: Int = 0
+    var focusSearchRequest: Int = 0
+    var saveRequest: Int = 0
+
+    @StateObject private var searchDebouncer = SearchDebouncer()
     @State private var searchText = ""
+    @State private var isSearchPresented = false
     @State private var showDraftsOnly = false
     @State private var showFinalizedOnly = false
     @State private var editorFlight: Flight?
     @State private var isCreatingNew = false
+    @FocusState private var isSearchFocused: Bool
 
     private var visibleFlights: [Flight] {
-        allFlights.filter { !($0.syncMetadata?.isSoftDeleted ?? false) }
+        let query = searchDebouncer.debouncedText.lowercased()
+        return allFlights
+            .filter { !($0.syncMetadata?.isSoftDeleted ?? false) }
             .filter { flight in
                 if showDraftsOnly { return flight.status == .draft }
                 if showFinalizedOnly { return flight.status == .finalized }
                 return true
             }
             .filter { flight in
-                guard !searchText.isEmpty else { return true }
-                let q = searchText.lowercased()
-                return flight.departureICAO.lowercased().contains(q)
-                    || flight.arrivalICAO.lowercased().contains(q)
-                    || (flight.aircraft?.registration.lowercased().contains(q) ?? false)
-                    || (flight.remarks?.lowercased().contains(q) ?? false)
+                guard !query.isEmpty else { return true }
+                return flight.departureICAO.lowercased().contains(query)
+                    || flight.arrivalICAO.lowercased().contains(query)
+                    || (flight.aircraft?.registration.lowercased().contains(query) ?? false)
+                    || (flight.remarks?.lowercased().contains(query) ?? false)
             }
     }
 
@@ -49,6 +57,7 @@ struct FlightListView: View {
                 } actions: {
                     Button("Log Flight") { createNewFlight() }
                         .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
                 }
             } else {
                 List {
@@ -59,6 +68,7 @@ struct FlightListView: View {
                             FlightRowView(flight: flight)
                         }
                         .buttonStyle(.plain)
+                        .cockpitTouchTarget(minHeight: 52)
                         .listRowBackground(
                             selectedFlight?.persistentModelID == flight.persistentModelID
                                 ? Color.accentColor.opacity(0.12)
@@ -66,15 +76,23 @@ struct FlightListView: View {
                         )
                     }
                 }
+                .listStyle(.plain)
             }
         }
+        .readableContentWidth()
         .navigationTitle("Logbook")
-        .searchable(text: $searchText, prompt: "Search route, aircraft, remarks")
+        .searchable(
+            text: $searchText,
+            isPresented: $isSearchPresented,
+            prompt: "Search route, aircraft, remarks"
+        )
+        .focused($isSearchFocused)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: createNewFlight) {
                     Label("Log Flight", systemImage: "plus")
                 }
+                .keyboardShortcut(KeyboardShortcutRegistry.newFlight)
             }
             ToolbarItem(placement: .secondaryAction) {
                 Menu {
@@ -89,14 +107,24 @@ struct FlightListView: View {
         }
         .sheet(item: $editorFlight) { flight in
             NavigationStack {
-                FlightEditorView(flight: flight, isNew: isCreatingNew)
+                FlightEditorView(flight: flight, isNew: isCreatingNew, saveRequest: saveRequest)
             }
+        }
+        .onChange(of: searchText) { _, text in
+            searchDebouncer.submit(text)
         }
         .onChange(of: selectedFlight) { _, flight in
             if let flight, flight.status == .draft {
                 isCreatingNew = false
                 editorFlight = flight
             }
+        }
+        .onChange(of: newFlightRequest) { _, _ in
+            createNewFlight()
+        }
+        .onChange(of: focusSearchRequest) { _, _ in
+            isSearchPresented = true
+            isSearchFocused = true
         }
     }
 

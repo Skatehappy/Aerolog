@@ -8,6 +8,7 @@ struct FlightEditorView: View {
 
     @Bindable var flight: Flight
     let isNew: Bool
+    var saveRequest: Int = 0
 
     @State private var useMultiLeg = false
     @State private var showAircraftPicker = false
@@ -57,6 +58,9 @@ struct FlightEditorView: View {
         }
         .onAppear {
             useMultiLeg = flight.usesMultiLeg
+        }
+        .onChange(of: saveRequest) { _, _ in
+            saveDraft()
         }
         .deleteConfirmation(
             title: flight.isFinalized ? "Delete Finalized Entry?" : "Delete Flight?",

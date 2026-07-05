@@ -30,11 +30,11 @@ struct SettingsDashboardView: View {
                 }
             }
 
-            Section("Display") {
+            Section("Display & iPad") {
                 NavigationLink {
                     DisplayPreferencesView()
                 } label: {
-                    Label("Display Preferences", systemImage: "textformat.size")
+                    Label("Display & Shortcuts", systemImage: "textformat.size")
                 }
             }
 

@@ -8,6 +8,9 @@ struct DisplayPreferencesView: View {
     @State private var confirmBeforeDelete = true
     @State private var defaultRole: FlightRole = .pic
     @State private var colorSchemeSelection = "system"
+    @State private var useAviationPalette = true
+    @State private var preferPencilOnly = false
+    @State private var compactSidebar = false
 
     var body: some View {
         Form {
@@ -40,7 +43,7 @@ struct DisplayPreferencesView: View {
                 Picker("Color Scheme", selection: $colorSchemeSelection) {
                     Text("System").tag("system")
                     Text("Light").tag("light")
-                    Text("Dark").tag("dark")
+                    Text("Aviation Dark").tag("dark")
                 }
                 .onChange(of: colorSchemeSelection) { _, value in
                     switch value {
@@ -49,6 +52,42 @@ struct DisplayPreferencesView: View {
                     default: environment?.settings.preferredColorScheme = nil
                     }
                 }
+
+                Toggle("Aviation Dark Palette", isOn: $useAviationPalette) {
+                    Text("Aviation Dark Palette")
+                }
+                .onChange(of: useAviationPalette) { _, value in
+                    environment?.settings.useAviationDarkPalette = value
+                }
+
+                Text("Uses navy panels and amber accents in dark mode — easier on the eyes during preflight briefings.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("Apple Pencil") {
+                Toggle("Pencil Only Input", isOn: $preferPencilOnly)
+                    .onChange(of: preferPencilOnly) { _, value in
+                        environment?.settings.preferPencilOnlyInput = value
+                    }
+                Text("When enabled, PencilKit canvases ignore finger touches — ideal for signing endorsements in turbulence.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("iPad Layout") {
+                Toggle("Compact Sidebar", isOn: $compactSidebar)
+                    .onChange(of: compactSidebar) { _, value in
+                        environment?.settings.compactSidebar = value
+                    }
+            }
+
+            Section("Keyboard Shortcuts") {
+                LabeledContent("Log flight", value: "⌘N")
+                LabeledContent("Search", value: "⌘F")
+                LabeledContent("Save", value: "⌘S")
+                LabeledContent("Toggle sidebar", value: "⌃⌘S")
+                LabeledContent("Switch tabs", value: "⌘⇧1–7")
             }
         }
         .navigationTitle("Display")
@@ -60,6 +99,9 @@ struct DisplayPreferencesView: View {
         showDecimalHours = settings.showDecimalHours
         confirmBeforeDelete = settings.confirmBeforeDelete
         defaultRole = settings.defaultFlightRole
+        useAviationPalette = settings.useAviationDarkPalette
+        preferPencilOnly = settings.preferPencilOnlyInput
+        compactSidebar = settings.compactSidebar
         switch settings.preferredColorScheme {
         case .light: colorSchemeSelection = "light"
         case .dark: colorSchemeSelection = "dark"

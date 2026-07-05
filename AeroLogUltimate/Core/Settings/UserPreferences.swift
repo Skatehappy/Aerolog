@@ -21,6 +21,9 @@ final class UserPreferences: @unchecked Sendable {
         case confirmBeforeDelete
         case lastSelectedTab
         case syncConfigurationJSON
+        case useAviationDarkPalette
+        case preferPencilOnlyInput
+        case compactSidebar
     }
 
     // MARK: - App Lifecycle
@@ -70,6 +73,26 @@ final class UserPreferences: @unchecked Sendable {
             return tab
         }
         set { defaults.set(newValue.rawValue, forKey: key(.lastSelectedTab)) }
+    }
+
+    // MARK: - iPad / Cockpit
+
+    /// Applies refined aviation dark palette (navy panels, amber accents) in dark mode.
+    var useAviationDarkPalette: Bool {
+        get { defaults.object(forKey: key(.useAviationDarkPalette)) as? Bool ?? true }
+        set { defaults.set(newValue, forKey: key(.useAviationDarkPalette)) }
+    }
+
+    /// Restrict PencilKit canvases to Apple Pencil only (no finger drawing).
+    var preferPencilOnlyInput: Bool {
+        get { defaults.object(forKey: key(.preferPencilOnlyInput)) as? Bool ?? false }
+        set { defaults.set(newValue, forKey: key(.preferPencilOnlyInput)) }
+    }
+
+    /// Use compact sidebar tab labels on smaller iPad windows.
+    var compactSidebar: Bool {
+        get { defaults.object(forKey: key(.compactSidebar)) as? Bool ?? false }
+        set { defaults.set(newValue, forKey: key(.compactSidebar)) }
     }
 
     // MARK: - Sync

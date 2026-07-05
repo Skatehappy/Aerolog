@@ -25,6 +25,18 @@ final class AppSettings {
         didSet { preferences.syncConfiguration = syncConfiguration }
     }
 
+    var useAviationDarkPalette: Bool {
+        didSet { preferences.useAviationDarkPalette = useAviationDarkPalette }
+    }
+
+    var preferPencilOnlyInput: Bool {
+        didSet { preferences.preferPencilOnlyInput = preferPencilOnlyInput }
+    }
+
+    var compactSidebar: Bool {
+        didSet { preferences.compactSidebar = compactSidebar }
+    }
+
     private let preferences: UserPreferences
 
     init(preferences: UserPreferences = .shared) {
@@ -33,6 +45,9 @@ final class AppSettings {
         self.defaultFlightRole = preferences.defaultFlightRole
         self.confirmBeforeDelete = preferences.confirmBeforeDelete
         self.syncConfiguration = preferences.syncConfiguration
+        self.useAviationDarkPalette = preferences.useAviationDarkPalette
+        self.preferPencilOnlyInput = preferences.preferPencilOnlyInput
+        self.compactSidebar = preferences.compactSidebar
         self.preferredColorScheme = preferences.preferredColorScheme.flatMap(ColorScheme.init(storageValue:))
     }
 }

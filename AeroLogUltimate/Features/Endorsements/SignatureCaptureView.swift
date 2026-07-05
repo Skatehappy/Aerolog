@@ -4,6 +4,7 @@ import SwiftUI
 /// Full-screen Apple Pencil signature capture for CFI signing.
 struct SignatureCaptureView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.appEnvironment) private var environment
 
     let endorsementTitle: String
     let onComplete: (Data, PKDrawing) -> Void
@@ -50,8 +51,11 @@ struct SignatureCaptureView: View {
 
     private var signatureArea: some View {
         ZStack(alignment: .bottomTrailing) {
-            SignatureCanvasView(drawing: $drawing)
-                .background(Color(.systemBackground))
+            SignatureCanvasView(
+                drawing: $drawing,
+                preferPencilOnly: environment?.settings.preferPencilOnlyInput ?? false
+            )
+            .background(Color(.systemBackground))
 
             Rectangle()
                 .fill(Color.secondary.opacity(0.3))

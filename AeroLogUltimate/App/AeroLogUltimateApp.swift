@@ -17,8 +17,12 @@ struct AeroLogUltimateApp: App {
         WindowGroup {
             RootView(navigation: environment.navigation)
                 .environment(\.appEnvironment, environment)
+                .aviationTheme(enabled: environment.settings.useAviationDarkPalette)
                 .preferredColorScheme(environment.settings.preferredColorScheme)
                 .modelContainer(environment.dataStore.container)
+        }
+        .commands {
+            AppCommands(shortcutCenter: environment.shortcutCenter)
         }
     }
 }

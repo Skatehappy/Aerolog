@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// iPad split-view shell with Phase 1 logbook and aircraft features.
+/// iPad split-view shell optimized for cockpit and briefing workflows.
 struct RootView: View {
     @Environment(\.appEnvironment) private var environment
     @Bindable private var navigation: NavigationCoordinator
@@ -10,6 +10,9 @@ struct RootView: View {
     @State private var selectedEndorsement: Endorsement?
     @State private var selectedReportType: ReportType?
     @State private var selectedRelationshipID: UUID?
+    @State private var newFlightRequest = 0
+    @State private var focusSearchRequest = 0
+    @State private var saveRequest = 0
 
     init(navigation: NavigationCoordinator) {
         self.navigation = navigation
@@ -18,12 +21,18 @@ struct RootView: View {
     var body: some View {
         NavigationSplitView(columnVisibility: $navigation.columnVisibility) {
             sidebar
+                .splitColumnStyle(.sidebar)
         } content: {
             contentColumn
+                .splitColumnStyle(.content)
         } detail: {
             detailColumn
+                .splitColumnStyle(.detail)
         }
         .navigationSplitViewStyle(.balanced)
+        .onChange(of: environment?.shortcutCenter.actionGeneration) { _, _ in
+            handleShortcut()
+        }
     }
 
     // MARK: - Sidebar
@@ -34,24 +43,25 @@ struct RootView: View {
                 Button {
                     navigation.selectedTab = tab
                 } label: {
-                    Label(tab.title, systemImage: tab.systemImage)
+                    SidebarTabRow(tab: tab, isSelected: navigation.selectedTab == tab)
                 }
                 .buttonStyle(.plain)
-                .listRowBackground(
-                    navigation.selectedTab == tab
-                        ? Color.accentColor.opacity(0.15)
-                        : Color.clear
-                )
+                .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
             }
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
         .navigationTitle(SettingsStore.appName)
+        .navigationSplitViewColumnWidth(
+            min: 220,
+            ideal: environment?.settings.compactSidebar == true ? 240 : AviationTheme.sidebarIdealWidth,
+            max: 320
+        )
         .onChange(of: navigation.selectedTab) { _, newTab in
             UserPreferences.shared.lastSelectedTab = newTab
-            if newTab != .logbook { selectedFlight = nil }
-            if newTab != .currency { selectedCurrency = nil }
-            if newTab != .endorsements { selectedEndorsement = nil }
-            if newTab != .reports { selectedReportType = nil }
-            if newTab != .training { selectedRelationshipID = nil }
+            clearSelections(except: newTab)
         }
     }
 
@@ -61,31 +71,24 @@ struct RootView: View {
     private var contentColumn: some View {
         switch navigation.selectedTab {
         case .logbook:
-            FlightListView(selectedFlight: $selectedFlight)
+            FlightListView(
+                selectedFlight: $selectedFlight,
+                newFlightRequest: newFlightRequest,
+                focusSearchRequest: focusSearchRequest,
+                saveRequest: saveRequest
+            )
         case .aircraft:
-            NavigationStack {
-                AircraftListView()
-            }
+            NavigationStack { AircraftListView() }
         case .currency:
-            NavigationStack {
-                CurrencyDashboardView(selectedResult: $selectedCurrency)
-            }
+            NavigationStack { CurrencyDashboardView(selectedResult: $selectedCurrency) }
         case .endorsements:
-            NavigationStack {
-                EndorsementListView(selectedEndorsement: $selectedEndorsement)
-            }
+            NavigationStack { EndorsementListView(selectedEndorsement: $selectedEndorsement) }
         case .reports:
-            NavigationStack {
-                ReportsDashboardView(selectedReportType: $selectedReportType)
-            }
+            NavigationStack { ReportsDashboardView(selectedReportType: $selectedReportType) }
         case .training:
-            NavigationStack {
-                TrainingDashboardView(selectedRelationshipID: $selectedRelationshipID)
-            }
+            NavigationStack { TrainingDashboardView(selectedRelationshipID: $selectedRelationshipID) }
         case .settings:
-            NavigationStack {
-                SettingsDashboardView()
-            }
+            NavigationStack { SettingsDashboardView() }
         default:
             PlaceholderTabView(tab: navigation.selectedTab)
         }
@@ -95,86 +98,108 @@ struct RootView: View {
 
     @ViewBuilder
     private var detailColumn: some View {
-        if navigation.selectedTab == .logbook {
+        switch navigation.selectedTab {
+        case .logbook:
             if let flight = selectedFlight, flight.status == .finalized {
-                NavigationStack {
-                    FlightDetailView(flight: flight)
-                }
+                NavigationStack { FlightDetailView(flight: flight) }
+                    .readableContentWidth(maxWidth: AviationTheme.detailMaxReadableWidth)
             } else {
-                ContentUnavailableView {
-                    Label("Select a Flight", systemImage: "book.closed")
-                } description: {
-                    Text("Choose a finalized entry to view details, or tap + to log a new flight.")
-                }
+                AviationDetailPlaceholder(
+                    title: "Select a Flight",
+                    systemImage: "book.closed",
+                    description: "Choose a finalized entry to view details, or press ⌘N to log a new flight.",
+                    actionTitle: "Log Flight",
+                    action: { environment?.shortcutCenter.trigger(.newFlight) }
+                )
             }
-        } else if navigation.selectedTab == .currency {
+        case .currency:
             if let result = selectedCurrency {
-                NavigationStack {
-                    CurrencyDetailView(result: result)
-                }
+                NavigationStack { CurrencyDetailView(result: result) }
             } else {
-                ContentUnavailableView {
-                    Label("Currency Detail", systemImage: "checkmark.shield")
-                } description: {
-                    Text("Select a currency item to view qualifying events and requirements.")
-                }
+                AviationDetailPlaceholder(
+                    title: "Currency Detail",
+                    systemImage: "checkmark.shield",
+                    description: "Select a currency item to view qualifying events and requirements."
+                )
             }
-        } else if navigation.selectedTab == .endorsements {
+        case .endorsements:
             if let endorsement = selectedEndorsement {
-                NavigationStack {
-                    EndorsementDetailView(endorsement: endorsement)
-                }
+                NavigationStack { EndorsementDetailView(endorsement: endorsement) }
             } else {
-                ContentUnavailableView {
-                    Label("Endorsement Detail", systemImage: "signature")
-                } description: {
-                    Text("Select an endorsement to view the full text and signature.")
-                }
+                AviationDetailPlaceholder(
+                    title: "Endorsement Detail",
+                    systemImage: "signature",
+                    description: "Select an endorsement to view the full text and signature."
+                )
             }
-        } else if navigation.selectedTab == .reports {
+        case .reports:
             if let reportType = selectedReportType {
-                NavigationStack {
-                    ReportDetailView(reportType: reportType)
-                }
+                NavigationStack { ReportDetailView(reportType: reportType) }
             } else {
-                ContentUnavailableView {
-                    Label("Report Detail", systemImage: "chart.bar.doc.horizontal")
-                } description: {
-                    Text("Select a report type to view details and generate exports.")
-                }
+                AviationDetailPlaceholder(
+                    title: "Report Detail",
+                    systemImage: "chart.bar.doc.horizontal",
+                    description: "Select a report type to view details and generate exports."
+                )
             }
-        } else if navigation.selectedTab == .training {
+        case .training:
             if let relationshipID = selectedRelationshipID {
-                NavigationStack {
-                    StudentDetailView(relationshipID: relationshipID)
-                }
+                NavigationStack { StudentDetailView(relationshipID: relationshipID) }
             } else {
-                ContentUnavailableView {
-                    Label("Student Detail", systemImage: "person.2")
-                } description: {
-                    Text("Select a student to view progress, log lessons, and check checkride readiness.")
-                }
+                AviationDetailPlaceholder(
+                    title: "Student Detail",
+                    systemImage: "person.2",
+                    description: "Select a student to view progress, log lessons, and check checkride readiness."
+                )
             }
-        } else {
-            ContentUnavailableView {
-                Label("Detail", systemImage: "sidebar.right")
-            } description: {
-                Text("Select an item from the list to view details.")
-            }
+        default:
+            AviationDetailPlaceholder(
+                title: "Detail",
+                systemImage: "sidebar.right",
+                description: "Select an item from the list to view details."
+            )
         }
+    }
+
+    // MARK: - Shortcuts
+
+    private func handleShortcut() {
+        guard let action = environment?.shortcutCenter.consume() else { return }
+        switch action {
+        case .newFlight:
+            navigation.selectedTab = .logbook
+            newFlightRequest += 1
+        case .focusSearch:
+            navigation.selectedTab = .logbook
+            focusSearchRequest += 1
+        case .toggleSidebar:
+            navigation.columnVisibility = navigation.columnVisibility == .all ? .detailOnly : .all
+        case .save:
+            saveRequest += 1
+        case .selectTab(let tab):
+            navigation.selectedTab = tab
+        }
+    }
+
+    private func clearSelections(except tab: AppTab) {
+        if tab != .logbook { selectedFlight = nil }
+        if tab != .currency { selectedCurrency = nil }
+        if tab != .endorsements { selectedEndorsement = nil }
+        if tab != .reports { selectedReportType = nil }
+        if tab != .training { selectedRelationshipID = nil }
     }
 }
 
-/// Placeholder for tabs not yet implemented (Phase 2+).
+/// Placeholder for tabs not yet implemented.
 private struct PlaceholderTabView: View {
     let tab: AppTab
 
     var body: some View {
-        ContentUnavailableView {
-            Label(tab.title, systemImage: tab.systemImage)
-        } description: {
-            Text("Coming in a future phase.")
-        }
+        AviationDetailPlaceholder(
+            title: tab.title,
+            systemImage: tab.systemImage,
+            description: "Coming in a future phase."
+        )
         .navigationTitle(tab.title)
     }
 }
