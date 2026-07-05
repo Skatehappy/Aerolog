@@ -2,6 +2,8 @@ import SwiftData
 import XCTest
 @testable import AeroLogUltimate
 
+private typealias AppDataStore = AeroLogUltimate.DataStore
+
 /// End-to-end validation using realistic private-pilot and CFI workflows.
 ///
 /// Scenario pilot: Sarah Chen — PPL based at KPAO, flies a club C172 (N5283E).
@@ -12,7 +14,7 @@ final class PilotScenarioTests: XCTestCase {
     // MARK: - Currency (14 CFR 61.57)
 
     func testSarahDayPassengerCurrencyAfterPatternWork() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let pilot = try configureSarah(store: store)
         let aircraft = try registerAircraft(store: store)
 
@@ -35,7 +37,7 @@ final class PilotScenarioTests: XCTestCase {
     }
 
     func testSarahNightCurrencyRejectsTouchAndGoLandings() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let pilot = try configureSarah(store: store)
         let aircraft = try registerAircraft(store: store)
 
@@ -56,7 +58,7 @@ final class PilotScenarioTests: XCTestCase {
     }
 
     func testSarahNightCurrencyWithFullStopLandings() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let pilot = try configureSarah(store: store)
         let aircraft = try registerAircraft(store: store)
 
@@ -80,7 +82,7 @@ final class PilotScenarioTests: XCTestCase {
     }
 
     func testSarahFlightReviewFromSignedEndorsement() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let pilot = try configureSarah(store: store)
         let instructor = PilotProfile(firstName: "Mike", lastName: "Torres", isCFI: true)
         instructor.cfiCertificateNumber = "CFI2847103"
@@ -117,7 +119,7 @@ final class PilotScenarioTests: XCTestCase {
     // MARK: - Logbook & Import
 
     func testSarahImportsLegacyCSVLogbook() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         _ = try configureSarah(store: store)
 
         let csv = """
@@ -142,7 +144,7 @@ final class PilotScenarioTests: XCTestCase {
     // MARK: - Backup & Restore (offline-first)
 
     func testSarahFullBackupRestorePreservesLogbookEndorsementsAndAdvancedFields() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let pilot = try configureSarah(store: store)
         let aircraftService = AircraftService(dataStore: store)
         let flightService = FlightService(dataStore: store)
@@ -201,7 +203,7 @@ final class PilotScenarioTests: XCTestCase {
         XCTAssertEqual(backup.package.flights.first?.expenses?.count, 1)
         XCTAssertNotNil(backup.package.flights.first?.weightBalanceLog)
 
-        let restoreStore = try DataStore.makeInMemory()
+        let restoreStore = try AppDataStore.makeInMemory()
         let restoreService = DataManagementService(
             dataStore: restoreStore,
             attachmentStorage: AttachmentStorageService()
@@ -227,7 +229,7 @@ final class PilotScenarioTests: XCTestCase {
     }
 
     func testOfflineOperationWithSyncDisabled() async throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let pilot = try configureSarah(store: store)
         let flightService = FlightService(dataStore: store)
         let flight = try flightService.createDraft()
@@ -255,7 +257,7 @@ final class PilotScenarioTests: XCTestCase {
     // MARK: - Reports
 
     func testSarahGeneratesFAA8710AndTotalTimeReports() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let pilot = try configureSarah(store: store)
         let aircraft = try registerAircraft(store: store)
 
@@ -283,7 +285,7 @@ final class PilotScenarioTests: XCTestCase {
     // MARK: - Advanced Features (Phase 8)
 
     func testSarahNaturalLanguageSearchFindsPinnedCrossCountry() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let pilot = try configureSarah(store: store)
         let aircraft = try registerAircraft(store: store)
 
@@ -323,7 +325,7 @@ final class PilotScenarioTests: XCTestCase {
     }
 
     func testSarahMaintenanceReminderIdentifiesOverdueAnnual() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let aircraftService = AircraftService(dataStore: store)
         let maintenanceService = MaintenanceService(dataStore: store)
         let aircraft = try aircraftService.create(registration: "N5283E", make: "Cessna", model: "172S")
@@ -344,7 +346,7 @@ final class PilotScenarioTests: XCTestCase {
     // MARK: - CFI Dual Instruction Scenario
 
     func testCFILogsDualGivenWithStudentProgress() throws {
-        let store = try DataStore.makeInMemory()
+        let store = try AppDataStore.makeInMemory()
         let student = PilotProfile(firstName: "Alex", lastName: "Rivera", isPrimaryProfile: true)
         store.insert(student)
 
@@ -376,7 +378,7 @@ final class PilotScenarioTests: XCTestCase {
     // MARK: - Helpers
 
     @discardableResult
-    private func configureSarah(store: DataStore) throws -> PilotProfile {
+    private func configureSarah(store: AppDataStore) throws -> PilotProfile {
         let pilot = try store.primaryPilotProfile()!
         pilot.firstName = "Sarah"
         pilot.lastName = "Chen"
@@ -389,13 +391,13 @@ final class PilotScenarioTests: XCTestCase {
         return pilot
     }
 
-    private func registerAircraft(store: DataStore) throws -> Aircraft {
+    private func registerAircraft(store: AppDataStore) throws -> Aircraft {
         let service = AircraftService(dataStore: store)
         return try service.create(registration: "N5283E", make: "Cessna", model: "172S")
     }
 
     private func builtInRequirement(
-        store: DataStore,
+        store: AppDataStore,
         type: CurrencyType
     ) throws -> CurrencyRequirement {
         try store.ensureBuiltInCurrencyRequirements()
@@ -408,7 +410,7 @@ final class PilotScenarioTests: XCTestCase {
 
     @discardableResult
     private func makeFinalizedFlight(
-        store: DataStore,
+        store: AppDataStore,
         pilot: PilotProfile,
         aircraft: Aircraft,
         daysAgo: Int,
