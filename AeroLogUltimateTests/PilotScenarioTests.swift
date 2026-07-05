@@ -313,7 +313,7 @@ final class PilotScenarioTests: XCTestCase {
         favorite.remarks = "Lake Tahoe lunch trip"
 
         let criteria = NaturalLanguageSearchEngine.parse(
-            "pinned cross country to KTRK last month",
+            "pinned cross country KTRK last month",
             referenceDate: referenceDate
         )
         XCTAssertTrue(criteria.pinnedOnly)
