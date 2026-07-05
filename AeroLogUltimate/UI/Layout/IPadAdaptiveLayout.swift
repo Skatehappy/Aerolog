@@ -52,15 +52,7 @@ struct SplitColumnStyle: ViewModifier {
         case .content: surface.background
         case .detail: surface.background
         }
-        Group {
-            if role == .sidebar {
-                content
-                    .background(background)
-                    .navigationSplitViewColumnWidth(min: 220, ideal: AviationTheme.sidebarIdealWidth, max: 320)
-            } else {
-                content.background(background)
-            }
-        }
+        content.background(background)
     }
 }
 

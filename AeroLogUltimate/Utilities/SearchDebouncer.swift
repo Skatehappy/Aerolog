@@ -1,7 +1,6 @@
 import Foundation
 
 /// Debounces rapid search input to reduce list re-filtering on large logbooks.
-@MainActor
 final class SearchDebouncer: ObservableObject {
     @Published private(set) var debouncedText = ""
     private var task: Task<Void, Never>?
@@ -13,7 +12,7 @@ final class SearchDebouncer: ObservableObject {
 
     func submit(_ text: String) {
         task?.cancel()
-        task = Task {
+        task = Task { @MainActor in
             try? await Task.sleep(nanoseconds: delayNanoseconds)
             guard !Task.isCancelled else { return }
             debouncedText = text

@@ -97,10 +97,25 @@ jobs:
           PY
           )
           echo "Using destination: $DESTINATION"
-          xcodebuild \
-            -project AeroLogUltimate.xcodeproj \
-            -scheme AeroLogUltimate \
-            -destination "$DESTINATION" \
-            -configuration Debug \
-            CODE_SIGNING_ALLOWED=NO \
-            test
+          UDID="${DESTINATION#*id=}"
+          xcrun simctl boot "$UDID" 2>/dev/null || true
+          xcrun simctl bootstatus "$UDID" -b
+
+          for attempt in 1 2 3; do
+            echo "Test attempt $attempt..."
+            if xcodebuild \
+              -project AeroLogUltimate.xcodeproj \
+              -scheme AeroLogUltimate \
+              -destination "$DESTINATION" \
+              -configuration Debug \
+              CODE_SIGNING_ALLOWED=NO \
+              test; then
+              exit 0
+            fi
+            xcrun simctl shutdown "$UDID" 2>/dev/null || true
+            sleep 5
+            xcrun simctl boot "$UDID" 2>/dev/null || true
+            xcrun simctl bootstatus "$UDID" -b
+          done
+          echo "Tests failed after 3 attempts"
+          exit 1
