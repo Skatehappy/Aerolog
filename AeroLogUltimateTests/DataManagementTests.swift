@@ -40,6 +40,7 @@ final class DataManagementTests: XCTestCase {
         flight.totalTime = 1.4
         flight.picTime = 1.4
         try flightService.finalize(flight)
+        XCTAssertEqual(flight.status, .finalized)
 
         let exportService = DataManagementService(
             dataStore: store,
@@ -58,8 +59,11 @@ final class DataManagementTests: XCTestCase {
     func testBackupRestoreMerge() throws {
         let store = try DataStore.makeInMemory()
         let flightService = FlightService(dataStore: store)
+        let aircraftService = AircraftService(dataStore: store)
 
+        let aircraft = try aircraftService.create(registration: "N54321", make: "Cessna", model: "172")
         let flight = try flightService.createDraft()
+        flight.aircraft = aircraft
         flight.departureICAO = "KPAO"
         flight.arrivalICAO = "KSQL"
         flight.totalTime = 1.0
@@ -88,8 +92,11 @@ final class DataManagementTests: XCTestCase {
     func testLogbookExportCSV() throws {
         let store = try DataStore.makeInMemory()
         let flightService = FlightService(dataStore: store)
+        let aircraftService = AircraftService(dataStore: store)
 
+        let aircraft = try aircraftService.create(registration: "N11111", make: "Cessna", model: "172")
         let flight = try flightService.createDraft()
+        flight.aircraft = aircraft
         flight.departureICAO = "KPAO"
         flight.arrivalICAO = "KSQL"
         flight.totalTime = 1.5
@@ -112,8 +119,13 @@ final class DataManagementTests: XCTestCase {
     func testLogbookExportPDF() throws {
         let store = try DataStore.makeInMemory()
         let flightService = FlightService(dataStore: store)
+        let aircraftService = AircraftService(dataStore: store)
 
+        let aircraft = try aircraftService.create(registration: "N22222", make: "Cessna", model: "172")
         let flight = try flightService.createDraft()
+        flight.aircraft = aircraft
+        flight.departureICAO = "KPAO"
+        flight.arrivalICAO = "KSQL"
         flight.totalTime = 1.0
         flight.picTime = 1.0
         try flightService.finalize(flight)
