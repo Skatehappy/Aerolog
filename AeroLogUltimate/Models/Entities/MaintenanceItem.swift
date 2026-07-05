@@ -21,11 +21,13 @@ final class MaintenanceItem {
     @Relationship(deleteRule: .nullify)
     var aircraft: Aircraft?
 
-    var isOverdue: Bool {
+    func isOverdue(asOf date: Date = .now) -> Bool {
         guard !isCompleted else { return false }
-        if let dueDate, dueDate < .now { return true }
+        if let dueDate, dueDate < date { return true }
         return false
     }
+
+    var isOverdue: Bool { isOverdue() }
 
     var daysUntilDue: Int? {
         guard !isCompleted, let dueDate else { return nil }

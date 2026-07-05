@@ -188,6 +188,7 @@
 		A100000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift */; };
 		A100000100000000000000D21 /* WeightBalanceCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */; };
 		A100000100000000000000D22 /* AdvancedFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D22 /* AdvancedFeaturesTests.swift */; };
+		A100000100000000000000D23 /* PilotScenarioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D23 /* PilotScenarioTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -383,6 +384,7 @@
 		A200000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalLanguageSearchEngineTests.swift; sourceTree = "<group>"; };
 		A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceCalculatorTests.swift; sourceTree = "<group>"; };
 		A200000100000000000000D22 /* AdvancedFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedFeaturesTests.swift; sourceTree = "<group>"; };
+		A200000100000000000000D23 /* PilotScenarioTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotScenarioTests.swift; sourceTree = "<group>"; };
 		A50000010000000000000001 /* AeroLogUltimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroLogUltimate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50000010000000000000002 /* AeroLogUltimateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroLogUltimateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -445,6 +447,7 @@
 				A200000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift */,
 				A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */,
 				A200000100000000000000D22 /* AdvancedFeaturesTests.swift */,
+				A200000100000000000000D23 /* PilotScenarioTests.swift */,
 			);
 			path = AeroLogUltimateTests;
 			sourceTree = "<group>";
@@ -1177,6 +1180,7 @@
 				A100000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift in Sources */,
 				A100000100000000000000D21 /* WeightBalanceCalculatorTests.swift in Sources */,
 				A100000100000000000000D22 /* AdvancedFeaturesTests.swift in Sources */,
+				A100000100000000000000D23 /* PilotScenarioTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

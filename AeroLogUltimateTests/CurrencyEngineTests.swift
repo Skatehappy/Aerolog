@@ -69,6 +69,43 @@ final class CurrencyEngineTests: XCTestCase {
         XCTAssertEqual(result.status, .expired)
     }
 
+    func testNightPassengerCurrencyCountsOnlyFullStopLandings() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        let requirement = CurrencyRequirement(
+            currencyType: .passengerCarryingNight,
+            displayName: "Night",
+            lookbackDays: 90,
+            isBuiltIn: true
+        )
+        requirement.requiredNightLandings = 3
+
+        let touchAndGo = makeFlight(daysAgo: 10, nightLandings: 3, role: .pic)
+        touchAndGo.fullStopNightLandings = 0
+        touchAndGo.setConditions([.night])
+        touchAndGo.nightTime = 1.0
+        touchAndGo.pilot = pilot
+
+        let touchResult = engine.calculate(
+            requirement: requirement,
+            pilot: pilot,
+            flights: [touchAndGo]
+        )
+        XCTAssertNotEqual(touchResult.status, .current)
+
+        let fullStop = makeFlight(daysAgo: 15, nightLandings: 3, role: .pic)
+        fullStop.fullStopNightLandings = 3
+        fullStop.setConditions([.night])
+        fullStop.nightTime = 1.2
+        fullStop.pilot = pilot
+
+        let fullStopResult = engine.calculate(
+            requirement: requirement,
+            pilot: pilot,
+            flights: [fullStop]
+        )
+        XCTAssertEqual(fullStopResult.status, .current)
+    }
+
     func testIPCNotApplicableWhenInstrumentCurrent() {
         let pilot = PilotProfile(isPrimaryProfile: true)
         let requirement = CurrencyRequirement(

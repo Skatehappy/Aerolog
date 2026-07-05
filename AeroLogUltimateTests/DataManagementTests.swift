@@ -141,6 +141,51 @@ final class DataManagementTests: XCTestCase {
         XCTAssertEqual(String(data: export.data.prefix(4), encoding: .ascii), "%PDF")
     }
 
+    func testBackupRestoreIncludesSignedEndorsements() throws {
+        let store = try DataStore.makeInMemory()
+        let student = try store.primaryPilotProfile()!
+        let instructor = PilotProfile(firstName: "CFI", lastName: "Adams", isCFI: true)
+        instructor.cfiCertificateNumber = "CFI9988776"
+        store.insert(instructor)
+        try store.save()
+
+        let endorsementService = EndorsementService(dataStore: store)
+        let definition = EndorsementTemplateCatalog.definition(for: .flightReview)!
+        let endorsement = try endorsementService.createFromBuiltInTemplate(
+            definition,
+            student: student,
+            instructor: instructor,
+            values: ["student_name": student.fullName, "review_date": "Jun 1, 2026"]
+        )
+        try endorsementService.sign(
+            endorsement,
+            signerName: instructor.fullName,
+            certificateNumber: instructor.cfiCertificateNumber!,
+            signatureData: Data([0xAB]),
+            instructor: instructor
+        )
+
+        let service = DataManagementService(
+            dataStore: store,
+            attachmentStorage: AttachmentStorageService()
+        )
+        let backup = try service.createBackup(includeAttachments: false)
+        XCTAssertEqual(backup.package.endorsements.count, 1)
+        XCTAssertEqual(backup.package.endorsements.first?.status, .signed)
+
+        let restoreStore = try DataStore.makeInMemory()
+        let restoreService = DataManagementService(
+            dataStore: restoreStore,
+            attachmentStorage: AttachmentStorageService()
+        )
+        _ = try restoreService.restoreBackup(from: backup.archiveURL, strategy: .merge)
+
+        let restored = try restoreStore.fetch(FetchDescriptor<Endorsement>())
+        XCTAssertEqual(restored.count, 1)
+        XCTAssertEqual(restored.first?.status, .signed)
+        XCTAssertEqual(restored.first?.templateID, .flightReview)
+    }
+
     func testCSVImporterDetectsLogTenHeaders() throws {
         let csv = "Date,Aircraft ID,From,To,Total Duration,PIC\n2024-01-01,N123,KPAO,KSQL,1.0,1.0\n"
         let importer = CSVLogbookImporter()

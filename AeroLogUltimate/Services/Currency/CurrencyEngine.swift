@@ -681,7 +681,9 @@ struct CurrencyEngine {
             .sorted { $0.flightDate > $1.flightDate }
             .compactMap { flight -> QualifyingEvent? in
                 let count: Int = if day {
-                    fullStopOnly ? (flight.fullStopDayLandings > 0 ? flight.fullStopDayLandings : flight.dayLandings) : flight.dayLandings
+                    fullStopOnly ? flight.fullStopDayLandings : flight.dayLandings
+                } else if fullStopOnly {
+                    flight.fullStopNightLandings
                 } else {
                     flight.fullStopNightLandings > 0 ? flight.fullStopNightLandings : flight.nightLandings
                 }

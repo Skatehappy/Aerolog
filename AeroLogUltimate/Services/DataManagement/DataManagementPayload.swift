@@ -114,6 +114,8 @@ struct AeroLogBackupPackage: Codable, Identifiable, Sendable {
         schemaVersion = AeroLogSchema.versionIdentifier
         appName = SettingsStore.appName
         self.includesAttachments = includesAttachments
+        let maintenanceCount = aircraft.reduce(0) { $0 + ($1.maintenanceItems?.count ?? 0) }
+        let expenseCount = flights.reduce(0) { $0 + ($1.expenses?.count ?? 0) }
         manifest = BackupManifest(
             backupID: UUID().uuidString,
             entityCounts: BackupEntityCounts(
@@ -121,7 +123,9 @@ struct AeroLogBackupPackage: Codable, Identifiable, Sendable {
                 aircraft: aircraft.count,
                 flights: flights.count,
                 endorsements: endorsements.count,
-                attachments: attachments.count
+                attachments: attachments.count,
+                maintenanceItems: maintenanceCount,
+                expenses: expenseCount
             )
         )
         self.pilots = pilots
@@ -161,6 +165,8 @@ struct BackupEntityCounts: Codable, Sendable {
     let flights: Int
     let endorsements: Int
     let attachments: Int
+    let maintenanceItems: Int?
+    let expenses: Int?
 }
 
 // MARK: - Portable Entities
@@ -193,6 +199,24 @@ struct PortableAircraft: Codable, Sendable {
     let aircraftClass: AircraftClass
     let simulatorLevel: SimulatorLevel
     let isActive: Bool
+    let performanceNotes: String?
+    let cruiseSpeedKIAS: Int?
+    let bestGlideSpeedKIAS: Int?
+    let fuelCapacity: Double?
+    let defaultFuelBurnGPH: Double?
+    let maintenanceItems: [PortableMaintenanceItem]?
+}
+
+struct PortableMaintenanceItem: Codable, Sendable {
+    let syncID: UUID
+    let title: String
+    let maintenanceType: MaintenanceType
+    let dueDate: Date?
+    let dueHobbs: Double?
+    let completedDate: Date?
+    let reminderLeadDays: Int
+    let notes: String?
+    let isCompleted: Bool
 }
 
 struct PortableFlightLeg: Codable, Sendable {
@@ -242,6 +266,36 @@ struct PortableFlight: Codable, Sendable {
     let externalID: String?
     let legs: [PortableFlightLeg]
     let approaches: [PortableInstrumentApproach]
+    let isPinned: Bool?
+    let isFavorite: Bool?
+    let fuelAdded: Double?
+    let fuelBurn: Double?
+    let fuelRemaining: Double?
+    let fuelUnit: FuelUnit?
+    let weightBalanceLog: PortableWeightBalanceLog?
+    let expenses: [PortableFlightExpense]?
+}
+
+struct PortableWeightBalanceLog: Codable, Sendable {
+    let syncID: UUID
+    let emptyWeight: Double
+    let emptyArm: Double
+    let rampWeight: Double?
+    let rampCG: Double?
+    let forwardCGLimit: Double?
+    let aftCGLimit: Double?
+    let stationEntriesJSON: String?
+    let notes: String?
+}
+
+struct PortableFlightExpense: Codable, Sendable {
+    let syncID: UUID
+    let category: ExpenseCategory
+    let amount: Double
+    let currencyCode: String
+    let vendor: String?
+    let notes: String?
+    let expenseDate: Date
 }
 
 struct PortableEndorsement: Codable, Sendable {
@@ -253,6 +307,9 @@ struct PortableEndorsement: Codable, Sendable {
     let endorsementText: String
     let status: EndorsementStatus
     let issuedDate: Date?
+    let signedAt: Date?
+    let signerName: String?
+    let signerCertificateNumber: String?
     let studentNameSnapshot: String?
     let instructorNameSnapshot: String?
 }

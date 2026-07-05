@@ -30,9 +30,9 @@ struct MaintenanceService {
             }
     }
 
-    func overdueItems() throws -> [MaintenanceItem] {
+    func overdueItems(asOf date: Date = .now) throws -> [MaintenanceItem] {
         let aircraft = try dataStore.fetch(FetchDescriptor<Aircraft>())
-        return aircraft.flatMap { items(for: $0) }.filter(\.isOverdue)
+        return aircraft.flatMap { items(for: $0) }.filter { $0.isOverdue(asOf: date) }
     }
 
     @discardableResult

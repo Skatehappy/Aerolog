@@ -221,7 +221,20 @@ struct BackupSnapshotBuilder {
     }
 
     private func portableAircraft(_ aircraft: Aircraft) -> PortableAircraft {
-        PortableAircraft(
+        let maintenance = (aircraft.maintenanceItems ?? []).map { item in
+            PortableMaintenanceItem(
+                syncID: item.syncMetadata?.syncID ?? UUID(),
+                title: item.title,
+                maintenanceType: item.maintenanceType,
+                dueDate: item.dueDate,
+                dueHobbs: item.dueHobbs,
+                completedDate: item.completedDate,
+                reminderLeadDays: item.reminderLeadDays,
+                notes: item.notes,
+                isCompleted: item.isCompleted
+            )
+        }
+        return PortableAircraft(
             syncID: aircraft.syncMetadata?.syncID ?? UUID(),
             registration: aircraft.registration,
             make: aircraft.make,
@@ -229,7 +242,13 @@ struct BackupSnapshotBuilder {
             category: aircraft.category,
             aircraftClass: aircraft.aircraftClass,
             simulatorLevel: aircraft.simulatorLevel,
-            isActive: aircraft.isActive
+            isActive: aircraft.isActive,
+            performanceNotes: aircraft.performanceNotes,
+            cruiseSpeedKIAS: aircraft.cruiseSpeedKIAS,
+            bestGlideSpeedKIAS: aircraft.bestGlideSpeedKIAS,
+            fuelCapacity: aircraft.fuelCapacity,
+            defaultFuelBurnGPH: aircraft.defaultFuelBurnGPH,
+            maintenanceItems: maintenance.isEmpty ? nil : maintenance
         )
     }
 
@@ -248,6 +267,33 @@ struct BackupSnapshotBuilder {
                 approachType: $0.approachType,
                 airportICAO: $0.airportICAO,
                 approachCount: $0.approachCount
+            )
+        }
+
+        var portableWeightBalance: PortableWeightBalanceLog?
+        if let log = flight.weightBalanceLog {
+            portableWeightBalance = PortableWeightBalanceLog(
+                syncID: log.syncMetadata?.syncID ?? UUID(),
+                emptyWeight: log.emptyWeight,
+                emptyArm: log.emptyArm,
+                rampWeight: log.rampWeight,
+                rampCG: log.rampCG,
+                forwardCGLimit: log.forwardCGLimit,
+                aftCGLimit: log.aftCGLimit,
+                stationEntriesJSON: log.stationEntriesJSON,
+                notes: log.notes
+            )
+        }
+
+        let portableExpenses = (flight.expenses ?? []).map { expense in
+            PortableFlightExpense(
+                syncID: expense.syncMetadata?.syncID ?? UUID(),
+                category: expense.category,
+                amount: expense.amount,
+                currencyCode: expense.currencyCode,
+                vendor: expense.vendor,
+                notes: expense.notes,
+                expenseDate: expense.expenseDate
             )
         }
 
@@ -284,7 +330,15 @@ struct BackupSnapshotBuilder {
             remarks: flight.remarks,
             externalID: flight.externalID,
             legs: legs,
-            approaches: approaches
+            approaches: approaches,
+            isPinned: flight.isPinned,
+            isFavorite: flight.isFavorite,
+            fuelAdded: flight.fuelAdded,
+            fuelBurn: flight.fuelBurn,
+            fuelRemaining: flight.fuelRemaining,
+            fuelUnit: flight.fuelUnit,
+            weightBalanceLog: portableWeightBalance,
+            expenses: portableExpenses.isEmpty ? nil : portableExpenses
         )
     }
 
@@ -298,6 +352,9 @@ struct BackupSnapshotBuilder {
             endorsementText: endorsement.endorsementText,
             status: endorsement.status,
             issuedDate: endorsement.issuedDate,
+            signedAt: endorsement.signedAt,
+            signerName: endorsement.signerName,
+            signerCertificateNumber: endorsement.signerCertificateNumber,
             studentNameSnapshot: endorsement.studentNameSnapshot,
             instructorNameSnapshot: endorsement.instructorNameSnapshot
         )
