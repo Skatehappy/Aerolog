@@ -26,6 +26,7 @@ final class NaturalLanguageSearchEngineTests: XCTestCase {
         XCTAssertTrue(NaturalLanguageSearchEngine.matches(flight, criteria: criteria))
     }
 
+    @MainActor
     func testPinnedFlightsSortFirst() {
         let recent = Flight(flightDate: .now)
         recent.isPinned = false

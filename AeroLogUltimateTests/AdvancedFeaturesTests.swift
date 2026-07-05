@@ -37,6 +37,6 @@ final class AdvancedFeaturesTests: XCTestCase {
         let flight = Flight()
         flight.fuelAdded = 40
         flight.fuelRemaining = 12
-        XCTAssertEqual(flight.computedFuelBurn, 28, accuracy: 0.01)
+        XCTAssertEqual(flight.computedFuelBurn ?? 0, 28, accuracy: 0.01)
     }
 }

@@ -1,3 +1,4 @@
+import SwiftData
 import XCTest
 @testable import AeroLogUltimate
 
@@ -75,7 +76,7 @@ final class PilotScenarioTests: XCTestCase {
             pilot: pilot
         )
         XCTAssertEqual(nightResult.status, .current)
-        XCTAssertGreaterThanOrEqual(nightResult.detail.countedLandings, 3)
+        XCTAssertGreaterThanOrEqual(nightResult.detail.countedLandings ?? 0, 3)
     }
 
     func testSarahFlightReviewFromSignedEndorsement() throws {
@@ -135,7 +136,7 @@ final class PilotScenarioTests: XCTestCase {
 
         let flights = try store.fetch(FetchDescriptor<Flight>())
         XCTAssertTrue(flights.contains { $0.arrivalICAO == "KMOD" })
-        XCTAssertTrue(flights.allSatisfy { $0.status == .finalized })
+        XCTAssertTrue(flights.allSatisfy { $0.status == FlightStatus.finalized })
     }
 
     // MARK: - Backup & Restore (offline-first)
@@ -181,7 +182,7 @@ final class PilotScenarioTests: XCTestCase {
         let instructor = PilotProfile(firstName: "Mike", lastName: "Torres", isCFI: true)
         store.insert(instructor)
         try store.save()
-        let definition = EndorsementTemplateCatalog.definition(for: .soloFlightTraining)!
+        let definition = EndorsementTemplateCatalog.definition(for: .soloFlight)!
         _ = try endorsementService.createFromBuiltInTemplate(
             definition,
             student: pilot,
@@ -222,7 +223,7 @@ final class PilotScenarioTests: XCTestCase {
         XCTAssertEqual(restoredEndorsements.count, 1)
         XCTAssertEqual(restoredMaintenance.count, 1)
         XCTAssertEqual(restoredExpenses.count, 1)
-        XCTAssertEqual(restoredExpenses.first?.amount, 124.50, accuracy: 0.01)
+        XCTAssertEqual(restoredExpenses.first?.amount ?? 0, 124.50, accuracy: 0.01)
     }
 
     func testOfflineOperationWithSyncDisabled() async throws {
@@ -272,11 +273,11 @@ final class PilotScenarioTests: XCTestCase {
         let reportService = ReportService(dataStore: store)
         let totalTime = try reportService.generate(type: .totalTimeSummary, pilot: pilot)
         XCTAssertEqual(totalTime.totalTime?.totalFlights, 3)
-        XCTAssertEqual(totalTime.totalTime?.totalTime, 4.5, accuracy: 0.01)
+        XCTAssertEqual(totalTime.totalTime?.totalTime ?? 0, 4.5, accuracy: 0.01)
 
         let faa8710 = try reportService.generate(type: .faa8710, pilot: pilot)
-        XCTAssertEqual(faa8710.faa8710?.totalTime, 4.5, accuracy: 0.01)
-        XCTAssertEqual(faa8710.faa8710?.picTime, 4.5, accuracy: 0.01)
+        XCTAssertEqual(faa8710.faa8710?.totalTime ?? 0, 4.5, accuracy: 0.01)
+        XCTAssertEqual(faa8710.faa8710?.picTime ?? 0, 4.5, accuracy: 0.01)
     }
 
     // MARK: - Advanced Features (Phase 8)
@@ -334,7 +335,7 @@ final class PilotScenarioTests: XCTestCase {
             dueDate: referenceDate.addingTimeInterval(-86400 * 3)
         )
 
-        let overdue = try maintenanceService.overdueItems(referenceDate: referenceDate)
+        let overdue = try maintenanceService.overdueItems(asOf: referenceDate)
         XCTAssertEqual(overdue.count, 1)
         XCTAssertEqual(overdue.first?.title, "Annual")
         XCTAssertTrue(overdue.first?.isOverdue == true)
@@ -369,7 +370,7 @@ final class PilotScenarioTests: XCTestCase {
 
         let reportService = ReportService(dataStore: store)
         let summary = try reportService.generate(type: .totalTimeSummary, pilot: cfi)
-        XCTAssertEqual(summary.totalTime?.dualGiven, 1.2, accuracy: 0.01)
+        XCTAssertEqual(summary.totalTime?.dualGiven ?? 0, 1.2, accuracy: 0.01)
     }
 
     // MARK: - Helpers
