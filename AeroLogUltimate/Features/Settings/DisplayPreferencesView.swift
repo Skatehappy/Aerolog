@@ -53,9 +53,7 @@ struct DisplayPreferencesView: View {
                     }
                 }
 
-                Toggle("Aviation Dark Palette", isOn: $useAviationPalette) {
-                    Text("Aviation Dark Palette")
-                }
+                Toggle("Aviation Dark Palette", isOn: $useAviationPalette)
                 .onChange(of: useAviationPalette) { _, value in
                     environment?.settings.useAviationDarkPalette = value
                 }
