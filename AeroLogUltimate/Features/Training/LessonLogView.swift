@@ -59,7 +59,7 @@ struct LessonLogView: View {
         .sheet(isPresented: $showFlightEditor) {
             if let flight = try? environment?.flightService.flight(syncID: createdFlightID ?? UUID()) {
                 NavigationStack {
-                    FlightEditorView(flight: flight)
+                    FlightEditorView(flight: flight, isNew: true)
                 }
             }
         }
