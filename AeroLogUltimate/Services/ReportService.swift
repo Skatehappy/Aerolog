@@ -26,17 +26,21 @@ final class ReportService {
         type: ReportType,
         filter: ReportFilter = .allTime,
         format: ReportOutputFormat? = nil,
+        configuration: ReportConfiguration? = nil,
         pilot: PilotProfile? = nil
     ) throws -> GeneratedReport {
         let profile = try resolvedPilot(pilot)
         let flights = try pilotFlights(for: profile)
         let outputFormat = format ?? type.defaultFormat
+        let config = configuration ?? .defaultFor(type)
         let title = type.displayName
+        let logRows = engine.flightLogRows(flights: flights, filter: filter)
 
         switch type {
         case .totalTimeSummary:
             return GeneratedReport(
-                type: type, title: title, filter: filter, format: outputFormat, generatedAt: .now,
+                type: type, title: title, filter: filter, format: outputFormat,
+                configuration: config, generatedAt: .now,
                 dashboard: nil,
                 totalTime: engine.totalTimeSummary(flights: flights, filter: filter, pilot: profile),
                 faa8710: nil, flightLog: nil, airports: nil, aircraft: nil,
@@ -44,29 +48,33 @@ final class ReportService {
             )
         case .faa8710:
             return GeneratedReport(
-                type: type, title: title, filter: filter, format: outputFormat, generatedAt: .now,
+                type: type, title: title, filter: filter, format: outputFormat,
+                configuration: config, generatedAt: .now,
                 dashboard: nil, totalTime: nil,
                 faa8710: engine.faa8710Totals(flights: flights, filter: filter, pilot: profile),
-                flightLog: nil, airports: nil, aircraft: nil,
+                flightLog: logRows, airports: nil, aircraft: nil,
                 studentProgress: nil, currencyResults: nil
             )
         case .flightLog:
             return GeneratedReport(
-                type: type, title: title, filter: filter, format: outputFormat, generatedAt: .now,
+                type: type, title: title, filter: filter, format: outputFormat,
+                configuration: config, generatedAt: .now,
                 dashboard: nil, totalTime: nil, faa8710: nil,
-                flightLog: engine.flightLogRows(flights: flights, filter: filter),
+                flightLog: logRows,
                 airports: nil, aircraft: nil, studentProgress: nil, currencyResults: nil
             )
         case .airportStatistics:
             return GeneratedReport(
-                type: type, title: title, filter: filter, format: outputFormat, generatedAt: .now,
+                type: type, title: title, filter: filter, format: outputFormat,
+                configuration: config, generatedAt: .now,
                 dashboard: nil, totalTime: nil, faa8710: nil, flightLog: nil,
                 airports: engine.airportStatistics(flights: flights, filter: filter),
                 aircraft: nil, studentProgress: nil, currencyResults: nil
             )
         case .aircraftStatistics:
             return GeneratedReport(
-                type: type, title: title, filter: filter, format: outputFormat, generatedAt: .now,
+                type: type, title: title, filter: filter, format: outputFormat,
+                configuration: config, generatedAt: .now,
                 dashboard: nil, totalTime: nil, faa8710: nil, flightLog: nil, airports: nil,
                 aircraft: engine.aircraftStatistics(flights: flights, filter: filter),
                 studentProgress: nil, currencyResults: nil
@@ -74,7 +82,8 @@ final class ReportService {
         case .studentProgress:
             guard profile.isCFI else { throw ReportServiceError.cfiRequired }
             return GeneratedReport(
-                type: type, title: title, filter: filter, format: outputFormat, generatedAt: .now,
+                type: type, title: title, filter: filter, format: outputFormat,
+                configuration: config, generatedAt: .now,
                 dashboard: nil, totalTime: nil, faa8710: nil, flightLog: nil, airports: nil, aircraft: nil,
                 studentProgress: engine.studentProgress(flights: flights, filter: filter, instructor: profile),
                 currencyResults: nil
@@ -83,10 +92,11 @@ final class ReportService {
             throw ReportServiceError.useCurrencyService
         case .custom:
             return GeneratedReport(
-                type: type, title: "Custom Report", filter: filter, format: outputFormat, generatedAt: .now,
+                type: type, title: "Custom Report", filter: filter, format: outputFormat,
+                configuration: config, generatedAt: .now,
                 dashboard: engine.dashboard(flights: flights, filter: filter, pilot: profile),
                 totalTime: engine.totalTimeSummary(flights: flights, filter: filter, pilot: profile),
-                faa8710: nil, flightLog: engine.flightLogRows(flights: flights, filter: filter),
+                faa8710: nil, flightLog: logRows,
                 airports: engine.airportStatistics(flights: flights, filter: filter),
                 aircraft: engine.aircraftStatistics(flights: flights, filter: filter),
                 studentProgress: nil, currencyResults: nil
@@ -99,6 +109,7 @@ final class ReportService {
             type: definition.reportType,
             filter: definition.filter,
             format: definition.outputFormat,
+            configuration: definition.configuration,
             pilot: definition.owner
         )
         definition.markGenerated()

@@ -66,29 +66,34 @@ struct ReportsDashboardView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 summaryGrid(dashboard)
+                TimeCategoryChart(
+                    picTime: dashboard.picTime,
+                    soloTime: dashboard.soloTime,
+                    dualReceived: dashboard.dualReceived,
+                    dualGiven: dashboard.dualGiven,
+                    crossCountryTime: dashboard.crossCountryTime,
+                    nightTime: dashboard.nightTime,
+                    instrumentTime: dashboard.actualInstrumentTime + dashboard.simulatedInstrumentTime
+                )
                 TimeBreakdownChart(buckets: dashboard.monthlyBuckets)
                 quickReportsSection
                 if !dashboard.topAirports.isEmpty {
-                    rankingSection(title: "Top Airports", icon: "mappin.and.ellipse") {
-                        ForEach(dashboard.topAirports) { stat in
-                            StatisticRow(
-                                label: stat.icao,
-                                value: TimeFormatting.display(stat.totalTime) + " hrs",
-                                detail: "\(stat.visitCount) visits"
-                            )
+                    RankingBarChart(
+                        title: "Top Airports",
+                        systemImage: "mappin.and.ellipse",
+                        items: dashboard.topAirports.map {
+                            ($0.icao, $0.totalTime, "\($0.visitCount) visits")
                         }
-                    }
+                    )
                 }
                 if !dashboard.topAircraft.isEmpty {
-                    rankingSection(title: "Top Aircraft", icon: "airplane") {
-                        ForEach(dashboard.topAircraft) { stat in
-                            StatisticRow(
-                                label: stat.registration,
-                                value: TimeFormatting.display(stat.totalTime) + " hrs",
-                                detail: "\(stat.makeModel) · \(stat.flightCount) flights"
-                            )
+                    RankingBarChart(
+                        title: "Top Aircraft",
+                        systemImage: "airplane",
+                        items: dashboard.topAircraft.map {
+                            ($0.registration, $0.totalTime, "\($0.makeModel) · \($0.flightCount) flights")
                         }
-                    }
+                    )
                 }
             }
             .padding()

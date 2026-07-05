@@ -21,6 +21,23 @@ extension ReportDefinition {
             }
         }
     }
+
+    var configuration: ReportConfiguration {
+        get {
+            guard let json = columnsJSON,
+                  let data = json.data(using: .utf8),
+                  let decoded = try? JSONDecoder().decode(ReportConfiguration.self, from: data) else {
+                return .defaultFor(reportType)
+            }
+            return decoded
+        }
+        set {
+            if let data = try? JSONEncoder().encode(newValue),
+               let json = String(data: data, encoding: .utf8) {
+                columnsJSON = json
+            }
+        }
+    }
 }
 
 extension ReportType {
@@ -81,6 +98,13 @@ extension ReportType {
 
     var supportsSavedDefinition: Bool {
         self != .currencySummary
+    }
+
+    var supportsColumnCustomization: Bool {
+        switch self {
+        case .flightLog, .custom, .faa8710: true
+        default: false
+        }
     }
 }
 

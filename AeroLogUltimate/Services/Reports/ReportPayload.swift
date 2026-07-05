@@ -101,14 +101,26 @@ struct FlightLogRow: Identifiable, Sendable, Codable {
     let date: Date
     let aircraft: String
     let route: String
+    let role: FlightRole?
     let totalTime: Double
     let picTime: Double
+    let sicTime: Double
     let dualReceived: Double
+    let dualGiven: Double
     let soloTime: Double
     let nightTime: Double
     let crossCountryTime: Double
+    let actualInstrumentTime: Double
+    let simulatedInstrumentTime: Double
+    let groundInstructionTime: Double
+    let simulatorTime: Double
     let dayLandings: Int
     let nightLandings: Int
+    let fullStopDayLandings: Int
+    let fullStopNightLandings: Int
+    let holds: Int
+    let approachCount: Int
+    let instructorName: String?
     let remarks: String?
 }
 
@@ -157,6 +169,7 @@ struct GeneratedReport: Sendable {
     let title: String
     let filter: ReportFilter
     let format: ReportOutputFormat
+    let configuration: ReportConfiguration
     let generatedAt: Date
     let dashboard: AnalyticsDashboard?
     let totalTime: TotalTimeSummary?

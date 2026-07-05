@@ -117,15 +117,39 @@ struct ReportPreviewView: View {
     }
 
     private func flightLogSection(_ rows: [FlightLogRow]) -> some View {
-        section(title: "Flight Log (\(rows.count))", icon: "book.closed") {
+        let columns = report.configuration.resolvedColumns(for: report.type)
+        return section(title: "Flight Log (\(rows.count))", icon: "book.closed") {
             ForEach(rows.prefix(50)) { row in
-                StatisticRow(
-                    label: row.date.formatted(date: .abbreviated, time: .omitted),
-                    value: TimeFormatting.display(row.totalTime) + " hrs",
-                    detail: "\(row.route) · \(row.aircraft)"
-                )
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text(row.date.formatted(date: .abbreviated, time: .omitted))
+                            .font(.subheadline.weight(.medium))
+                        Spacer()
+                        Text(TimeFormatting.display(row.totalTime) + " hrs")
+                            .font(.subheadline.weight(.semibold).monospacedDigit())
+                    }
+                    Text("\(row.route) · \(row.aircraft)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    if columns.count > 3 {
+                        Text(columnSummary(row, columns: columns))
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+                .padding(.vertical, 4)
             }
         }
+    }
+
+    private func columnSummary(_ row: FlightLogRow, columns: [ReportColumn]) -> String {
+        let detailColumns = columns.filter {
+            switch $0 {
+            case .date, .aircraft, .route, .totalTime, .remarks: false
+            default: true
+            }
+        }
+        return detailColumns.prefix(8).map { "\($0.displayName): \($0.value(from: row))" }.joined(separator: " · ")
     }
 
     private func airportSection(_ airports: [AirportStatistic]) -> some View {
@@ -160,6 +184,15 @@ struct ReportPreviewView: View {
         section(title: "Analytics Snapshot", icon: "chart.bar") {
             StatisticRow(label: "Flights", value: "\(dashboard.totalFlights)")
             StatisticRow(label: "Total Time", value: TimeFormatting.display(dashboard.totalTime))
+            TimeCategoryChart(
+                picTime: dashboard.picTime,
+                soloTime: dashboard.soloTime,
+                dualReceived: dashboard.dualReceived,
+                dualGiven: dashboard.dualGiven,
+                crossCountryTime: dashboard.crossCountryTime,
+                nightTime: dashboard.nightTime,
+                instrumentTime: dashboard.actualInstrumentTime + dashboard.simulatedInstrumentTime
+            )
             TimeBreakdownChart(buckets: dashboard.monthlyBuckets)
         }
     }

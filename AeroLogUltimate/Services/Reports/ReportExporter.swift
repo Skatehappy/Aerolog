@@ -3,11 +3,13 @@ import UIKit
 
 /// Exports generated reports to CSV, JSON, and PDF.
 struct ReportExporter: Sendable {
+    private let pdfRenderer = ReportPDFRenderer()
+
     func export(_ report: GeneratedReport) throws -> Data {
         switch report.format {
         case .csv: return try exportCSV(report)
         case .json: return try exportJSON(report)
-        case .pdf: return try exportPDF(report)
+        case .pdf: return pdfRenderer.render(report)
         }
     }
 
@@ -23,28 +25,19 @@ struct ReportExporter: Sendable {
     private func exportCSV(_ report: GeneratedReport) throws -> Data {
         var lines: [String] = []
         lines.append("Report,\(csvEscape(report.title))")
+        lines.append("Pilot,\(csvEscape(report.pilotDisplayName))")
         lines.append("Generated,\(report.generatedAt.formatted())")
         lines.append("Filter,\(csvEscape(report.filter.displaySummary))")
         lines.append("")
 
         switch report.type {
-        case .flightLog:
-            lines.append("Date,Aircraft,Route,Total,PIC,Dual,Solo,Night,XC,Day Ldg,Night Ldg,Remarks")
-            for row in report.flightLog ?? [] {
-                lines.append([
-                    row.date.formatted(date: .abbreviated, time: .omitted),
-                    csvEscape(row.aircraft),
-                    csvEscape(row.route),
-                    TimeFormatting.display(row.totalTime),
-                    TimeFormatting.display(row.picTime),
-                    TimeFormatting.display(row.dualReceived),
-                    TimeFormatting.display(row.soloTime),
-                    TimeFormatting.display(row.nightTime),
-                    TimeFormatting.display(row.crossCountryTime),
-                    "\(row.dayLandings)",
-                    "\(row.nightLandings)",
-                    csvEscape(row.remarks ?? "")
-                ].joined(separator: ","))
+        case .flightLog, .custom:
+            if let rows = report.flightLog {
+                let columns = report.configuration.resolvedColumns(for: report.type)
+                lines.append(columns.map(\.csvHeader).joined(separator: ","))
+                for row in rows {
+                    lines.append(columns.map { csvEscape($0.value(from: row)) }.joined(separator: ","))
+                }
             }
         case .airportStatistics:
             lines.append("ICAO,Departures,Arrivals,Visits,Total Time")
@@ -68,9 +61,38 @@ struct ReportExporter: Sendable {
                     csvEscape(entry.lastLessonTitle ?? "")
                 ].joined(separator: ","))
             }
+        case .faa8710:
+            if let faa = report.faa8710 {
+                lines.append("Category,Hours")
+                lines.append("Total,\(TimeFormatting.display(faa.totalTime))")
+                lines.append("PIC,\(TimeFormatting.display(faa.picTime))")
+                lines.append("SIC,\(TimeFormatting.display(faa.sicTime))")
+                lines.append("Dual Received,\(TimeFormatting.display(faa.dualReceived))")
+                lines.append("Solo,\(TimeFormatting.display(faa.soloTime))")
+                lines.append("Cross Country,\(TimeFormatting.display(faa.crossCountryTime))")
+                lines.append("Night,\(TimeFormatting.display(faa.nightTime))")
+                lines.append("Actual Instrument,\(TimeFormatting.display(faa.actualInstrumentTime))")
+                lines.append("Simulated Instrument,\(TimeFormatting.display(faa.simulatedInstrumentTime))")
+                lines.append("Airplane SEL,\(TimeFormatting.display(faa.airplaneSingleEngineLand))")
+                lines.append("Airplane MEL,\(TimeFormatting.display(faa.airplaneMultiEngineLand))")
+                lines.append("Rotorcraft,\(TimeFormatting.display(faa.rotorcraftHelicopter))")
+                lines.append("Simulator,\(TimeFormatting.display(faa.simulatorTime))")
+                lines.append("Instructor,\(TimeFormatting.display(faa.instructorTime))")
+                lines.append("Day Landings,\(faa.dayLandings)")
+                lines.append("Night Landings,\(faa.nightLandings)")
+            }
+            if let rows = report.flightLog, !rows.isEmpty {
+                lines.append("")
+                let columns = report.configuration.resolvedColumns(for: .faa8710)
+                lines.append(columns.map(\.csvHeader).joined(separator: ","))
+                for row in rows {
+                    lines.append(columns.map { csvEscape($0.value(from: row)) }.joined(separator: ","))
+                }
+            }
         default:
             if let totals = report.totalTime {
                 lines.append("Category,Hours")
+                lines.append("Total Flights,\(totals.totalFlights)")
                 lines.append("Total,\(TimeFormatting.display(totals.totalTime))")
                 lines.append("PIC,\(TimeFormatting.display(totals.picTime))")
                 lines.append("SIC,\(TimeFormatting.display(totals.sicTime))")
@@ -81,6 +103,11 @@ struct ReportExporter: Sendable {
                 lines.append("Night,\(TimeFormatting.display(totals.nightTime))")
                 lines.append("Actual Instrument,\(TimeFormatting.display(totals.actualInstrumentTime))")
                 lines.append("Simulated Instrument,\(TimeFormatting.display(totals.simulatedInstrumentTime))")
+                lines.append("Ground Instruction,\(TimeFormatting.display(totals.groundInstructionTime))")
+                lines.append("Simulator,\(TimeFormatting.display(totals.simulatorTime))")
+                lines.append("Day Landings,\(totals.dayLandings)")
+                lines.append("Night Landings,\(totals.nightLandings)")
+                lines.append("Approaches,\(totals.approachCount)")
             }
         }
 
@@ -99,6 +126,7 @@ struct ReportExporter: Sendable {
             title: report.title,
             generatedAt: report.generatedAt,
             filterSummary: report.filter.displaySummary,
+            configuration: report.configuration,
             dashboard: report.dashboard,
             totalTime: report.totalTime,
             faa8710: report.faa8710,
@@ -110,108 +138,12 @@ struct ReportExporter: Sendable {
         return try encoder.encode(wrapper)
     }
 
-    // MARK: - PDF
-
-    private func exportPDF(_ report: GeneratedReport) throws -> Data {
-        let pageRect = CGRect(x: 0, y: 0, width: 612, height: 792)
-        let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
-        let lines = pdfLines(for: report)
-
-        return renderer.pdfData { context in
-            context.beginPage()
-            let margin: CGFloat = 48
-            var y = margin
-            let lineHeight: CGFloat = 18
-            let maxY = pageRect.height - margin
-
-            for line in lines {
-                if y + lineHeight > maxY {
-                    context.beginPage()
-                    y = margin
-                }
-                let attrs: [NSAttributedString.Key: Any] = line.isHeading
-                    ? [.font: UIFont.boldSystemFont(ofSize: line.fontSize)]
-                    : [.font: UIFont.systemFont(ofSize: line.fontSize)]
-                line.text.draw(at: CGPoint(x: margin, y: y), withAttributes: attrs)
-                y += lineHeight + (line.isHeading ? 6 : 2)
-            }
-        }
-    }
-
-    private func pdfLines(for report: GeneratedReport) -> [PDFLine] {
-        var lines: [PDFLine] = [
-            PDFLine(text: report.title, isHeading: true, fontSize: 20),
-            PDFLine(text: "Generated \(report.generatedAt.formatted(date: .abbreviated, time: .shortened))"),
-            PDFLine(text: report.filter.displaySummary),
-            PDFLine(text: "")
-        ]
-
-        if let totals = report.totalTime ?? report.faa8710.map { faa in
-            TotalTimeSummary(
-                pilotName: faa.pilotName, generatedAt: faa.generatedAt, filterSummary: report.filter.displaySummary,
-                totalFlights: 0, totalTime: faa.totalTime, picTime: faa.picTime, sicTime: faa.sicTime,
-                dualReceived: faa.dualReceived, dualGiven: 0, soloTime: faa.soloTime,
-                crossCountryTime: faa.crossCountryTime, nightTime: faa.nightTime,
-                actualInstrumentTime: faa.actualInstrumentTime, simulatedInstrumentTime: faa.simulatedInstrumentTime,
-                groundInstructionTime: 0, simulatorTime: faa.simulatorTime,
-                dayLandings: faa.dayLandings, nightLandings: faa.nightLandings,
-                fullStopDayLandings: 0, fullStopNightLandings: 0, holds: 0, approachCount: 0
-            )
-        } {
-            lines.append(PDFLine(text: "Time Summary", isHeading: true, fontSize: 16))
-            lines.append(PDFLine(text: "Total: \(TimeFormatting.display(totals.totalTime)) hrs"))
-            lines.append(PDFLine(text: "PIC: \(TimeFormatting.display(totals.picTime)) · Solo: \(TimeFormatting.display(totals.soloTime))"))
-            lines.append(PDFLine(text: "Dual Received: \(TimeFormatting.display(totals.dualReceived)) · Night: \(TimeFormatting.display(totals.nightTime))"))
-            lines.append(PDFLine(text: "Cross Country: \(TimeFormatting.display(totals.crossCountryTime)) · Instrument: \(TimeFormatting.display(totals.actualInstrumentTime))"))
-            lines.append(PDFLine(text: "Landings: \(totals.dayLandings) day / \(totals.nightLandings) night"))
-            lines.append(PDFLine(text: ""))
-        }
-
-        if let faa = report.faa8710 {
-            lines.append(PDFLine(text: "FAA 8710 Category Breakdown", isHeading: true, fontSize: 16))
-            lines.append(PDFLine(text: "Airplane SEL: \(TimeFormatting.display(faa.airplaneSingleEngineLand))"))
-            lines.append(PDFLine(text: "Airplane MEL: \(TimeFormatting.display(faa.airplaneMultiEngineLand))"))
-            lines.append(PDFLine(text: "Rotorcraft: \(TimeFormatting.display(faa.rotorcraftHelicopter))"))
-            lines.append(PDFLine(text: "Instructor: \(TimeFormatting.display(faa.instructorTime))"))
-            lines.append(PDFLine(text: ""))
-        }
-
-        if let rows = report.flightLog?.prefix(25) {
-            lines.append(PDFLine(text: "Flight Log", isHeading: true, fontSize: 16))
-            for row in rows {
-                lines.append(PDFLine(text: "\(row.date.formatted(date: .abbreviated, time: .omitted))  \(row.route)  \(TimeFormatting.display(row.totalTime)) hrs"))
-            }
-        }
-
-        if let airports = report.airports?.prefix(15) {
-            lines.append(PDFLine(text: "Airport Statistics", isHeading: true, fontSize: 16))
-            for stat in airports {
-                lines.append(PDFLine(text: "\(stat.icao): \(stat.visitCount) visits, \(TimeFormatting.display(stat.totalTime)) hrs"))
-            }
-        }
-
-        if let aircraft = report.aircraft?.prefix(15) {
-            lines.append(PDFLine(text: "Aircraft Statistics", isHeading: true, fontSize: 16))
-            for stat in aircraft {
-                lines.append(PDFLine(text: "\(stat.registration): \(stat.flightCount) flights, \(TimeFormatting.display(stat.totalTime)) hrs"))
-            }
-        }
-
-        return lines
-    }
-
     private func csvEscape(_ value: String) -> String {
-        if value.contains(",") || value.contains("\"") {
+        if value.contains(",") || value.contains("\"") || value.contains("\n") {
             return "\"\(value.replacingOccurrences(of: "\"", with: "\"\""))\""
         }
         return value
     }
-}
-
-private struct PDFLine {
-    let text: String
-    var isHeading: Bool = false
-    var fontSize: CGFloat = 12
 }
 
 private struct JSONReportWrapper: Codable {
@@ -219,6 +151,7 @@ private struct JSONReportWrapper: Codable {
     let title: String
     let generatedAt: Date
     let filterSummary: String
+    let configuration: ReportConfiguration
     let dashboard: AnalyticsDashboard?
     let totalTime: TotalTimeSummary?
     let faa8710: FAA8710Totals?

@@ -23,6 +23,7 @@ struct ReportDefinitionService {
         reportType: ReportType,
         outputFormat: ReportOutputFormat? = nil,
         filter: ReportFilter = .allTime,
+        configuration: ReportConfiguration? = nil,
         owner: PilotProfile?
     ) throws -> ReportDefinition {
         let definition = ReportDefinition(
@@ -31,6 +32,7 @@ struct ReportDefinitionService {
             outputFormat: outputFormat ?? reportType.defaultFormat
         )
         definition.filter = filter
+        definition.configuration = configuration ?? .defaultFor(reportType)
         definition.owner = owner
         dataStore.insert(definition)
         try dataStore.save()
