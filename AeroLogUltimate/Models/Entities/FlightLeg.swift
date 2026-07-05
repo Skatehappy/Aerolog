@@ -21,7 +21,7 @@ final class FlightLeg {
     var createdAt: Date
     var updatedAt: Date
 
-    @Relationship(deleteRule: .nullify, inverse: \Flight.legs)
+    @Relationship(deleteRule: .nullify)
     var flight: Flight?
 
     init(

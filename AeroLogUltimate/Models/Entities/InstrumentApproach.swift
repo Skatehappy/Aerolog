@@ -12,7 +12,7 @@ final class InstrumentApproach {
 
     var createdAt: Date
 
-    @Relationship(deleteRule: .nullify, inverse: \Flight.approaches)
+    @Relationship(deleteRule: .nullify)
     var flight: Flight?
 
     init(

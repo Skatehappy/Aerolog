@@ -88,7 +88,7 @@ enum ApproachType: String, Codable, CaseIterable, Sendable {
 enum CertificateType: String, Codable, CaseIterable, Sendable {
     case student
     case recreational
-    case private
+    case privatePilot = "private"
     case commercial
     case atp
     case cfi
