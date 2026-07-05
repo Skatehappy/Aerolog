@@ -22,7 +22,16 @@ jobs:
         run: xcodebuild -version
 
       - name: Install iOS Simulator platform
-        run: xcodebuild -downloadPlatform iOS
+        run: |
+          for attempt in 1 2 3; do
+            echo "Download attempt $attempt..."
+            if xcodebuild -downloadPlatform iOS; then
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "Platform download failed after 3 attempts"
+          exit 1
 
       - name: Build for iOS Simulator
         run: |
