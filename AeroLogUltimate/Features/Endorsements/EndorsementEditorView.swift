@@ -57,6 +57,10 @@ struct EndorsementEditorView: View {
         builtInTemplate?.title ?? customTemplate?.title ?? endorsement?.title ?? "Endorsement"
     }
 
+    private var isReadOnly: Bool {
+        endorsement?.isSigned == true || endorsement?.status == .revoked
+    }
+
     private var renderedText: String {
         if let builtInTemplate {
             return builtInTemplate.renderedText(values: placeholderValues)
@@ -77,6 +81,14 @@ struct EndorsementEditorView: View {
                 }
             }
 
+            if isReadOnly {
+                Section {
+                    Text("Signed endorsements are locked. Revoke and re-issue to make changes.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
             Section("People") {
                 Picker("Student", selection: $selectedStudent) {
                     Text("Select Student").tag(nil as PilotProfile?)
@@ -91,6 +103,7 @@ struct EndorsementEditorView: View {
                     }
                 }
             }
+            .disabled(isReadOnly)
 
             if !placeholders.isEmpty {
                 Section("Details") {
@@ -99,6 +112,7 @@ struct EndorsementEditorView: View {
                                   text: binding(for: key))
                     }
                 }
+                .disabled(isReadOnly)
             }
 
             Section("Aircraft") {
@@ -119,6 +133,7 @@ struct EndorsementEditorView: View {
             Section("Notes") {
                 TextField("Optional notes", text: $notes, axis: .vertical).lineLimit(2...4)
             }
+            .disabled(isReadOnly)
 
             if isEditing, let endorsement {
                 existingActions(endorsement)
@@ -130,8 +145,11 @@ struct EndorsementEditorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-            if isEditing { ToolbarItem(placement: .confirmationAction) { Button("Save") { saveExisting() } } }
+            if isEditing, endorsement?.isSigned != true, endorsement?.status != .revoked {
+                ToolbarItem(placement: .confirmationAction) { Button("Save") { saveExisting() } }
+            }
         }
+
         .sheet(isPresented: $showAircraftPicker) {
             AircraftPickerSheet(selectedAircraft: $selectedAircraft)
         }
@@ -282,14 +300,20 @@ struct EndorsementEditorView: View {
     }
 
     private func saveExisting() {
-        guard let endorsement else { return }
-        endorsement.endorsementText = renderedText
-        endorsement.filledPlaceholders = placeholderValues
-        endorsement.notes = notes.isEmpty ? nil : notes
-        endorsement.student = selectedStudent
-        endorsement.instructor = selectedInstructor
-        try? environment?.endorsementService.save(endorsement)
-        dismiss()
+        guard let endorsement, let service = environment?.endorsementService else { return }
+        do {
+            try service.updateDraft(
+                endorsement,
+                endorsementText: renderedText,
+                filledPlaceholders: placeholderValues,
+                notes: notes.isEmpty ? nil : notes,
+                student: selectedStudent,
+                instructor: selectedInstructor
+            )
+            dismiss()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     private func exportForSigning(_ endorsement: Endorsement) {

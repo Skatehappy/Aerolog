@@ -31,16 +31,55 @@ struct LogbookImportService {
         }
     }
 
+    func previewCSV(_ data: Data) throws -> CSVImportPreview {
+        let rows = try csvImporter.parse(data)
+        let headers = try csvHeaderLine(from: data)
+        let source = csvImporter.detectSource(headers: headers)
+        let inferred = rows.filter(\.totalTimeWasInferred).count
+        let duplicates = try countDuplicateRows(in: rows)
+        return CSVImportPreview(
+            sourceFormat: source,
+            rows: rows,
+            inferredTotalTimeCount: inferred,
+            duplicateCount: duplicates
+        )
+    }
+
+    func importCSVRows(
+        _ rows: [CSVFlightImportRow],
+        strategy: BackupRestoreStrategy = .merge
+    ) throws -> LogbookImportResult {
+        if strategy == .replaceAll {
+            try clearUserData()
+        }
+        return try commitCSVRows(rows, strategy: strategy)
+    }
+
     func importCSV(
         _ data: Data,
         strategy: BackupRestoreStrategy = .merge
     ) throws -> LogbookImportResult {
         let rows = try csvImporter.parse(data)
+        if strategy == .replaceAll {
+            try clearUserData()
+        }
+        return try commitCSVRows(rows, strategy: strategy)
+    }
+
+    private func commitCSVRows(
+        _ rows: [CSVFlightImportRow],
+        strategy: BackupRestoreStrategy
+    ) throws -> LogbookImportResult {
         let pilot = try dataStore.primaryPilotProfile()
         var importedFlights = 0
         var importedAircraft = 0
         var skipped = 0
         var warnings: [String] = []
+
+        let inferredCount = rows.filter(\.totalTimeWasInferred).count
+        if inferredCount > 0 {
+            warnings.append("\(inferredCount) flight(s) had total time inferred from PIC/dual/solo columns.")
+        }
 
         var aircraftCache = try buildAircraftCache()
 
@@ -407,6 +446,26 @@ struct LogbookImportService {
     private func expenseItem(syncID: UUID) throws -> FlightExpense? {
         let expenses = try dataStore.fetch(FetchDescriptor<FlightExpense>())
         return expenses.first { $0.syncMetadata?.syncID == syncID }
+    }
+
+    private func csvHeaderLine(from data: Data) throws -> [String] {
+        guard let text = String(data: data, encoding: .utf8) ?? String(data: data, encoding: .isoLatin1) else {
+            throw DataManagementError.unsupportedFormat
+        }
+        guard let firstLine = text.split(whereSeparator: \.isNewline).first else {
+            throw DataManagementError.emptyImport
+        }
+        return firstLine.split(separator: ",").map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+    }
+
+    private func countDuplicateRows(in rows: [CSVFlightImportRow]) throws -> Int {
+        var count = 0
+        for row in rows {
+            if let externalID = row.externalID, try flightExists(externalID: externalID) {
+                count += 1
+            }
+        }
+        return count
     }
 
     private func clearUserData() throws {

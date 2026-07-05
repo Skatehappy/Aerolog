@@ -212,6 +212,25 @@ final class CurrencyEngineTests: XCTestCase {
         XCTAssertEqual(result.status, .current)
     }
 
+    func testDayPassengerCurrencyWordingMentionsCarryingPassengers() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        let requirement = CurrencyRequirement(
+            currencyType: .passengerCarryingDay,
+            displayName: "Day",
+            lookbackDays: 90,
+            isBuiltIn: true
+        )
+        requirement.requiredLandings = 3
+
+        let flight = makeFlight(daysAgo: 10, dayLandings: 1, role: .pic)
+        flight.pilot = pilot
+
+        let result = engine.calculate(requirement: requirement, pilot: pilot, flights: [flight])
+        XCTAssertEqual(result.status, .expired)
+        XCTAssertTrue(result.warningText?.contains("carry passengers") == true)
+        XCTAssertTrue(result.detail.nextRequiredAction?.contains("carrying passengers") == true)
+    }
+
     func testIPCNotApplicableWhenInstrumentCurrent() {
         let pilot = PilotProfile(isPrimaryProfile: true)
         let requirement = CurrencyRequirement(

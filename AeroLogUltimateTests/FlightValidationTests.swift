@@ -32,4 +32,17 @@ final class FlightValidationTests: XCTestCase {
         let result = FlightValidation.validateForFinalize(flight)
         XCTAssertTrue(result.isValid)
     }
+
+    func testFinalizeWarnsWhenNightTimeExceedsTotalTime() {
+        let flight = Flight()
+        flight.totalTime = 1.0
+        flight.nightTime = 2.0
+        flight.departureICAO = "KPAO"
+        flight.arrivalICAO = "KSQL"
+        flight.aircraft = Aircraft(registration: "N12345", make: "Cessna", model: "172")
+
+        let result = FlightValidation.validateForFinalize(flight)
+        XCTAssertTrue(result.isValid)
+        XCTAssertTrue(result.warnings.contains(where: { $0.contains("Night time") && $0.contains("exceeds total time") }))
+    }
 }

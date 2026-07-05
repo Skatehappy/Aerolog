@@ -59,6 +59,27 @@ struct LogbookImportResult: Sendable {
     let warnings: [String]
 }
 
+/// Parsed CSV awaiting user confirmation before commit.
+struct CSVImportPreview: Sendable {
+    let sourceFormat: String
+    let rows: [CSVFlightImportRow]
+    let inferredTotalTimeCount: Int
+    let duplicateCount: Int
+
+    var flightCount: Int { rows.count }
+
+    var summaryLines: [String] {
+        var lines = ["\(flightCount) flight(s) ready to import from \(sourceFormat)"]
+        if inferredTotalTimeCount > 0 {
+            lines.append("\(inferredTotalTimeCount) row(s) inferred total time from PIC/dual/solo — review carefully")
+        }
+        if duplicateCount > 0 {
+            lines.append("\(duplicateCount) duplicate(s) will be skipped (merge strategy)")
+        }
+        return lines
+    }
+}
+
 struct LogbookExportResult: Sendable {
     let format: LogbookExportFormat
     let data: Data
@@ -330,6 +351,8 @@ struct PortableAttachment: Codable, Sendable {
 
 struct CSVFlightImportRow: Sendable {
     var flightDate: Date?
+    /// True when total time was missing and inferred from PIC, dual, or solo columns.
+    var totalTimeWasInferred: Bool = false
     var aircraftRegistration: String?
     var departureICAO: String?
     var arrivalICAO: String?

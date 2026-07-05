@@ -41,6 +41,9 @@ struct FlightService {
     }
 
     func save(_ flight: Flight) throws {
+        if flight.status == .finalized {
+            flight.recordEditHistory(action: "Edited finalized entry")
+        }
         flight.touch()
         try dataStore.save()
     }

@@ -77,6 +77,8 @@ enum FlightValidation {
             }
         }
 
+        warnings.append(contentsOf: timeIntegrityWarnings(for: flight))
+
         if errors.isEmpty {
             return FlightValidationResult(isValid: true, errors: [], warnings: warnings)
         }
@@ -89,5 +91,41 @@ enum FlightValidation {
 
     private static func isGroundOnly(_ flight: Flight) -> Bool {
         flight.groundInstructionTime > 0 && flight.totalTime == 0 && flight.simulatorTime == 0
+    }
+
+    /// Soft warnings for impossible or suspicious time breakdowns (does not block finalize).
+    private static func timeIntegrityWarnings(for flight: Flight) -> [String] {
+        guard flight.totalTime > 0 else { return [] }
+
+        var warnings: [String] = []
+        let tolerance = 0.05
+
+        func exceeds(_ component: Double, _ label: String) {
+            if component > flight.totalTime + tolerance {
+                warnings.append("\(label) (\(TimeFormatting.display(component))h) exceeds total time")
+            }
+        }
+
+        exceeds(flight.nightTime, "Night time")
+        exceeds(flight.crossCountryTime, "Cross-country time")
+        exceeds(flight.actualInstrumentTime, "Actual instrument time")
+        exceeds(flight.simulatedInstrumentTime, "Simulated instrument time")
+        exceeds(flight.picTime, "PIC time")
+        exceeds(flight.sicTime, "SIC time")
+        exceeds(flight.dualReceived, "Dual received")
+        exceeds(flight.dualGiven, "Dual given")
+        exceeds(flight.soloTime, "Solo time")
+
+        let instrumentTotal = flight.actualInstrumentTime + flight.simulatedInstrumentTime
+        if instrumentTotal > flight.totalTime + tolerance {
+            warnings.append("Combined instrument time exceeds total time")
+        }
+
+        let roleTotal = flight.picTime + flight.sicTime + flight.dualReceived + flight.soloTime
+        if roleTotal > flight.totalTime + tolerance {
+            warnings.append("PIC + SIC + dual + solo (\(TimeFormatting.display(roleTotal))h) exceeds total time")
+        }
+
+        return warnings
     }
 }

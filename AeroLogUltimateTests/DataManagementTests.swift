@@ -4,6 +4,24 @@ import SwiftData
 
 @MainActor
 final class DataManagementTests: XCTestCase {
+    func testCSVPreviewFlagsInferredTotalTime() throws {
+        let store = try DataStore.makeInMemory()
+        let service = DataManagementService(
+            dataStore: store,
+            attachmentStorage: AttachmentStorageService()
+        )
+
+        let csv = """
+        Date,Aircraft,From,To,PIC,Remarks
+        2024-06-15,N12345,KPAO,KSQL,1.5,No total column
+        """
+        let preview = try service.previewCSVImport(Data(csv.utf8))
+
+        XCTAssertEqual(preview.flightCount, 1)
+        XCTAssertEqual(preview.inferredTotalTimeCount, 1)
+        XCTAssertTrue(preview.summaryLines.joined().contains("inferred total time"))
+    }
+
     func testCSVImportCreatesFlights() throws {
         let store = try DataStore.makeInMemory()
         let service = DataManagementService(

@@ -46,6 +46,7 @@
 		A10000010000000000000032 /* FlightValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000032 /* FlightValidationTests.swift */; };
 		A10000010000000000000040 /* TimeFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000040 /* TimeFormatting.swift */; };
 		A10000010000000000000041 /* FlightValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000041 /* FlightValidation.swift */; };
+		A100000100000000000000CF /* FlightEditHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000CF /* FlightEditHistory.swift */; };
 		A10000010000000000000042 /* AviationDisplayNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000042 /* AviationDisplayNames.swift */; };
 		A10000010000000000000043 /* FlightExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000043 /* FlightExtensions.swift */; };
 		A10000010000000000000044 /* MediaTransferable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000044 /* MediaTransferable.swift */; };
@@ -189,6 +190,7 @@
 		A100000100000000000000D21 /* WeightBalanceCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */; };
 		A100000100000000000000D22 /* AdvancedFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D22 /* AdvancedFeaturesTests.swift */; };
 		A100000100000000000000D23 /* PilotScenarioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D23 /* PilotScenarioTests.swift */; };
+		A100000100000000000000D24 /* FlightEditHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D24 /* FlightEditHistoryTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -242,6 +244,7 @@
 		A20000010000000000000032 /* FlightValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightValidationTests.swift; sourceTree = "<group>"; };
 		A20000010000000000000040 /* TimeFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatting.swift; sourceTree = "<group>"; };
 		A20000010000000000000041 /* FlightValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightValidation.swift; sourceTree = "<group>"; };
+		A200000100000000000000CF /* FlightEditHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightEditHistory.swift; sourceTree = "<group>"; };
 		A20000010000000000000042 /* AviationDisplayNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AviationDisplayNames.swift; sourceTree = "<group>"; };
 		A20000010000000000000043 /* FlightExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightExtensions.swift; sourceTree = "<group>"; };
 		A20000010000000000000044 /* MediaTransferable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTransferable.swift; sourceTree = "<group>"; };
@@ -385,6 +388,7 @@
 		A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceCalculatorTests.swift; sourceTree = "<group>"; };
 		A200000100000000000000D22 /* AdvancedFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedFeaturesTests.swift; sourceTree = "<group>"; };
 		A200000100000000000000D23 /* PilotScenarioTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotScenarioTests.swift; sourceTree = "<group>"; };
+		A200000100000000000000D24 /* FlightEditHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightEditHistoryTests.swift; sourceTree = "<group>"; };
 		A50000010000000000000001 /* AeroLogUltimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroLogUltimate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50000010000000000000002 /* AeroLogUltimateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroLogUltimateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -448,6 +452,7 @@
 				A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */,
 				A200000100000000000000D22 /* AdvancedFeaturesTests.swift */,
 				A200000100000000000000D23 /* PilotScenarioTests.swift */,
+				A200000100000000000000D24 /* FlightEditHistoryTests.swift */,
 			);
 			path = AeroLogUltimateTests;
 			sourceTree = "<group>";
@@ -640,6 +645,7 @@
 			children = (
 				A20000010000000000000040 /* TimeFormatting.swift */,
 				A20000010000000000000041 /* FlightValidation.swift */,
+				A200000100000000000000CF /* FlightEditHistory.swift */,
 				A20000010000000000000042 /* AviationDisplayNames.swift */,
 				A20000010000000000000043 /* FlightExtensions.swift */,
 				A20000010000000000000044 /* MediaTransferable.swift */,
@@ -1028,6 +1034,7 @@
 				A10000010000000000000021 /* AircraftService.swift in Sources */,
 				A10000010000000000000040 /* TimeFormatting.swift in Sources */,
 				A10000010000000000000041 /* FlightValidation.swift in Sources */,
+				A100000100000000000000CF /* FlightEditHistory.swift in Sources */,
 				A10000010000000000000042 /* AviationDisplayNames.swift in Sources */,
 				A10000010000000000000043 /* FlightExtensions.swift in Sources */,
 				A10000010000000000000044 /* MediaTransferable.swift in Sources */,
@@ -1181,6 +1188,7 @@
 				A100000100000000000000D21 /* WeightBalanceCalculatorTests.swift in Sources */,
 				A100000100000000000000D22 /* AdvancedFeaturesTests.swift in Sources */,
 				A100000100000000000000D23 /* PilotScenarioTests.swift in Sources */,
+				A100000100000000000000D24 /* FlightEditHistoryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

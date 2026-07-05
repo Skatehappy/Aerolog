@@ -80,6 +80,8 @@ final class Flight {
     var createdAt: Date
     var updatedAt: Date
     var finalizedAt: Date?
+    /// JSON array of `FlightEditRecord` — append-only trail when finalized entries change.
+    var editHistoryJSON: String?
 
     // MARK: Sync
 
@@ -196,9 +198,23 @@ final class Flight {
     }
 
     func revertToDraft() {
+        recordEditHistory(action: "Reverted to draft")
         status = .draft
         finalizedAt = nil
         touch()
+    }
+
+    func recordEditHistory(action: String) {
+        guard status == .finalized || finalizedAt != nil else { return }
+        editHistoryJSON = FlightEditHistory.append(
+            action: action,
+            previousStatus: status.rawValue,
+            to: editHistoryJSON
+        )
+    }
+
+    var editHistory: [FlightEditRecord] {
+        FlightEditHistory.decode(from: editHistoryJSON)
     }
 
     func touch() {

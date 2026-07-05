@@ -196,6 +196,31 @@ final class EndorsementService {
     // MARK: - Lifecycle
 
     func save(_ endorsement: Endorsement) throws {
+        guard endorsement.status == .draft || endorsement.status == .pendingSignature else {
+            throw EndorsementServiceError.signedEndorsementImmutable
+        }
+        endorsement.touch()
+        try dataStore.save()
+    }
+
+    func updateDraft(
+        _ endorsement: Endorsement,
+        endorsementText: String,
+        filledPlaceholders: [String: String],
+        notes: String?,
+        student: PilotProfile?,
+        instructor: PilotProfile?
+    ) throws {
+        guard endorsement.status == .draft || endorsement.status == .pendingSignature else {
+            throw EndorsementServiceError.signedEndorsementImmutable
+        }
+        endorsement.endorsementText = endorsementText
+        endorsement.filledPlaceholders = filledPlaceholders
+        endorsement.notes = notes
+        endorsement.student = student
+        endorsement.instructor = instructor
+        if let student { endorsement.studentNameSnapshot = student.fullName }
+        if let instructor { endorsement.instructorNameSnapshot = instructor.fullName }
         endorsement.touch()
         try dataStore.save()
     }
@@ -214,12 +239,14 @@ final class EndorsementService {
 enum EndorsementServiceError: LocalizedError {
     case certificateNumberRequired
     case signatureRequired
+    case signedEndorsementImmutable
     case notFound
 
     var errorDescription: String? {
         switch self {
         case .certificateNumberRequired: "Instructor certificate number is required."
         case .signatureRequired: "A signature is required before completing the endorsement."
+        case .signedEndorsementImmutable: "Signed endorsements cannot be edited. Revoke and re-issue if a correction is required."
         case .notFound: "Endorsement not found."
         }
     }

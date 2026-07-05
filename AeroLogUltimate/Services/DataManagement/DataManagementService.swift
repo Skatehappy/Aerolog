@@ -46,6 +46,17 @@ final class DataManagementService {
         try importService.importData(data, format: format, strategy: strategy)
     }
 
+    func previewCSVImport(_ data: Data) throws -> CSVImportPreview {
+        try importService.previewCSV(data)
+    }
+
+    func commitCSVImport(
+        _ rows: [CSVFlightImportRow],
+        strategy: BackupRestoreStrategy = .merge
+    ) throws -> LogbookImportResult {
+        try importService.importCSVRows(rows, strategy: strategy)
+    }
+
     // MARK: - Export
 
     func exportLogbook(

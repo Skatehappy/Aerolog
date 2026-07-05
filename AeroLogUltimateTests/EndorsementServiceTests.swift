@@ -43,6 +43,47 @@ final class EndorsementServiceTests: XCTestCase {
         XCTAssertEqual(endorsement.signerCertificateNumber, "CFI1234567")
     }
 
+    func testSignedEndorsementCannotBeEdited() throws {
+        let store = try DataStore.makeInMemory()
+        let service = EndorsementService(dataStore: store)
+        let student = try store.primaryPilotProfile()!
+        let instructor = PilotProfile(firstName: "CFI", lastName: "Smith", isCFI: true)
+        instructor.cfiCertificateNumber = "CFI1234567"
+        store.insert(instructor)
+        try store.save()
+
+        let definition = EndorsementTemplateCatalog.definition(for: .flightReview)!
+        let endorsement = try service.createFromBuiltInTemplate(
+            definition,
+            student: student,
+            instructor: instructor,
+            values: ["student_name": student.fullName, "review_date": "Jun 15, 2026"]
+        )
+
+        try service.sign(
+            endorsement,
+            signerName: instructor.fullName,
+            certificateNumber: "CFI1234567",
+            signatureData: Data("sig".utf8),
+            instructor: instructor
+        )
+
+        XCTAssertThrowsError(
+            try service.updateDraft(
+                endorsement,
+                endorsementText: "Altered text",
+                filledPlaceholders: [:],
+                notes: nil,
+                student: student,
+                instructor: instructor
+            )
+        ) { error in
+            guard case EndorsementServiceError.signedEndorsementImmutable = error else {
+                return XCTFail("Expected signedEndorsementImmutable, got \(error)")
+            }
+        }
+    }
+
     func testRemoteSigningPackageRoundTrip() throws {
         let store = try DataStore.makeInMemory()
         let service = EndorsementService(dataStore: store)

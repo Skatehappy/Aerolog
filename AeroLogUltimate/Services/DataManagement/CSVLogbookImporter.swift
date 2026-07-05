@@ -88,6 +88,7 @@ struct CSVLogbookImporter: Sendable {
         }
         if row.totalTime == nil {
             row.totalTime = row.picTime ?? row.dualReceived ?? row.soloTime ?? 0
+            row.totalTimeWasInferred = true
         }
 
         _ = headers

@@ -88,7 +88,8 @@ struct CurrencyEngine {
             windowEnd: windowEnd,
             events: events,
             requirement: requirement,
-            unitLabel: "day landings"
+            unitLabel: "day landings",
+            passengerCarrying: true
         )
     }
 
@@ -121,7 +122,8 @@ struct CurrencyEngine {
             windowEnd: windowEnd,
             events: events,
             requirement: requirement,
-            unitLabel: "night full-stop landings"
+            unitLabel: "night full-stop landings",
+            passengerCarrying: true
         )
     }
 
@@ -274,6 +276,7 @@ struct CurrencyEngine {
         let windowStart = CurrencyDateUtilities.windowStart(months: windowMonths, from: referenceDate)
         let windowEnd = CurrencyDateUtilities.startOfDay(referenceDate)
 
+        // Primary: profile date and signed endorsements. Fallback: free-text in flight remarks (best-effort).
         let endorsementDate = endorsements
             .filter { $0.templateID == .flightReview && $0.status == .signed }
             .compactMap { $0.issuedDate ?? $0.signedAt }
@@ -289,9 +292,10 @@ struct CurrencyEngine {
             .map(\.flightDate)
             .max()
 
-        let lastReview = [pilot.lastFlightReviewDate, endorsementDate, flightReviewFlightDate]
+        let authoritativeReview = [pilot.lastFlightReviewDate, endorsementDate]
             .compactMap { $0 }
             .max()
+        let lastReview = authoritativeReview ?? flightReviewFlightDate
 
         guard let lastReview else {
             let detail = CurrencyDetailPayload(
@@ -318,9 +322,21 @@ struct CurrencyEngine {
             nil
         }
 
+        let reviewSource: String = if endorsementDate == lastReview {
+            "Signed flight review endorsement"
+        } else if pilot.lastFlightReviewDate == lastReview {
+            "Pilot profile date"
+        } else {
+            "Flight remarks (best-effort match)"
+        }
+
         let detail = CurrencyDetailPayload(
             regulationReference: "14 CFR 61.56",
-            qualifyingEvents: [QualifyingEvent(date: lastReview, description: "Flight Review", contribution: "Valid 24 calendar months")],
+            qualifyingEvents: [QualifyingEvent(
+                date: lastReview,
+                description: "Flight Review — \(reviewSource)",
+                contribution: "Valid 24 calendar months"
+            )],
             daysRemaining: daysRemaining,
             progressFraction: isCurrent ? 1.0 : 0.0,
             lastQualifyingDate: lastReview,
@@ -631,7 +647,8 @@ struct CurrencyEngine {
         windowEnd: Date,
         events: [QualifyingEvent],
         requirement: CurrencyRequirement,
-        unitLabel: String
+        unitLabel: String,
+        passengerCarrying: Bool = false
     ) -> CurrencyTuple {
         let total = events.reduce(0) { $0 + $1.count }
 
@@ -655,12 +672,25 @@ struct CurrencyEngine {
             ? "\(total) \(unitLabel) in last \(windowDays) days"
             : "\(total) of \(required) \(unitLabel) in last \(windowDays) days"
 
+        let shortfall = required - total
         let warning: String? = if !isCurrent {
-            "Need \(required - total) more \(unitLabel)"
+            if passengerCarrying {
+                "Not current to carry passengers — need \(shortfall) more \(unitLabel)"
+            } else {
+                "Need \(shortfall) more \(unitLabel)"
+            }
         } else if let days = daysRemaining, days <= requirement.reminderLeadDays {
             "Expires in \(days) day(s)"
         } else {
             nil
+        }
+
+        let nextAction: String? = if isCurrent {
+            nil
+        } else if passengerCarrying {
+            "Log \(shortfall) more \(unitLabel) before carrying passengers"
+        } else {
+            "Log \(shortfall) more \(unitLabel)"
         }
 
         let detail = CurrencyDetailPayload(
@@ -671,7 +701,7 @@ struct CurrencyEngine {
             daysRemaining: daysRemaining,
             progressFraction: min(1.0, Double(total) / Double(required)),
             lastQualifyingDate: events.first?.date,
-            nextRequiredAction: isCurrent ? nil : "Log \(required - total) more \(unitLabel)"
+            nextRequiredAction: nextAction
         )
 
         return (status, summary, warning, expiresAt, windowStart, windowEnd, detail)
