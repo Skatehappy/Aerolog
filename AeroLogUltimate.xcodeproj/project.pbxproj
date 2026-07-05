@@ -764,7 +764,7 @@
 			children = (
 				A200000100000000000000D5 /* FlightSearchCriteria.swift */,
 				A200000100000000000000D6 /* NaturalLanguageSearchEngine.swift */,
-			),
+			);
 			path = Search;
 			sourceTree = "<group>";
 		};
@@ -772,7 +772,7 @@
 			isa = PBXGroup;
 			children = (
 				A200000100000000000000D7 /* WeightBalanceCalculator.swift */,
-			),
+			);
 			path = WeightBalance;
 			sourceTree = "<group>";
 		};
@@ -780,7 +780,7 @@
 			isa = PBXGroup;
 			children = (
 				A200000100000000000000D10 /* MaintenanceReminderScheduler.swift */,
-			),
+			);
 			path = Notifications;
 			sourceTree = "<group>";
 		};

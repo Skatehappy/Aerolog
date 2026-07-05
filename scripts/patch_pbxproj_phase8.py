@@ -61,7 +61,7 @@ if "00000027 /* Search */" not in pbx:
 \t\t\tchildren = (
 \t\t\t\tA200000100000000000000D5 /* FlightSearchCriteria.swift */,
 \t\t\t\tA200000100000000000000D6 /* NaturalLanguageSearchEngine.swift */,
-\t\t\t),
+\t\t\t);
 \t\t\tpath = Search;
 \t\t\tsourceTree = "<group>";
 \t\t};
@@ -69,7 +69,7 @@ if "00000027 /* Search */" not in pbx:
 \t\t\tisa = PBXGroup;
 \t\t\tchildren = (
 \t\t\t\tA200000100000000000000D7 /* WeightBalanceCalculator.swift */,
-\t\t\t),
+\t\t\t);
 \t\t\tpath = WeightBalance;
 \t\t\tsourceTree = "<group>";
 \t\t};
@@ -77,7 +77,7 @@ if "00000027 /* Search */" not in pbx:
 \t\t\tisa = PBXGroup;
 \t\t\tchildren = (
 \t\t\t\tA200000100000000000000D10 /* MaintenanceReminderScheduler.swift */,
-\t\t\t),
+\t\t\t);
 \t\t\tpath = Notifications;
 \t\t\tsourceTree = "<group>";
 \t\t};
