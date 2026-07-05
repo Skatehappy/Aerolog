@@ -162,7 +162,7 @@ private struct WeightBalanceCalculationRow: View {
                 Text("Ramp Weight / CG")
                 Spacer()
                 Text(String(format: "%.0f lbs @ %.2f", calculation.totalWeight, calculation.centerOfGravity))
-                    .foregroundStyle(calculation.isWithinLimits ? .secondary : .red)
+                    .foregroundStyle(calculation.isWithinLimits ? Color.secondary : Color.red)
             }
         }
     }
