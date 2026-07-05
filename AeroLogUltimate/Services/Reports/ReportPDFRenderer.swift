@@ -24,9 +24,9 @@ struct ReportPDFRenderer: Sendable {
                 margin: margin,
                 headerBandHeight: headerBandHeight,
                 footerHeight: footerHeight,
-                pageNumber: 0,
                 report: report,
-                brandColor: brandColor
+                brandColor: brandColor,
+                pageNumber: 0
             )
             state.beginPage()
             renderBody(report: report, state: &state)
