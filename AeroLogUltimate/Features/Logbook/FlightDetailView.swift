@@ -25,7 +25,7 @@ struct FlightDetailView: View {
             }
             .padding()
         }
-        .navigationTitle(flight.flightDate, format: .dateTime.month(.wide).day().year())
+        .navigationTitle(flight.flightDate.formatted(.dateTime.month(.wide).day().year()))
         .toolbar { toolbarContent }
         .sheet(isPresented: $showEditor) {
             NavigationStack {
