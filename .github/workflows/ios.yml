@@ -1,0 +1,45 @@
+name: iOS Build & Test
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and test on macOS
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: List available iPad simulators
+        run: xcrun simctl list devices available | grep -i ipad | head -5
+
+      - name: Build for iOS Simulator
+        run: |
+          xcodebuild \
+            -project AeroLogUltimate.xcodeproj \
+            -scheme AeroLogUltimate \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Run unit tests
+        run: |
+          xcodebuild \
+            -project AeroLogUltimate.xcodeproj \
+            -scheme AeroLogUltimate \
+            -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4),OS=18.2' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            test

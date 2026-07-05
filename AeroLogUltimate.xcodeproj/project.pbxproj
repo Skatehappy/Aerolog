@@ -1,0 +1,944 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000010000000000000001 /* AeroLogUltimateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* AeroLogUltimateApp.swift */; };
+		A10000010000000000000002 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* AppEnvironment.swift */; };
+		A10000010000000000000003 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* RootView.swift */; };
+		A10000010000000000000004 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* DataStore.swift */; };
+		A10000010000000000000005 /* ModelContainerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* ModelContainerConfiguration.swift */; };
+		A10000010000000000000006 /* SchemaMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* SchemaMigrationPlan.swift */; };
+		A10000010000000000000007 /* EncryptedSyncConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* EncryptedSyncConfiguration.swift */; };
+		A10000010000000000000008 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008 /* SyncCoordinator.swift */; };
+		A10000010000000000000009 /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* AppTab.swift */; };
+		A1000001000000000000000A /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A /* AppRoute.swift */; };
+		A1000001000000000000000B /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B /* NavigationCoordinator.swift */; };
+		A1000001000000000000000C /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000C /* AppSettings.swift */; };
+		A1000001000000000000000D /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D /* UserPreferences.swift */; };
+		A1000001000000000000000E /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000E /* SettingsStore.swift */; };
+		A1000001000000000000000F /* AviationEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* AviationEnums.swift */; };
+		A10000010000000000000010 /* SyncableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010 /* SyncableEntity.swift */; };
+		A10000010000000000000011 /* SyncMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* SyncMetadata.swift */; };
+		A10000010000000000000012 /* PilotProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* PilotProfile.swift */; };
+		A10000010000000000000013 /* Aircraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000013 /* Aircraft.swift */; };
+		A10000010000000000000014 /* FlightLeg.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* FlightLeg.swift */; };
+		A10000010000000000000015 /* InstrumentApproach.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* InstrumentApproach.swift */; };
+		A10000010000000000000016 /* Flight.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016 /* Flight.swift */; };
+		A10000010000000000000017 /* Endorsement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* Endorsement.swift */; };
+		A10000010000000000000018 /* CurrencyRequirement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* CurrencyRequirement.swift */; };
+		A10000010000000000000019 /* CurrencySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000019 /* CurrencySnapshot.swift */; };
+		A1000001000000000000001A /* TrainingRelationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001A /* TrainingRelationship.swift */; };
+		A1000001000000000000001B /* ReportDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001B /* ReportDefinition.swift */; };
+		A1000001000000000000001C /* Attachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001C /* Attachment.swift */; };
+		A1000001000000000000001D /* AeroLogSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001D /* AeroLogSchema.swift */; };
+		A1000001000000000000001E /* AttachmentStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001E /* AttachmentStorageService.swift */; };
+		A1000001000000000000001F /* PilotProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000001F /* PilotProfileService.swift */; };
+		A10000010000000000000020 /* FlightService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000020 /* FlightService.swift */; };
+		A10000010000000000000021 /* AircraftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000021 /* AircraftService.swift */; };
+		A10000010000000000000022 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000022 /* Assets.xcassets */; };
+		A10000010000000000000030 /* SchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000030 /* SchemaTests.swift */; };
+		A10000010000000000000031 /* DataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000031 /* DataStoreTests.swift */; };
+		A10000010000000000000032 /* FlightValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000032 /* FlightValidationTests.swift */; };
+		A10000010000000000000040 /* TimeFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000040 /* TimeFormatting.swift */; };
+		A10000010000000000000041 /* FlightValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000041 /* FlightValidation.swift */; };
+		A10000010000000000000042 /* AviationDisplayNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000042 /* AviationDisplayNames.swift */; };
+		A10000010000000000000043 /* FlightExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000043 /* FlightExtensions.swift */; };
+		A10000010000000000000044 /* MediaTransferable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000044 /* MediaTransferable.swift */; };
+		A10000010000000000000045 /* DecimalHourField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000045 /* DecimalHourField.swift */; };
+		A10000010000000000000046 /* ICAOTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000046 /* ICAOTextField.swift */; };
+		A10000010000000000000047 /* StepperField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000047 /* StepperField.swift */; };
+		A10000010000000000000048 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000048 /* StatusBadge.swift */; };
+		A10000010000000000000049 /* DeleteConfirmationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000049 /* DeleteConfirmationModifier.swift */; };
+		A1000001000000000000004A /* FormSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004A /* FormSectionHeader.swift */; };
+		A1000001000000000000004B /* FlightRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004B /* FlightRowView.swift */; };
+		A1000001000000000000004C /* FlightListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004C /* FlightListView.swift */; };
+		A1000001000000000000004D /* FlightDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004D /* FlightDetailView.swift */; };
+		A1000001000000000000004E /* FlightEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004E /* FlightEditorView.swift */; };
+		A1000001000000000000004F /* FlightBasicsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000004F /* FlightBasicsSection.swift */; };
+		A10000010000000000000050 /* FlightRouteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000050 /* FlightRouteSection.swift */; };
+		A10000010000000000000051 /* FlightLegsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000051 /* FlightLegsSection.swift */; };
+		A10000010000000000000052 /* FlightTimesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000052 /* FlightTimesSection.swift */; };
+		A10000010000000000000053 /* FlightLandingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000053 /* FlightLandingsSection.swift */; };
+		A10000010000000000000054 /* FlightConditionsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000054 /* FlightConditionsSection.swift */; };
+		A10000010000000000000055 /* FlightHobbsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000055 /* FlightHobbsSection.swift */; };
+		A10000010000000000000056 /* FlightApproachesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000056 /* FlightApproachesSection.swift */; };
+		A10000010000000000000057 /* FlightTrainingSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000057 /* FlightTrainingSection.swift */; };
+		A10000010000000000000058 /* FlightRemarksSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000058 /* FlightRemarksSection.swift */; };
+		A10000010000000000000059 /* FlightAttachmentsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000059 /* FlightAttachmentsSection.swift */; };
+		A1000001000000000000005A /* AircraftListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000005A /* AircraftListView.swift */; };
+		A1000001000000000000005B /* AircraftEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000005B /* AircraftEditorView.swift */; };
+		A1000001000000000000005C /* AircraftPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000005C /* AircraftPickerSheet.swift */; };
+		A1000001000000000000005D /* AttachmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000005D /* AttachmentService.swift */; };
+		A10000010000000000000068 /* CurrencyEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000068 /* CurrencyEngineTests.swift */; };
+		A1000001000000000000005E /* CurrencyDetailPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000005E /* CurrencyDetailPayload.swift */; };
+		A1000001000000000000005F /* CurrencyCalculationResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000005F /* CurrencyCalculationResult.swift */; };
+		A10000010000000000000060 /* CurrencyDateUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000060 /* CurrencyDateUtilities.swift */; };
+		A10000010000000000000061 /* CurrencyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000061 /* CurrencyEngine.swift */; };
+		A10000010000000000000062 /* CurrencyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000062 /* CurrencyService.swift */; };
+		A10000010000000000000063 /* CurrencyStatusCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000063 /* CurrencyStatusCard.swift */; };
+		A10000010000000000000064 /* CurrencyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000064 /* CurrencyDashboardView.swift */; };
+		A10000010000000000000065 /* CurrencyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000065 /* CurrencyDetailView.swift */; };
+		A10000010000000000000066 /* PilotRecencySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000066 /* PilotRecencySettingsView.swift */; };
+		A10000010000000000000067 /* CustomCurrencyEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000067 /* CustomCurrencyEditorView.swift */; };
+		A10000010000000000000069 /* EndorsementTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000069 /* EndorsementTemplate.swift */; };
+		A1000001000000000000006A /* EndorsementExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006A /* EndorsementExtensions.swift */; };
+		A1000001000000000000006B /* EndorsementTemplateCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006B /* EndorsementTemplateCatalog.swift */; };
+		A1000001000000000000006C /* RemoteSigningPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006C /* RemoteSigningPackage.swift */; };
+		A1000001000000000000006D /* EndorsementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006D /* EndorsementService.swift */; };
+		A1000001000000000000006E /* EndorsementTemplateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006E /* EndorsementTemplateService.swift */; };
+		A1000001000000000000006F /* SignatureCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000006F /* SignatureCanvasView.swift */; };
+		A10000010000000000000070 /* EndorsementStatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000070 /* EndorsementStatusBadge.swift */; };
+		A10000010000000000000071 /* EndorsementRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000071 /* EndorsementRowView.swift */; };
+		A10000010000000000000072 /* SignatureCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000072 /* SignatureCaptureView.swift */; };
+		A10000010000000000000073 /* EndorsementListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000073 /* EndorsementListView.swift */; };
+		A10000010000000000000074 /* TemplatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000074 /* TemplatePickerView.swift */; };
+		A10000010000000000000075 /* EndorsementEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000075 /* EndorsementEditorView.swift */; };
+		A10000010000000000000076 /* EndorsementDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000076 /* EndorsementDetailView.swift */; };
+		A10000010000000000000077 /* CFIInboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000077 /* CFIInboxView.swift */; };
+		A10000010000000000000078 /* ImportSigningPackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000078 /* ImportSigningPackageView.swift */; };
+		A10000010000000000000079 /* CustomTemplateListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000079 /* CustomTemplateListView.swift */; };
+		A1000001000000000000007A /* CustomTemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007A /* CustomTemplateEditorView.swift */; };
+		A1000001000000000000007B /* EndorsementServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007B /* EndorsementServiceTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A30000010000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A40000010000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000010000000000000001;
+			remoteInfo = AeroLogUltimate;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A20000010000000000000001 /* AeroLogUltimateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AeroLogUltimateApp.swift; sourceTree = "<group>"; };
+		A20000010000000000000002 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		A20000010000000000000003 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A20000010000000000000004 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		A20000010000000000000005 /* ModelContainerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelContainerConfiguration.swift; sourceTree = "<group>"; };
+		A20000010000000000000006 /* SchemaMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaMigrationPlan.swift; sourceTree = "<group>"; };
+		A20000010000000000000007 /* EncryptedSyncConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptedSyncConfiguration.swift; sourceTree = "<group>"; };
+		A20000010000000000000008 /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
+		A20000010000000000000009 /* AppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTab.swift; sourceTree = "<group>"; };
+		A2000001000000000000000A /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
+		A2000001000000000000000B /* NavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinator.swift; sourceTree = "<group>"; };
+		A2000001000000000000000C /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		A2000001000000000000000D /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
+		A2000001000000000000000E /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		A2000001000000000000000F /* AviationEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AviationEnums.swift; sourceTree = "<group>"; };
+		A20000010000000000000010 /* SyncableEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncableEntity.swift; sourceTree = "<group>"; };
+		A20000010000000000000011 /* SyncMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMetadata.swift; sourceTree = "<group>"; };
+		A20000010000000000000012 /* PilotProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotProfile.swift; sourceTree = "<group>"; };
+		A20000010000000000000013 /* Aircraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aircraft.swift; sourceTree = "<group>"; };
+		A20000010000000000000014 /* FlightLeg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightLeg.swift; sourceTree = "<group>"; };
+		A20000010000000000000015 /* InstrumentApproach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentApproach.swift; sourceTree = "<group>"; };
+		A20000010000000000000016 /* Flight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flight.swift; sourceTree = "<group>"; };
+		A20000010000000000000017 /* Endorsement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endorsement.swift; sourceTree = "<group>"; };
+		A20000010000000000000018 /* CurrencyRequirement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyRequirement.swift; sourceTree = "<group>"; };
+		A20000010000000000000019 /* CurrencySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySnapshot.swift; sourceTree = "<group>"; };
+		A2000001000000000000001A /* TrainingRelationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingRelationship.swift; sourceTree = "<group>"; };
+		A2000001000000000000001B /* ReportDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDefinition.swift; sourceTree = "<group>"; };
+		A2000001000000000000001C /* Attachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attachment.swift; sourceTree = "<group>"; };
+		A2000001000000000000001D /* AeroLogSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AeroLogSchema.swift; sourceTree = "<group>"; };
+		A2000001000000000000001E /* AttachmentStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentStorageService.swift; sourceTree = "<group>"; };
+		A2000001000000000000001F /* PilotProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotProfileService.swift; sourceTree = "<group>"; };
+		A20000010000000000000020 /* FlightService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightService.swift; sourceTree = "<group>"; };
+		A20000010000000000000021 /* AircraftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftService.swift; sourceTree = "<group>"; };
+		A20000010000000000000022 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A20000010000000000000023 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000010000000000000030 /* SchemaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaTests.swift; sourceTree = "<group>"; };
+		A20000010000000000000031 /* DataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreTests.swift; sourceTree = "<group>"; };
+		A20000010000000000000032 /* FlightValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightValidationTests.swift; sourceTree = "<group>"; };
+		A20000010000000000000040 /* TimeFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatting.swift; sourceTree = "<group>"; };
+		A20000010000000000000041 /* FlightValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightValidation.swift; sourceTree = "<group>"; };
+		A20000010000000000000042 /* AviationDisplayNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AviationDisplayNames.swift; sourceTree = "<group>"; };
+		A20000010000000000000043 /* FlightExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightExtensions.swift; sourceTree = "<group>"; };
+		A20000010000000000000044 /* MediaTransferable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTransferable.swift; sourceTree = "<group>"; };
+		A20000010000000000000045 /* DecimalHourField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalHourField.swift; sourceTree = "<group>"; };
+		A20000010000000000000046 /* ICAOTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICAOTextField.swift; sourceTree = "<group>"; };
+		A20000010000000000000047 /* StepperField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperField.swift; sourceTree = "<group>"; };
+		A20000010000000000000048 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
+		A20000010000000000000049 /* DeleteConfirmationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfirmationModifier.swift; sourceTree = "<group>"; };
+		A2000001000000000000004A /* FormSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormSectionHeader.swift; sourceTree = "<group>"; };
+		A2000001000000000000004B /* FlightRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightRowView.swift; sourceTree = "<group>"; };
+		A2000001000000000000004C /* FlightListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightListView.swift; sourceTree = "<group>"; };
+		A2000001000000000000004D /* FlightDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightDetailView.swift; sourceTree = "<group>"; };
+		A2000001000000000000004E /* FlightEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightEditorView.swift; sourceTree = "<group>"; };
+		A2000001000000000000004F /* FlightBasicsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightBasicsSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000050 /* FlightRouteSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightRouteSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000051 /* FlightLegsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightLegsSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000052 /* FlightTimesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightTimesSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000053 /* FlightLandingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightLandingsSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000054 /* FlightConditionsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightConditionsSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000055 /* FlightHobbsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightHobbsSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000056 /* FlightApproachesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightApproachesSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000057 /* FlightTrainingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightTrainingSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000058 /* FlightRemarksSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightRemarksSection.swift; sourceTree = "<group>"; };
+		A20000010000000000000059 /* FlightAttachmentsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightAttachmentsSection.swift; sourceTree = "<group>"; };
+		A2000001000000000000005A /* AircraftListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftListView.swift; sourceTree = "<group>"; };
+		A2000001000000000000005B /* AircraftEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftEditorView.swift; sourceTree = "<group>"; };
+		A2000001000000000000005C /* AircraftPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftPickerSheet.swift; sourceTree = "<group>"; };
+		A2000001000000000000005D /* AttachmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentService.swift; sourceTree = "<group>"; };
+		A2000001000000000000005E /* CurrencyDetailPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyDetailPayload.swift; sourceTree = "<group>"; };
+		A2000001000000000000005F /* CurrencyCalculationResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyCalculationResult.swift; sourceTree = "<group>"; };
+		A20000010000000000000060 /* CurrencyDateUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyDateUtilities.swift; sourceTree = "<group>"; };
+		A20000010000000000000061 /* CurrencyEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyEngine.swift; sourceTree = "<group>"; };
+		A20000010000000000000062 /* CurrencyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyService.swift; sourceTree = "<group>"; };
+		A20000010000000000000063 /* CurrencyStatusCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyStatusCard.swift; sourceTree = "<group>"; };
+		A20000010000000000000064 /* CurrencyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyDashboardView.swift; sourceTree = "<group>"; };
+		A20000010000000000000065 /* CurrencyDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyDetailView.swift; sourceTree = "<group>"; };
+		A20000010000000000000066 /* PilotRecencySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotRecencySettingsView.swift; sourceTree = "<group>"; };
+		A20000010000000000000067 /* CustomCurrencyEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCurrencyEditorView.swift; sourceTree = "<group>"; };
+		A20000010000000000000068 /* CurrencyEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyEngineTests.swift; sourceTree = "<group>"; };
+		A20000010000000000000069 /* EndorsementTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementTemplate.swift; sourceTree = "<group>"; };
+		A2000001000000000000006A /* EndorsementExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementExtensions.swift; sourceTree = "<group>"; };
+		A2000001000000000000006B /* EndorsementTemplateCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementTemplateCatalog.swift; sourceTree = "<group>"; };
+		A2000001000000000000006C /* RemoteSigningPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteSigningPackage.swift; sourceTree = "<group>"; };
+		A2000001000000000000006D /* EndorsementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementService.swift; sourceTree = "<group>"; };
+		A2000001000000000000006E /* EndorsementTemplateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementTemplateService.swift; sourceTree = "<group>"; };
+		A2000001000000000000006F /* SignatureCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureCanvasView.swift; sourceTree = "<group>"; };
+		A20000010000000000000070 /* EndorsementStatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementStatusBadge.swift; sourceTree = "<group>"; };
+		A20000010000000000000071 /* EndorsementRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementRowView.swift; sourceTree = "<group>"; };
+		A20000010000000000000072 /* SignatureCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureCaptureView.swift; sourceTree = "<group>"; };
+		A20000010000000000000073 /* EndorsementListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementListView.swift; sourceTree = "<group>"; };
+		A20000010000000000000074 /* TemplatePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplatePickerView.swift; sourceTree = "<group>"; };
+		A20000010000000000000075 /* EndorsementEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementEditorView.swift; sourceTree = "<group>"; };
+		A20000010000000000000076 /* EndorsementDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementDetailView.swift; sourceTree = "<group>"; };
+		A20000010000000000000077 /* CFIInboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CFIInboxView.swift; sourceTree = "<group>"; };
+		A20000010000000000000078 /* ImportSigningPackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSigningPackageView.swift; sourceTree = "<group>"; };
+		A20000010000000000000079 /* CustomTemplateListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTemplateListView.swift; sourceTree = "<group>"; };
+		A2000001000000000000007A /* CustomTemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTemplateEditorView.swift; sourceTree = "<group>"; };
+		A2000001000000000000007B /* EndorsementServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementServiceTests.swift; sourceTree = "<group>"; };
+		A50000010000000000000001 /* AeroLogUltimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroLogUltimate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A50000010000000000000002 /* AeroLogUltimateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroLogUltimateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A60000010000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A60000010000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A70000010000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A70000010000000000000002 /* AeroLogUltimate */,
+				A70000010000000000000003 /* AeroLogUltimateTests */,
+				A70000010000000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A70000010000000000000002 /* AeroLogUltimate */ = {
+			isa = PBXGroup;
+			children = (
+				A70000010000000000000005 /* App */,
+				A70000010000000000000006 /* Core */,
+				A70000010000000000000012 /* Features */,
+				A70000010000000000000007 /* Models */,
+				A70000010000000000000008 /* Services */,
+				A70000010000000000000013 /* UI */,
+				A70000010000000000000014 /* Utilities */,
+				A70000010000000000000009 /* Resources */,
+				A20000010000000000000023 /* Info.plist */,
+			);
+			path = AeroLogUltimate;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000003 /* AeroLogUltimateTests */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000030 /* SchemaTests.swift */,
+				A20000010000000000000031 /* DataStoreTests.swift */,
+				A20000010000000000000032 /* FlightValidationTests.swift */,
+				A20000010000000000000068 /* CurrencyEngineTests.swift */,
+				A2000001000000000000007B /* EndorsementServiceTests.swift */,
+			);
+			path = AeroLogUltimateTests;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A50000010000000000000001 /* AeroLogUltimate.app */,
+				A50000010000000000000002 /* AeroLogUltimateTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000005 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000001 /* AeroLogUltimateApp.swift */,
+				A20000010000000000000002 /* AppEnvironment.swift */,
+				A20000010000000000000003 /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000006 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A7000001000000000000000A /* Persistence */,
+				A7000001000000000000000B /* Sync */,
+				A7000001000000000000000C /* Navigation */,
+				A7000001000000000000000D /* Settings */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000007 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A7000001000000000000000E /* Enums */,
+				A7000001000000000000000F /* Protocols */,
+				A70000010000000000000010 /* Entities */,
+				A70000010000000000000011 /* Schema */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000008 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000001E /* AttachmentStorageService.swift */,
+				A2000001000000000000005D /* AttachmentService.swift */,
+				A2000001000000000000001F /* PilotProfileService.swift */,
+				A20000010000000000000020 /* FlightService.swift */,
+				A20000010000000000000021 /* AircraftService.swift */,
+				A20000010000000000000062 /* CurrencyService.swift */,
+				A2000001000000000000006D /* EndorsementService.swift */,
+				A2000001000000000000006E /* EndorsementTemplateService.swift */,
+				A7000001000000000000001A /* Currency */,
+				A7000001000000000000001C /* Endorsements */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A7000001000000000000001A /* Currency */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000005E /* CurrencyDetailPayload.swift */,
+				A2000001000000000000005F /* CurrencyCalculationResult.swift */,
+				A20000010000000000000060 /* CurrencyDateUtilities.swift */,
+				A20000010000000000000061 /* CurrencyEngine.swift */,
+			);
+			path = Currency;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000012 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				A70000010000000000000015 /* Logbook */,
+				A70000010000000000000016 /* Aircraft */,
+				A70000010000000000000019 /* Currency */,
+				A7000001000000000000001B /* Endorsements */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000019 /* Currency */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000064 /* CurrencyDashboardView.swift */,
+				A20000010000000000000065 /* CurrencyDetailView.swift */,
+				A20000010000000000000066 /* PilotRecencySettingsView.swift */,
+				A20000010000000000000067 /* CustomCurrencyEditorView.swift */,
+			);
+			path = Currency;
+			sourceTree = "<group>";
+		};
+		A7000001000000000000001B /* Endorsements */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000071 /* EndorsementRowView.swift */,
+				A20000010000000000000072 /* SignatureCaptureView.swift */,
+				A20000010000000000000073 /* EndorsementListView.swift */,
+				A20000010000000000000074 /* TemplatePickerView.swift */,
+				A20000010000000000000075 /* EndorsementEditorView.swift */,
+				A20000010000000000000076 /* EndorsementDetailView.swift */,
+				A20000010000000000000077 /* CFIInboxView.swift */,
+				A20000010000000000000078 /* ImportSigningPackageView.swift */,
+				A20000010000000000000079 /* CustomTemplateListView.swift */,
+				A2000001000000000000007A /* CustomTemplateEditorView.swift */,
+			);
+			path = Endorsements;
+			sourceTree = "<group>";
+		};
+		A7000001000000000000001C /* Endorsements */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000006B /* EndorsementTemplateCatalog.swift */,
+				A2000001000000000000006C /* RemoteSigningPackage.swift */,
+			);
+			path = Endorsements;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000013 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A70000010000000000000017 /* Components */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000014 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000040 /* TimeFormatting.swift */,
+				A20000010000000000000041 /* FlightValidation.swift */,
+				A20000010000000000000042 /* AviationDisplayNames.swift */,
+				A20000010000000000000043 /* FlightExtensions.swift */,
+				A20000010000000000000044 /* MediaTransferable.swift */,
+				A2000001000000000000006A /* EndorsementExtensions.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000015 /* Logbook */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000004B /* FlightRowView.swift */,
+				A2000001000000000000004C /* FlightListView.swift */,
+				A2000001000000000000004D /* FlightDetailView.swift */,
+				A2000001000000000000004E /* FlightEditorView.swift */,
+				A70000010000000000000018 /* Sections */,
+			);
+			path = Logbook;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000016 /* Aircraft */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000005A /* AircraftListView.swift */,
+				A2000001000000000000005B /* AircraftEditorView.swift */,
+				A2000001000000000000005C /* AircraftPickerSheet.swift */,
+			);
+			path = Aircraft;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000017 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000045 /* DecimalHourField.swift */,
+				A20000010000000000000046 /* ICAOTextField.swift */,
+				A20000010000000000000047 /* StepperField.swift */,
+				A20000010000000000000048 /* StatusBadge.swift */,
+				A20000010000000000000049 /* DeleteConfirmationModifier.swift */,
+				A2000001000000000000004A /* FormSectionHeader.swift */,
+				A20000010000000000000063 /* CurrencyStatusCard.swift */,
+				A2000001000000000000006F /* SignatureCanvasView.swift */,
+				A20000010000000000000070 /* EndorsementStatusBadge.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000018 /* Sections */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000004F /* FlightBasicsSection.swift */,
+				A20000010000000000000050 /* FlightRouteSection.swift */,
+				A20000010000000000000051 /* FlightLegsSection.swift */,
+				A20000010000000000000052 /* FlightTimesSection.swift */,
+				A20000010000000000000053 /* FlightLandingsSection.swift */,
+				A20000010000000000000054 /* FlightConditionsSection.swift */,
+				A20000010000000000000055 /* FlightHobbsSection.swift */,
+				A20000010000000000000056 /* FlightApproachesSection.swift */,
+				A20000010000000000000057 /* FlightTrainingSection.swift */,
+				A20000010000000000000058 /* FlightRemarksSection.swift */,
+				A20000010000000000000059 /* FlightAttachmentsSection.swift */,
+			);
+			path = Sections;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000009 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000022 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A7000001000000000000000A /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000004 /* DataStore.swift */,
+				A20000010000000000000005 /* ModelContainerConfiguration.swift */,
+				A20000010000000000000006 /* SchemaMigrationPlan.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		A7000001000000000000000B /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000007 /* EncryptedSyncConfiguration.swift */,
+				A20000010000000000000008 /* SyncCoordinator.swift */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
+		A7000001000000000000000C /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000009 /* AppTab.swift */,
+				A2000001000000000000000A /* AppRoute.swift */,
+				A2000001000000000000000B /* NavigationCoordinator.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		A7000001000000000000000D /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000000C /* AppSettings.swift */,
+				A2000001000000000000000D /* UserPreferences.swift */,
+				A2000001000000000000000E /* SettingsStore.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		A7000001000000000000000E /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000000F /* AviationEnums.swift */,
+			);
+			path = Enums;
+			sourceTree = "<group>";
+		};
+		A7000001000000000000000F /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000010 /* SyncableEntity.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000010 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000011 /* SyncMetadata.swift */,
+				A20000010000000000000012 /* PilotProfile.swift */,
+				A20000010000000000000013 /* Aircraft.swift */,
+				A20000010000000000000014 /* FlightLeg.swift */,
+				A20000010000000000000015 /* InstrumentApproach.swift */,
+				A20000010000000000000016 /* Flight.swift */,
+				A20000010000000000000017 /* Endorsement.swift */,
+				A20000010000000000000069 /* EndorsementTemplate.swift */,
+				A20000010000000000000018 /* CurrencyRequirement.swift */,
+				A20000010000000000000019 /* CurrencySnapshot.swift */,
+				A2000001000000000000001A /* TrainingRelationship.swift */,
+				A2000001000000000000001B /* ReportDefinition.swift */,
+				A2000001000000000000001C /* Attachment.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000011 /* Schema */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000001D /* AeroLogSchema.swift */,
+			);
+			path = Schema;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A80000010000000000000001 /* AeroLogUltimate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000010000000000000003 /* Build configuration list for PBXNativeTarget "AeroLogUltimate" */;
+			buildPhases = (
+				A80000010000000000000003 /* Sources */,
+				A60000010000000000000001 /* Frameworks */,
+				A80000010000000000000004 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AeroLogUltimate;
+			productName = AeroLogUltimate;
+			productReference = A50000010000000000000001 /* AeroLogUltimate.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A80000010000000000000002 /* AeroLogUltimateTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000010000000000000004 /* Build configuration list for PBXNativeTarget "AeroLogUltimateTests" */;
+			buildPhases = (
+				A80000010000000000000005 /* Sources */,
+				A60000010000000000000002 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A80000010000000000000006 /* PBXTargetDependency */,
+			);
+			name = AeroLogUltimateTests;
+			productName = AeroLogUltimateTests;
+			productReference = A50000010000000000000002 /* AeroLogUltimateTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A40000010000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					A80000010000000000000001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					A80000010000000000000002 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = A80000010000000000000001;
+					};
+				};
+			};
+			buildConfigurationList = A90000010000000000000001 /* Build configuration list for PBXProject "AeroLogUltimate" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A70000010000000000000001;
+			productRefGroup = A70000010000000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A80000010000000000000001 /* AeroLogUltimate */,
+				A80000010000000000000002 /* AeroLogUltimateTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A80000010000000000000004 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000010000000000000022 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A80000010000000000000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000010000000000000001 /* AeroLogUltimateApp.swift in Sources */,
+				A10000010000000000000002 /* AppEnvironment.swift in Sources */,
+				A10000010000000000000003 /* RootView.swift in Sources */,
+				A10000010000000000000004 /* DataStore.swift in Sources */,
+				A10000010000000000000005 /* ModelContainerConfiguration.swift in Sources */,
+				A10000010000000000000006 /* SchemaMigrationPlan.swift in Sources */,
+				A10000010000000000000007 /* EncryptedSyncConfiguration.swift in Sources */,
+				A10000010000000000000008 /* SyncCoordinator.swift in Sources */,
+				A10000010000000000000009 /* AppTab.swift in Sources */,
+				A1000001000000000000000A /* AppRoute.swift in Sources */,
+				A1000001000000000000000B /* NavigationCoordinator.swift in Sources */,
+				A1000001000000000000000C /* AppSettings.swift in Sources */,
+				A1000001000000000000000D /* UserPreferences.swift in Sources */,
+				A1000001000000000000000E /* SettingsStore.swift in Sources */,
+				A1000001000000000000000F /* AviationEnums.swift in Sources */,
+				A10000010000000000000010 /* SyncableEntity.swift in Sources */,
+				A10000010000000000000011 /* SyncMetadata.swift in Sources */,
+				A10000010000000000000012 /* PilotProfile.swift in Sources */,
+				A10000010000000000000013 /* Aircraft.swift in Sources */,
+				A10000010000000000000014 /* FlightLeg.swift in Sources */,
+				A10000010000000000000015 /* InstrumentApproach.swift in Sources */,
+				A10000010000000000000016 /* Flight.swift in Sources */,
+				A10000010000000000000017 /* Endorsement.swift in Sources */,
+				A10000010000000000000018 /* CurrencyRequirement.swift in Sources */,
+				A10000010000000000000019 /* CurrencySnapshot.swift in Sources */,
+				A1000001000000000000001A /* TrainingRelationship.swift in Sources */,
+				A1000001000000000000001B /* ReportDefinition.swift in Sources */,
+				A1000001000000000000001C /* Attachment.swift in Sources */,
+				A1000001000000000000001D /* AeroLogSchema.swift in Sources */,
+				A1000001000000000000001E /* AttachmentStorageService.swift in Sources */,
+				A1000001000000000000001F /* PilotProfileService.swift in Sources */,
+				A10000010000000000000020 /* FlightService.swift in Sources */,
+				A10000010000000000000021 /* AircraftService.swift in Sources */,
+				A10000010000000000000040 /* TimeFormatting.swift in Sources */,
+				A10000010000000000000041 /* FlightValidation.swift in Sources */,
+				A10000010000000000000042 /* AviationDisplayNames.swift in Sources */,
+				A10000010000000000000043 /* FlightExtensions.swift in Sources */,
+				A10000010000000000000044 /* MediaTransferable.swift in Sources */,
+				A10000010000000000000045 /* DecimalHourField.swift in Sources */,
+				A10000010000000000000046 /* ICAOTextField.swift in Sources */,
+				A10000010000000000000047 /* StepperField.swift in Sources */,
+				A10000010000000000000048 /* StatusBadge.swift in Sources */,
+				A10000010000000000000049 /* DeleteConfirmationModifier.swift in Sources */,
+				A1000001000000000000004A /* FormSectionHeader.swift in Sources */,
+				A1000001000000000000004B /* FlightRowView.swift in Sources */,
+				A1000001000000000000004C /* FlightListView.swift in Sources */,
+				A1000001000000000000004D /* FlightDetailView.swift in Sources */,
+				A1000001000000000000004E /* FlightEditorView.swift in Sources */,
+				A1000001000000000000004F /* FlightBasicsSection.swift in Sources */,
+				A10000010000000000000050 /* FlightRouteSection.swift in Sources */,
+				A10000010000000000000051 /* FlightLegsSection.swift in Sources */,
+				A10000010000000000000052 /* FlightTimesSection.swift in Sources */,
+				A10000010000000000000053 /* FlightLandingsSection.swift in Sources */,
+				A10000010000000000000054 /* FlightConditionsSection.swift in Sources */,
+				A10000010000000000000055 /* FlightHobbsSection.swift in Sources */,
+				A10000010000000000000056 /* FlightApproachesSection.swift in Sources */,
+				A10000010000000000000057 /* FlightTrainingSection.swift in Sources */,
+				A10000010000000000000058 /* FlightRemarksSection.swift in Sources */,
+				A10000010000000000000059 /* FlightAttachmentsSection.swift in Sources */,
+				A1000001000000000000005A /* AircraftListView.swift in Sources */,
+				A1000001000000000000005B /* AircraftEditorView.swift in Sources */,
+				A1000001000000000000005C /* AircraftPickerSheet.swift in Sources */,
+				A1000001000000000000005D /* AttachmentService.swift in Sources */,
+				A1000001000000000000005E /* CurrencyDetailPayload.swift in Sources */,
+				A1000001000000000000005F /* CurrencyCalculationResult.swift in Sources */,
+				A10000010000000000000060 /* CurrencyDateUtilities.swift in Sources */,
+				A10000010000000000000061 /* CurrencyEngine.swift in Sources */,
+				A10000010000000000000062 /* CurrencyService.swift in Sources */,
+				A10000010000000000000063 /* CurrencyStatusCard.swift in Sources */,
+				A10000010000000000000064 /* CurrencyDashboardView.swift in Sources */,
+				A10000010000000000000065 /* CurrencyDetailView.swift in Sources */,
+				A10000010000000000000066 /* PilotRecencySettingsView.swift in Sources */,
+				A10000010000000000000067 /* CustomCurrencyEditorView.swift in Sources */,
+				A10000010000000000000069 /* EndorsementTemplate.swift in Sources */,
+				A1000001000000000000006A /* EndorsementExtensions.swift in Sources */,
+				A1000001000000000000006B /* EndorsementTemplateCatalog.swift in Sources */,
+				A1000001000000000000006C /* RemoteSigningPackage.swift in Sources */,
+				A1000001000000000000006D /* EndorsementService.swift in Sources */,
+				A1000001000000000000006E /* EndorsementTemplateService.swift in Sources */,
+				A1000001000000000000006F /* SignatureCanvasView.swift in Sources */,
+				A10000010000000000000070 /* EndorsementStatusBadge.swift in Sources */,
+				A10000010000000000000071 /* EndorsementRowView.swift in Sources */,
+				A10000010000000000000072 /* SignatureCaptureView.swift in Sources */,
+				A10000010000000000000073 /* EndorsementListView.swift in Sources */,
+				A10000010000000000000074 /* TemplatePickerView.swift in Sources */,
+				A10000010000000000000075 /* EndorsementEditorView.swift in Sources */,
+				A10000010000000000000076 /* EndorsementDetailView.swift in Sources */,
+				A10000010000000000000077 /* CFIInboxView.swift in Sources */,
+				A10000010000000000000078 /* ImportSigningPackageView.swift in Sources */,
+				A10000010000000000000079 /* CustomTemplateListView.swift in Sources */,
+				A1000001000000000000007A /* CustomTemplateEditorView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A80000010000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000010000000000000030 /* SchemaTests.swift in Sources */,
+				A10000010000000000000031 /* DataStoreTests.swift in Sources */,
+				A10000010000000000000032 /* FlightValidationTests.swift in Sources */,
+				A10000010000000000000068 /* CurrencyEngineTests.swift in Sources */,
+				A1000001000000000000007B /* EndorsementServiceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A80000010000000000000006 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A80000010000000000000001 /* AeroLogUltimate */;
+			targetProxy = A30000010000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AA0000010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AA0000010000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA0000010000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AeroLogUltimate/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aerologultimate.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0000010000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AeroLogUltimate/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aerologultimate.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AA0000010000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aerologultimate.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroLogUltimate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroLogUltimate";
+			};
+			name = Debug;
+		};
+		AA0000010000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aerologultimate.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AeroLogUltimate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AeroLogUltimate";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A90000010000000000000001 /* Build configuration list for PBXProject "AeroLogUltimate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000001 /* Debug */,
+				AA0000010000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A90000010000000000000003 /* Build configuration list for PBXNativeTarget "AeroLogUltimate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000003 /* Debug */,
+				AA0000010000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A90000010000000000000004 /* Build configuration list for PBXNativeTarget "AeroLogUltimateTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000005 /* Debug */,
+				AA0000010000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A40000010000000000000001 /* Project object */;
+}
