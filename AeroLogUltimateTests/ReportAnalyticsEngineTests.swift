@@ -92,7 +92,8 @@ final class ReportAnalyticsEngineTests: XCTestCase {
     }
 
     func testFAA8710CategoryBreakdown() {
-        let pilot = PilotProfile(firstName: "Applicant", lastName: "Pilot", certificateNumber: "1234567")
+        let pilot = PilotProfile(firstName: "Applicant", lastName: "Pilot")
+        pilot.certificateNumber = "1234567"
         let selAircraft = Aircraft(registration: "N12345", make: "Cessna", model: "172")
         selAircraft.category = .airplane
         selAircraft.aircraftClass = .singleEngineLand
@@ -172,7 +173,8 @@ final class ReportAnalyticsEngineTests: XCTestCase {
     }
 
     func testPDFExportProducesValidDocument() throws {
-        let pilot = PilotProfile(firstName: "PDF", lastName: "Pilot", certificateNumber: "9999999")
+        let pilot = PilotProfile(firstName: "PDF", lastName: "Pilot")
+        pilot.certificateNumber = "9999999"
         let flight = Flight(flightDate: .now, status: .finalized, role: .pic)
         flight.totalTime = 2.5
         flight.picTime = 2.5
