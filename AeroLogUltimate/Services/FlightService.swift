@@ -30,7 +30,11 @@ struct FlightService {
         pilot: PilotProfile? = nil
     ) throws -> Flight {
         let flight = Flight(flightDate: date, status: .draft, role: role)
-        flight.pilot = pilot ?? (try dataStore.primaryPilotProfile())
+        if let pilot {
+            flight.pilot = pilot
+        } else {
+            flight.pilot = try dataStore.primaryPilotProfile()
+        }
         dataStore.insert(flight)
         try dataStore.save()
         return flight
