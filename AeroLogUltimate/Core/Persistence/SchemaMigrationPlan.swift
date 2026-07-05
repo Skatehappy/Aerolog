@@ -7,11 +7,6 @@ import SwiftData
 enum AeroLogMigrationPlan {
     static let currentVersion = Schema.Version(1, 0, 0)
 
-    /// Extend with migration stages when bumping `AeroLogSchema.versionIdentifier`.
-    static var migrationPlan: SchemaMigrationPlan {
-        SchemaMigrationPlan(
-            schemas: [AeroLogSchema.schema],
-            stages: []
-        )
-    }
+    // When bumping `AeroLogSchema.versionIdentifier`, add a VersionedSchema type
+    // and conform this enum to `SchemaMigrationPlan` with migration stages.
 }

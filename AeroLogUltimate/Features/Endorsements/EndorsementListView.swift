@@ -39,9 +39,11 @@ struct EndorsementListView: View {
                         .buttonStyle(.borderedProminent)
                 }
             } else {
-                List(visible, selection: $selectedEndorsement) { endorsement in
-                    EndorsementRowView(endorsement: endorsement)
-                        .tag(endorsement)
+                List(selection: $selectedEndorsement) {
+                    ForEach(visible) { endorsement in
+                        EndorsementRowView(endorsement: endorsement)
+                            .tag(endorsement)
+                    }
                 }
             }
         }

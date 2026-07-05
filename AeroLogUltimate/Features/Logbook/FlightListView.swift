@@ -51,9 +51,11 @@ struct FlightListView: View {
                         .buttonStyle(.borderedProminent)
                 }
             } else {
-                List(visibleFlights, selection: $selectedFlight) { flight in
-                    FlightRowView(flight: flight)
-                        .tag(flight)
+                List(selection: $selectedFlight) {
+                    ForEach(visibleFlights) { flight in
+                        FlightRowView(flight: flight)
+                            .tag(flight)
+                    }
                 }
             }
         }

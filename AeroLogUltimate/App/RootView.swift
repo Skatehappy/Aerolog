@@ -27,9 +27,11 @@ struct RootView: View {
     // MARK: - Sidebar
 
     private var sidebar: some View {
-        List(AppTab.allCases, selection: $navigation.selectedTab) { tab in
-            Label(tab.title, systemImage: tab.systemImage)
-                .tag(tab)
+        List(selection: $navigation.selectedTab) {
+            ForEach(AppTab.allCases) { tab in
+                Label(tab.title, systemImage: tab.systemImage)
+                    .tag(tab)
+            }
         }
         .navigationTitle(SettingsStore.appName)
         .onChange(of: navigation.selectedTab) { _, newTab in
