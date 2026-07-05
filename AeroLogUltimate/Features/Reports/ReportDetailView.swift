@@ -42,7 +42,7 @@ struct ReportDetailView: View {
         HStack(spacing: 16) {
             Image(systemName: reportType.systemImage)
                 .font(.largeTitle)
-                .foregroundStyle(.accent)
+                .foregroundStyle(Color.accentColor)
             VStack(alignment: .leading, spacing: 4) {
                 Text(reportType.displayName)
                     .font(.title2.weight(.bold))
