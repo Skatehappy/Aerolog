@@ -29,7 +29,7 @@ struct ReportPDFRenderer: Sendable {
                 pageNumber: 0
             )
             state.beginPage()
-            renderBody(report: report, state: &state)
+            renderBody(report, state: &state)
             state.drawFooter()
         }
     }
