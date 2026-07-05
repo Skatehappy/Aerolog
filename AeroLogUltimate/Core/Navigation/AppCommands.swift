@@ -28,15 +28,15 @@ struct AppCommands: Commands {
             .keyboardShortcut(KeyboardShortcutRegistry.toggleSidebar)
         }
 
-        CommandGroup(replacing: .textEditing) {
-            Button("Search") {
+        CommandGroup(after: .textEditing) {
+            Button("Search Flights") {
                 AppShortcutNotifications.post(.focusSearch)
             }
             .keyboardShortcut(KeyboardShortcutRegistry.focusSearch)
         }
 
-        CommandGroup(replacing: .saveItem) {
-            Button("Save") {
+        CommandGroup(after: .saveItem) {
+            Button("Save Flight") {
                 AppShortcutNotifications.post(.save)
             }
             .keyboardShortcut(KeyboardShortcutRegistry.save)
