@@ -18,26 +18,37 @@ struct FlightListView: View {
     @State private var isSearchPresented = false
     @State private var showDraftsOnly = false
     @State private var showFinalizedOnly = false
+    @State private var showPinnedOnly = false
+    @State private var showFavoritesOnly = false
+    @State private var parsedCriteria = FlightSearchCriteria()
     @State private var editorFlight: Flight?
     @State private var isCreatingNew = false
     @FocusState private var isSearchFocused: Bool
 
     private var visibleFlights: [Flight] {
-        let query = searchDebouncer.debouncedText.lowercased()
-        return allFlights
+        let query = searchDebouncer.debouncedText
+        var criteria = parsedCriteria
+        if showPinnedOnly { criteria.pinnedOnly = true }
+        if showFavoritesOnly { criteria.favoritesOnly = true }
+        if showDraftsOnly { criteria.status = .draft }
+        if showFinalizedOnly { criteria.status = .finalized }
+
+        let filtered = allFlights
             .filter { !($0.syncMetadata?.isSoftDeleted ?? false) }
             .filter { flight in
-                if showDraftsOnly { return flight.status == .draft }
-                if showFinalizedOnly { return flight.status == .finalized }
-                return true
+                if criteria.isEmpty && query.isEmpty { return true }
+                if !query.isEmpty {
+                    let nlCriteria = NaturalLanguageSearchEngine.parse(query)
+                    var merged = nlCriteria
+                    if criteria.pinnedOnly { merged.pinnedOnly = true }
+                    if criteria.favoritesOnly { merged.favoritesOnly = true }
+                    if let status = criteria.status { merged.status = status }
+                    return NaturalLanguageSearchEngine.matches(flight, criteria: merged)
+                }
+                return NaturalLanguageSearchEngine.matches(flight, criteria: criteria)
             }
-            .filter { flight in
-                guard !query.isEmpty else { return true }
-                return flight.departureICAO.lowercased().contains(query)
-                    || flight.arrivalICAO.lowercased().contains(query)
-                    || (flight.aircraft?.registration.lowercased().contains(query) ?? false)
-                    || (flight.remarks?.lowercased().contains(query) ?? false)
-            }
+
+        return FlightService.sortedForDisplay(filtered)
     }
 
     var body: some View {
@@ -84,7 +95,7 @@ struct FlightListView: View {
         .searchable(
             text: $searchText,
             isPresented: $isSearchPresented,
-            prompt: "Search route, aircraft, remarks"
+            prompt: "Try: night PIC last month, pinned, KORD"
         )
         .focused($isSearchFocused)
         .toolbar {
@@ -96,6 +107,8 @@ struct FlightListView: View {
             }
             ToolbarItem(placement: .secondaryAction) {
                 Menu {
+                    Toggle("Pinned Only", isOn: $showPinnedOnly)
+                    Toggle("Favorites Only", isOn: $showFavoritesOnly)
                     Toggle("Drafts Only", isOn: $showDraftsOnly)
                         .onChange(of: showDraftsOnly) { _, on in if on { showFinalizedOnly = false } }
                     Toggle("Finalized Only", isOn: $showFinalizedOnly)
@@ -111,6 +124,7 @@ struct FlightListView: View {
             }
         }
         .onChange(of: searchText) { _, text in
+            parsedCriteria = NaturalLanguageSearchEngine.parse(text)
             searchDebouncer.submit(text)
         }
         .onChange(of: selectedFlight) { _, flight in

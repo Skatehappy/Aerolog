@@ -37,6 +37,13 @@ struct FlightEditorView: View {
             if let aircraft = flight.aircraft, (aircraft.tracksHobbs || aircraft.tracksTach) {
                 FlightHobbsSection(flight: flight, aircraft: aircraft)
             }
+            if !isSimulator {
+                FlightFuelSection(flight: flight, aircraft: flight.aircraft)
+                FlightWeightBalanceSection(flight: flight)
+            }
+            if environment?.settings.enableExpenseLogging == true {
+                FlightExpensesSection(flight: flight)
+            }
             FlightApproachesSection(flight: flight)
             FlightTrainingSection(flight: flight)
             FlightRemarksSection(flight: flight)

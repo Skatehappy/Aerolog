@@ -23,6 +23,8 @@ final class AppEnvironment {
     let trainingService: TrainingService
     let syllabusService: SyllabusService
     let dataManagementService: DataManagementService
+    let expenseService: ExpenseService
+    let maintenanceService: MaintenanceService
 
     init(dataStore: DataStore) {
         self.dataStore = dataStore
@@ -46,6 +48,8 @@ final class AppEnvironment {
             dataStore: dataStore,
             attachmentStorage: attachmentStorage
         )
+        self.expenseService = ExpenseService(dataStore: dataStore)
+        self.maintenanceService = MaintenanceService(dataStore: dataStore)
 
         syncCoordinator.attach(dataManagementService: dataManagementService)
         navigation.selectedTab = UserPreferences.shared.lastSelectedTab

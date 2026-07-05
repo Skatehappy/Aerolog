@@ -37,6 +37,14 @@ final class AppSettings {
         didSet { preferences.compactSidebar = compactSidebar }
     }
 
+    var enableExpenseLogging: Bool {
+        didSet { preferences.enableExpenseLogging = enableExpenseLogging }
+    }
+
+    var enableMaintenanceReminders: Bool {
+        didSet { preferences.enableMaintenanceReminders = enableMaintenanceReminders }
+    }
+
     private let preferences: UserPreferences
 
     init(preferences: UserPreferences = .shared) {
@@ -48,6 +56,8 @@ final class AppSettings {
         self.useAviationDarkPalette = preferences.useAviationDarkPalette
         self.preferPencilOnlyInput = preferences.preferPencilOnlyInput
         self.compactSidebar = preferences.compactSidebar
+        self.enableExpenseLogging = preferences.enableExpenseLogging
+        self.enableMaintenanceReminders = preferences.enableMaintenanceReminders
         self.preferredColorScheme = preferences.preferredColorScheme.flatMap(ColorScheme.init(storageValue:))
     }
 }

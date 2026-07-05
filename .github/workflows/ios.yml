@@ -95,3 +95,29 @@ jobs:
           done
           echo "Tests failed after 3 attempts"
           exit 1
+
+      - name: Build for iPhone companion layout
+        run: |
+          IPHONE_DEST=$(python3 - <<'PY'
+          import json, subprocess
+          out = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
+          data = json.loads(out)
+          for runtime in sorted(data["devices"].keys(), reverse=True):
+              if "iOS" not in runtime:
+                  continue
+              for device in data["devices"][runtime]:
+                  name = device["name"]
+                  if device.get("isAvailable") and "iPhone" in name:
+                      print(f"platform=iOS Simulator,id={device['udid']}")
+                      raise SystemExit
+          raise SystemExit("No available iPhone simulator found")
+          PY
+          )
+          echo "Using iPhone destination: $IPHONE_DEST"
+          xcodebuild \
+            -project AeroLogUltimate.xcodeproj \
+            -scheme AeroLogUltimate \
+            -destination "$IPHONE_DEST" \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            build

@@ -50,6 +50,13 @@ final class Flight {
     var tachStart: Double?
     var tachEnd: Double?
 
+    // MARK: Fuel
+
+    var fuelAdded: Double?
+    var fuelBurn: Double?
+    var fuelRemaining: Double?
+    var fuelUnit: FuelUnit
+
     // MARK: Training Context
 
     var lessonTitle: String?
@@ -102,6 +109,12 @@ final class Flight {
     @Relationship(deleteRule: .cascade, inverse: \Attachment.flight)
     var attachments: [Attachment]?
 
+    @Relationship(deleteRule: .cascade, inverse: \WeightBalanceLog.flight)
+    var weightBalanceLog: WeightBalanceLog?
+
+    @Relationship(deleteRule: .cascade, inverse: \FlightExpense.flight)
+    var expenses: [FlightExpense]?
+
     // MARK: Computed
 
     var conditions: [FlightCondition] {
@@ -119,6 +132,16 @@ final class Flight {
     var tachTime: Double? {
         guard let start = tachStart, let end = tachEnd, end >= start else { return nil }
         return end - start
+    }
+
+    var computedFuelBurn: Double? {
+        if let burn = fuelBurn { return burn }
+        guard let added = fuelAdded, let remaining = fuelRemaining, added >= remaining else { return nil }
+        return added - remaining
+    }
+
+    var totalExpenses: Double {
+        (expenses ?? []).reduce(0) { $0 + $1.amount }
     }
 
     // MARK: Init
@@ -151,6 +174,7 @@ final class Flight {
         self.fullStopNightLandings = 0
         self.holds = 0
         self.conditionsRaw = []
+        self.fuelUnit = .gallons
         self.isPinned = false
         self.isFavorite = false
         self.createdAt = .now

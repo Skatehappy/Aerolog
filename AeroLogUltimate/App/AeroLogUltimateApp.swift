@@ -26,7 +26,7 @@ struct AeroLogUltimateApp: App {
                 if isRunningTests {
                     TestHostView()
                 } else {
-                    RootView(navigation: environment.navigation)
+                    AdaptiveRootView(navigation: environment.navigation)
                         .environment(\.appEnvironment, environment)
                         .aviationTheme(enabled: environment.settings.useAviationDarkPalette)
                         .preferredColorScheme(environment.settings.preferredColorScheme)

@@ -132,6 +132,36 @@ struct FlightService {
         flight.touch()
         try dataStore.save()
     }
+
+    // MARK: - Weight & Balance
+
+    @discardableResult
+    func ensureWeightBalanceLog(for flight: Flight) throws -> WeightBalanceLog {
+        if let existing = flight.weightBalanceLog { return existing }
+        let log = WeightBalanceLog()
+        log.flight = flight
+        dataStore.insert(log)
+        flight.touch()
+        try dataStore.save()
+        return log
+    }
+
+    func updateWeightBalance(_ log: WeightBalanceLog) throws {
+        WeightBalanceCalculator.apply(to: log)
+        log.touch()
+        log.flight?.touch()
+        try dataStore.save()
+    }
+
+    // MARK: - Sorting
+
+    static func sortedForDisplay(_ flights: [Flight]) -> [Flight] {
+        flights.sorted { lhs, rhs in
+            if lhs.isPinned != rhs.isPinned { return lhs.isPinned && !rhs.isPinned }
+            if lhs.isFavorite != rhs.isFavorite { return lhs.isFavorite && !rhs.isFavorite }
+            return lhs.flightDate > rhs.flightDate
+        }
+    }
 }
 
 enum FlightServiceError: LocalizedError {

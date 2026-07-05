@@ -230,6 +230,34 @@ enum ReportOutputFormat: String, Codable, CaseIterable, Sendable {
     case json
 }
 
+// MARK: - Fuel & Expenses
+
+enum FuelUnit: String, Codable, CaseIterable, Sendable {
+    case gallons
+    case liters
+}
+
+enum ExpenseCategory: String, Codable, CaseIterable, Sendable {
+    case fuel
+    case ramp
+    case rental
+    case instruction
+    case maintenance
+    case other
+}
+
+// MARK: - Maintenance
+
+enum MaintenanceType: String, Codable, CaseIterable, Sendable {
+    case annual
+    case hundredHour
+    case oilChange
+    case transponder
+    case altimeter
+    case adCompliance
+    case other
+}
+
 // MARK: - Sync
 
 enum SyncState: String, Codable, CaseIterable, Sendable {

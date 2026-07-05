@@ -24,6 +24,8 @@ final class UserPreferences: @unchecked Sendable {
         case useAviationDarkPalette
         case preferPencilOnlyInput
         case compactSidebar
+        case enableExpenseLogging
+        case enableMaintenanceReminders
     }
 
     // MARK: - App Lifecycle
@@ -93,6 +95,18 @@ final class UserPreferences: @unchecked Sendable {
     var compactSidebar: Bool {
         get { defaults.object(forKey: key(.compactSidebar)) as? Bool ?? false }
         set { defaults.set(newValue, forKey: key(.compactSidebar)) }
+    }
+
+    /// Show optional per-flight expense logging sections.
+    var enableExpenseLogging: Bool {
+        get { defaults.object(forKey: key(.enableExpenseLogging)) as? Bool ?? false }
+        set { defaults.set(newValue, forKey: key(.enableExpenseLogging)) }
+    }
+
+    /// Schedule local notifications for upcoming maintenance.
+    var enableMaintenanceReminders: Bool {
+        get { defaults.object(forKey: key(.enableMaintenanceReminders)) as? Bool ?? true }
+        set { defaults.set(newValue, forKey: key(.enableMaintenanceReminders)) }
     }
 
     // MARK: - Sync

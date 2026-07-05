@@ -11,6 +11,8 @@ struct DisplayPreferencesView: View {
     @State private var useAviationPalette = true
     @State private var preferPencilOnly = false
     @State private var compactSidebar = false
+    @State private var enableExpenseLogging = false
+    @State private var enableMaintenanceReminders = true
 
     var body: some View {
         Form {
@@ -80,6 +82,20 @@ struct DisplayPreferencesView: View {
                     }
             }
 
+            Section("Advanced Logging") {
+                Toggle("Expense Logging", isOn: $enableExpenseLogging)
+                    .onChange(of: enableExpenseLogging) { _, value in
+                        environment?.settings.enableExpenseLogging = value
+                    }
+                Toggle("Maintenance Reminders", isOn: $enableMaintenanceReminders)
+                    .onChange(of: enableMaintenanceReminders) { _, value in
+                        environment?.settings.enableMaintenanceReminders = value
+                    }
+                Text("Expense logging adds per-flight cost tracking. Maintenance reminders use local notifications for due items.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("Keyboard Shortcuts") {
                 LabeledContent("Log flight", value: "⌘N")
                 LabeledContent("Search", value: "⌘F")
@@ -100,6 +116,8 @@ struct DisplayPreferencesView: View {
         useAviationPalette = settings.useAviationDarkPalette
         preferPencilOnly = settings.preferPencilOnlyInput
         compactSidebar = settings.compactSidebar
+        enableExpenseLogging = settings.enableExpenseLogging
+        enableMaintenanceReminders = settings.enableMaintenanceReminders
         switch settings.preferredColorScheme {
         case .light: colorSchemeSelection = "light"
         case .dark: colorSchemeSelection = "dark"

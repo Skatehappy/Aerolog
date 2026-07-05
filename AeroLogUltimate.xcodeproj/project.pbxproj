@@ -167,6 +167,27 @@
 		A100000100000000000000CC /* SidebarTabRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000CC /* SidebarTabRow.swift */; };
 		A100000100000000000000CE /* SearchDebouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000CE /* SearchDebouncer.swift */; };
 		A100000100000000000000D0 /* iPadOptimizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D0 /* iPadOptimizationTests.swift */; };
+		A100000100000000000000D2 /* WeightBalanceLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D2 /* WeightBalanceLog.swift */; };
+		A100000100000000000000D3 /* FlightExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D3 /* FlightExpense.swift */; };
+		A100000100000000000000D4 /* MaintenanceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D4 /* MaintenanceItem.swift */; };
+		A100000100000000000000D5 /* FlightSearchCriteria.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D5 /* FlightSearchCriteria.swift */; };
+		A100000100000000000000D6 /* NaturalLanguageSearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D6 /* NaturalLanguageSearchEngine.swift */; };
+		A100000100000000000000D7 /* WeightBalanceCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D7 /* WeightBalanceCalculator.swift */; };
+		A100000100000000000000D8 /* ExpenseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D8 /* ExpenseService.swift */; };
+		A100000100000000000000D9 /* MaintenanceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D9 /* MaintenanceService.swift */; };
+		A100000100000000000000D10 /* MaintenanceReminderScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D10 /* MaintenanceReminderScheduler.swift */; };
+		A100000100000000000000D11 /* FlightFuelSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D11 /* FlightFuelSection.swift */; };
+		A100000100000000000000D12 /* FlightWeightBalanceSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D12 /* FlightWeightBalanceSection.swift */; };
+		A100000100000000000000D13 /* FlightExpensesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D13 /* FlightExpensesSection.swift */; };
+		A100000100000000000000D14 /* AircraftPerformanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D14 /* AircraftPerformanceView.swift */; };
+		A100000100000000000000D15 /* MaintenanceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D15 /* MaintenanceListView.swift */; };
+		A100000100000000000000D16 /* MaintenanceEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D16 /* MaintenanceEditorView.swift */; };
+		A100000100000000000000D17 /* AircraftHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D17 /* AircraftHubView.swift */; };
+		A100000100000000000000D18 /* CompactRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D18 /* CompactRootView.swift */; };
+		A100000100000000000000D19 /* AdaptiveRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D19 /* AdaptiveRootView.swift */; };
+		A100000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift */; };
+		A100000100000000000000D21 /* WeightBalanceCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */; };
+		A100000100000000000000D22 /* AdvancedFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D22 /* AdvancedFeaturesTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -341,6 +362,27 @@
 		A200000100000000000000CC /* SidebarTabRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarTabRow.swift; sourceTree = "<group>"; };
 		A200000100000000000000CE /* SearchDebouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDebouncer.swift; sourceTree = "<group>"; };
 		A200000100000000000000D0 /* iPadOptimizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPadOptimizationTests.swift; sourceTree = "<group>"; };
+		A200000100000000000000D2 /* WeightBalanceLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceLog.swift; sourceTree = "<group>"; };
+		A200000100000000000000D3 /* FlightExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightExpense.swift; sourceTree = "<group>"; };
+		A200000100000000000000D4 /* MaintenanceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceItem.swift; sourceTree = "<group>"; };
+		A200000100000000000000D5 /* FlightSearchCriteria.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightSearchCriteria.swift; sourceTree = "<group>"; };
+		A200000100000000000000D6 /* NaturalLanguageSearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalLanguageSearchEngine.swift; sourceTree = "<group>"; };
+		A200000100000000000000D7 /* WeightBalanceCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceCalculator.swift; sourceTree = "<group>"; };
+		A200000100000000000000D8 /* ExpenseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseService.swift; sourceTree = "<group>"; };
+		A200000100000000000000D9 /* MaintenanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceService.swift; sourceTree = "<group>"; };
+		A200000100000000000000D10 /* MaintenanceReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceReminderScheduler.swift; sourceTree = "<group>"; };
+		A200000100000000000000D11 /* FlightFuelSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFuelSection.swift; sourceTree = "<group>"; };
+		A200000100000000000000D12 /* FlightWeightBalanceSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightWeightBalanceSection.swift; sourceTree = "<group>"; };
+		A200000100000000000000D13 /* FlightExpensesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightExpensesSection.swift; sourceTree = "<group>"; };
+		A200000100000000000000D14 /* AircraftPerformanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftPerformanceView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D15 /* MaintenanceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceListView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D16 /* MaintenanceEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceEditorView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D17 /* AircraftHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftHubView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D18 /* CompactRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactRootView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D19 /* AdaptiveRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveRootView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalLanguageSearchEngineTests.swift; sourceTree = "<group>"; };
+		A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceCalculatorTests.swift; sourceTree = "<group>"; };
+		A200000100000000000000D22 /* AdvancedFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedFeaturesTests.swift; sourceTree = "<group>"; };
 		A50000010000000000000001 /* AeroLogUltimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroLogUltimate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50000010000000000000002 /* AeroLogUltimateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroLogUltimateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -400,6 +442,9 @@
 				A200000100000000000000A0 /* TrainingProgressEngineTests.swift */,
 				A200000100000000000000BD /* DataManagementTests.swift */,
 				A200000100000000000000D0 /* iPadOptimizationTests.swift */,
+				A200000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift */,
+				A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */,
+				A200000100000000000000D22 /* AdvancedFeaturesTests.swift */,
 			);
 			path = AeroLogUltimateTests;
 			sourceTree = "<group>";
@@ -407,7 +452,28 @@
 		A70000010000000000000004 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A50000010000000000000001 /* AeroLogUltimate.app */,
+				A200000100000000000000D2 /* WeightBalanceLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceLog.swift; sourceTree = "<group>"; };
+		A200000100000000000000D3 /* FlightExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightExpense.swift; sourceTree = "<group>"; };
+		A200000100000000000000D4 /* MaintenanceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceItem.swift; sourceTree = "<group>"; };
+		A200000100000000000000D5 /* FlightSearchCriteria.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightSearchCriteria.swift; sourceTree = "<group>"; };
+		A200000100000000000000D6 /* NaturalLanguageSearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalLanguageSearchEngine.swift; sourceTree = "<group>"; };
+		A200000100000000000000D7 /* WeightBalanceCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceCalculator.swift; sourceTree = "<group>"; };
+		A200000100000000000000D8 /* ExpenseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseService.swift; sourceTree = "<group>"; };
+		A200000100000000000000D9 /* MaintenanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceService.swift; sourceTree = "<group>"; };
+		A200000100000000000000D10 /* MaintenanceReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceReminderScheduler.swift; sourceTree = "<group>"; };
+		A200000100000000000000D11 /* FlightFuelSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFuelSection.swift; sourceTree = "<group>"; };
+		A200000100000000000000D12 /* FlightWeightBalanceSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightWeightBalanceSection.swift; sourceTree = "<group>"; };
+		A200000100000000000000D13 /* FlightExpensesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightExpensesSection.swift; sourceTree = "<group>"; };
+		A200000100000000000000D14 /* AircraftPerformanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftPerformanceView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D15 /* MaintenanceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceListView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D16 /* MaintenanceEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceEditorView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D17 /* AircraftHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftHubView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D18 /* CompactRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactRootView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D19 /* AdaptiveRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveRootView.swift; sourceTree = "<group>"; };
+		A200000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalLanguageSearchEngineTests.swift; sourceTree = "<group>"; };
+		A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceCalculatorTests.swift; sourceTree = "<group>"; };
+		A200000100000000000000D22 /* AdvancedFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedFeaturesTests.swift; sourceTree = "<group>"; };
+		A50000010000000000000001 /* AeroLogUltimate.app */,
 				A50000010000000000000002 /* AeroLogUltimateTests.xctest */,
 			);
 			name = Products;
@@ -453,6 +519,8 @@
 				A2000001000000000000001F /* PilotProfileService.swift */,
 				A20000010000000000000020 /* FlightService.swift */,
 				A20000010000000000000021 /* AircraftService.swift */,
+				A200000100000000000000D8 /* ExpenseService.swift */,
+				A200000100000000000000D9 /* MaintenanceService.swift */,
 				A20000010000000000000062 /* CurrencyService.swift */,
 				A2000001000000000000006D /* EndorsementService.swift */,
 				A2000001000000000000006E /* EndorsementTemplateService.swift */,
@@ -576,6 +644,8 @@
 			isa = PBXGroup;
 			children = (
 				A200000100000000000000C0 /* IPadAdaptiveLayout.swift */,
+				A200000100000000000000D18 /* CompactRootView.swift */,
+				A200000100000000000000D19 /* AdaptiveRootView.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -613,6 +683,10 @@
 				A2000001000000000000005A /* AircraftListView.swift */,
 				A2000001000000000000005B /* AircraftEditorView.swift */,
 				A2000001000000000000005C /* AircraftPickerSheet.swift */,
+				A200000100000000000000D14 /* AircraftPerformanceView.swift */,
+				A200000100000000000000D15 /* MaintenanceListView.swift */,
+				A200000100000000000000D16 /* MaintenanceEditorView.swift */,
+				A200000100000000000000D17 /* AircraftHubView.swift */,
 			);
 			path = Aircraft;
 			sourceTree = "<group>";
@@ -656,6 +730,9 @@
 				A20000010000000000000057 /* FlightTrainingSection.swift */,
 				A20000010000000000000058 /* FlightRemarksSection.swift */,
 				A20000010000000000000059 /* FlightAttachmentsSection.swift */,
+				A200000100000000000000D13 /* FlightExpensesSection.swift */,
+				A200000100000000000000D12 /* FlightWeightBalanceSection.swift */,
+				A200000100000000000000D11 /* FlightFuelSection.swift */,
 			);
 			path = Sections;
 			sourceTree = "<group>";
@@ -698,6 +775,31 @@
 				A200000100000000000000D1 /* AppShortcutNotifications.swift */,
 			);
 			path = Navigation;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000027 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				A200000100000000000000D5 /* FlightSearchCriteria.swift */,
+				A200000100000000000000D6 /* NaturalLanguageSearchEngine.swift */,
+			),
+			path = Search;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000028 /* WeightBalance */ = {
+			isa = PBXGroup;
+			children = (
+				A200000100000000000000D7 /* WeightBalanceCalculator.swift */,
+			),
+			path = WeightBalance;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000029 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				A200000100000000000000D10 /* MaintenanceReminderScheduler.swift */,
+			),
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		A7000001000000000000000D /* Settings */ = {
@@ -1053,6 +1155,24 @@
 				A100000100000000000000CA /* AviationDetailPlaceholder.swift in Sources */,
 				A100000100000000000000CC /* SidebarTabRow.swift in Sources */,
 				A100000100000000000000CE /* SearchDebouncer.swift in Sources */,
+				A100000100000000000000D2 /* WeightBalanceLog.swift in Sources */,
+				A100000100000000000000D3 /* FlightExpense.swift in Sources */,
+				A100000100000000000000D4 /* MaintenanceItem.swift in Sources */,
+				A100000100000000000000D5 /* FlightSearchCriteria.swift in Sources */,
+				A100000100000000000000D6 /* NaturalLanguageSearchEngine.swift in Sources */,
+				A100000100000000000000D7 /* WeightBalanceCalculator.swift in Sources */,
+				A100000100000000000000D8 /* ExpenseService.swift in Sources */,
+				A100000100000000000000D9 /* MaintenanceService.swift in Sources */,
+				A100000100000000000000D10 /* MaintenanceReminderScheduler.swift in Sources */,
+				A100000100000000000000D11 /* FlightFuelSection.swift in Sources */,
+				A100000100000000000000D12 /* FlightWeightBalanceSection.swift in Sources */,
+				A100000100000000000000D13 /* FlightExpensesSection.swift in Sources */,
+				A100000100000000000000D14 /* AircraftPerformanceView.swift in Sources */,
+				A100000100000000000000D15 /* MaintenanceListView.swift in Sources */,
+				A100000100000000000000D16 /* MaintenanceEditorView.swift in Sources */,
+				A100000100000000000000D17 /* AircraftHubView.swift in Sources */,
+				A100000100000000000000D18 /* CompactRootView.swift in Sources */,
+				A100000100000000000000D19 /* AdaptiveRootView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1069,6 +1189,9 @@
 				A100000100000000000000A0 /* TrainingProgressEngineTests.swift in Sources */,
 				A100000100000000000000BD /* DataManagementTests.swift in Sources */,
 				A100000100000000000000D0 /* iPadOptimizationTests.swift in Sources */,
+				A100000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift in Sources */,
+				A100000100000000000000D21 /* WeightBalanceCalculatorTests.swift in Sources */,
+				A100000100000000000000D22 /* AdvancedFeaturesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

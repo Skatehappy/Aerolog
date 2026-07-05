@@ -241,3 +241,39 @@ extension AttachmentKind {
         }
     }
 }
+
+extension FuelUnit {
+    var displayName: String {
+        switch self {
+        case .gallons: "Gallons"
+        case .liters: "Liters"
+        }
+    }
+}
+
+extension ExpenseCategory {
+    var displayName: String {
+        switch self {
+        case .fuel: "Fuel"
+        case .ramp: "Ramp / Parking"
+        case .rental: "Aircraft Rental"
+        case .instruction: "Instruction"
+        case .maintenance: "Maintenance"
+        case .other: "Other"
+        }
+    }
+}
+
+extension MaintenanceType {
+    var displayName: String {
+        switch self {
+        case .annual: "Annual Inspection"
+        case .hundredHour: "100-Hour Inspection"
+        case .oilChange: "Oil Change"
+        case .transponder: "Transponder Check"
+        case .altimeter: "Altimeter / Pitot-Static"
+        case .adCompliance: "AD Compliance"
+        case .other: "Other"
+        }
+    }
+}

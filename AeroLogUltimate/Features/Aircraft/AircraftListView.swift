@@ -70,9 +70,8 @@ struct AircraftListView: View {
     @ViewBuilder
     private func aircraftRows(simulators: Bool) -> some View {
         ForEach(filteredAircraft.filter { $0.isSimulator == simulators }) { aircraft in
-            Button {
-                isCreatingNew = false
-                editorAircraft = aircraft
+            NavigationLink {
+                AircraftHubView(aircraft: aircraft)
             } label: {
                 AircraftRowView(aircraft: aircraft)
             }

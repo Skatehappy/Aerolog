@@ -20,6 +20,9 @@ struct FlightDetailView: View {
                 if !(flight.approaches ?? []).isEmpty { approachesSection }
                 if flight.usesMultiLeg { legsSection }
                 if hasTrainingInfo { trainingSection }
+                if hasFuelInfo { fuelSection }
+                if flight.weightBalanceLog != nil { weightBalanceSection }
+                if flight.totalExpenses > 0 { expensesSection }
                 if let remarks = flight.remarks, !remarks.isEmpty { remarksSection(remarks) }
                 if !(flight.attachments ?? []).isEmpty { attachmentsSection }
             }
@@ -166,6 +169,48 @@ struct FlightDetailView: View {
 
     private var hasTrainingInfo: Bool {
         flight.lessonTitle != nil || flight.instructorName != nil
+    }
+
+    private var hasFuelInfo: Bool {
+        flight.fuelAdded != nil || flight.fuelBurn != nil || flight.fuelRemaining != nil
+    }
+
+    private var fuelSection: some View {
+        let unit = flight.fuelUnit == .gallons ? "gal" : "L"
+        return DetailSection(title: "Fuel", icon: "fuelpump") {
+            if let added = flight.fuelAdded {
+                DetailRow(label: "Added", value: String(format: "%.1f %@", added, unit))
+            }
+            if let burn = flight.computedFuelBurn ?? flight.fuelBurn {
+                DetailRow(label: "Burn", value: String(format: "%.1f %@", burn, unit))
+            }
+            if let remaining = flight.fuelRemaining {
+                DetailRow(label: "Remaining", value: String(format: "%.1f %@", remaining, unit))
+            }
+        }
+    }
+
+    private var weightBalanceSection: some View {
+        DetailSection(title: "Weight & Balance", icon: "scalemass") {
+            if let log = flight.weightBalanceLog {
+                DetailRow(label: "Empty", value: String(format: "%.0f lbs @ %.1f", log.emptyWeight, log.emptyArm))
+                if let weight = log.rampWeight, let cg = log.rampCG {
+                    DetailRow(label: "Ramp", value: String(format: "%.0f lbs @ %.2f", weight, cg))
+                }
+            }
+        }
+    }
+
+    private var expensesSection: some View {
+        DetailSection(title: "Expenses", icon: "dollarsign.circle") {
+            DetailRow(label: "Total", value: flight.totalExpenses.formatted(.currency(code: "USD")))
+            ForEach(environment?.expenseService.expenses(for: flight) ?? [], id: \.persistentModelID) { expense in
+                DetailRow(
+                    label: expense.category.displayName,
+                    value: expense.amount.formatted(.currency(code: expense.currencyCode))
+                )
+            }
+        }
     }
 
     @ViewBuilder

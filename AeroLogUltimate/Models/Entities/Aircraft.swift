@@ -39,6 +39,10 @@ final class Aircraft {
     var yearManufactured: Int?
     var serialNumber: String?
     var performanceNotes: String?
+    var cruiseSpeedKIAS: Int?
+    var bestGlideSpeedKIAS: Int?
+    var fuelCapacity: Double?
+    var defaultFuelBurnGPH: Double?
     var notes: String?
 
     // MARK: Audit
@@ -58,6 +62,9 @@ final class Aircraft {
 
     @Relationship(deleteRule: .nullify, inverse: \Attachment.aircraft)
     var attachments: [Attachment]?
+
+    @Relationship(deleteRule: .cascade, inverse: \MaintenanceItem.aircraft)
+    var maintenanceItems: [MaintenanceItem]?
 
     // MARK: Computed
 

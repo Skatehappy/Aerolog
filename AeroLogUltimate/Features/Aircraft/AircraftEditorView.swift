@@ -79,6 +79,55 @@ struct AircraftEditorView: View {
                 Toggle("Active", isOn: $aircraft.isActive)
             }
 
+            if !aircraft.isSimulator {
+                Section("Performance Profile") {
+                    HStack {
+                        Text("Cruise Speed")
+                        Spacer()
+                        TextField("KIAS", value: Binding(
+                            get: { aircraft.cruiseSpeedKIAS },
+                            set: { aircraft.cruiseSpeedKIAS = $0 }
+                        ), format: .number)
+                        .keyboardType(.numberPad)
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: 80)
+                    }
+                    HStack {
+                        Text("Best Glide")
+                        Spacer()
+                        TextField("KIAS", value: Binding(
+                            get: { aircraft.bestGlideSpeedKIAS },
+                            set: { aircraft.bestGlideSpeedKIAS = $0 }
+                        ), format: .number)
+                        .keyboardType(.numberPad)
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: 80)
+                    }
+                    HStack {
+                        Text("Fuel Capacity")
+                        Spacer()
+                        TextField("gal", value: Binding(
+                            get: { aircraft.fuelCapacity },
+                            set: { aircraft.fuelCapacity = $0 }
+                        ), format: .number)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: 80)
+                    }
+                    HStack {
+                        Text("Fuel Burn")
+                        Spacer()
+                        TextField("GPH", value: Binding(
+                            get: { aircraft.defaultFuelBurnGPH },
+                            set: { aircraft.defaultFuelBurnGPH = $0 }
+                        ), format: .number)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: 80)
+                    }
+                }
+            }
+
             Section("Notes") {
                 TextField("Performance notes, fuel burn, etc.", text: Binding(
                     get: { aircraft.performanceNotes ?? "" },
