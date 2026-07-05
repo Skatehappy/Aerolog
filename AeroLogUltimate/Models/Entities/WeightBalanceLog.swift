@@ -23,7 +23,7 @@ final class WeightBalanceLog {
     @Relationship(deleteRule: .cascade)
     var syncMetadata: SyncMetadata?
 
-    @Relationship(deleteRule: .nullify, inverse: \Flight.weightBalanceLog)
+    @Relationship(deleteRule: .nullify)
     var flight: Flight?
 
     var stationEntries: [WeightBalanceStation] {

@@ -18,7 +18,7 @@ final class MaintenanceItem {
     @Relationship(deleteRule: .cascade)
     var syncMetadata: SyncMetadata?
 
-    @Relationship(deleteRule: .nullify, inverse: \Aircraft.maintenanceItems)
+    @Relationship(deleteRule: .nullify)
     var aircraft: Aircraft?
 
     var isOverdue: Bool {

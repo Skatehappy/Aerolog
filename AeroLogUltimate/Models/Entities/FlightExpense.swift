@@ -16,7 +16,7 @@ final class FlightExpense {
     @Relationship(deleteRule: .cascade)
     var syncMetadata: SyncMetadata?
 
-    @Relationship(deleteRule: .nullify, inverse: \Flight.expenses)
+    @Relationship(deleteRule: .nullify)
     var flight: Flight?
 
     init(
