@@ -104,6 +104,23 @@
 		A10000010000000000000079 /* CustomTemplateListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000079 /* CustomTemplateListView.swift */; };
 		A1000001000000000000007A /* CustomTemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007A /* CustomTemplateEditorView.swift */; };
 		A1000001000000000000007B /* EndorsementServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007B /* EndorsementServiceTests.swift */; };
+		A1000001000000000000007C /* ReportFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007C /* ReportFilter.swift */; };
+		A1000001000000000000007D /* ReportAnalyticsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007D /* ReportAnalyticsEngine.swift */; };
+		A1000001000000000000007E /* ReportPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007E /* ReportPayload.swift */; };
+		A1000001000000000000007F /* ReportExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000007F /* ReportExporter.swift */; };
+		A10000010000000000000080 /* ReportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000080 /* ReportService.swift */; };
+		A10000010000000000000081 /* ReportDefinitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000081 /* ReportDefinitionService.swift */; };
+		A10000010000000000000082 /* ReportExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000082 /* ReportExtensions.swift */; };
+		A10000010000000000000083 /* ReportsDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000083 /* ReportsDashboardView.swift */; };
+		A10000010000000000000084 /* ReportDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000084 /* ReportDetailView.swift */; };
+		A10000010000000000000085 /* ReportBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000085 /* ReportBuilderView.swift */; };
+		A10000010000000000000086 /* ReportPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000086 /* ReportPreviewView.swift */; };
+		A10000010000000000000087 /* SavedReportsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000087 /* SavedReportsListView.swift */; };
+		A10000010000000000000088 /* AnalyticsSummaryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000088 /* AnalyticsSummaryCard.swift */; };
+		A10000010000000000000089 /* TimeBreakdownChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000089 /* TimeBreakdownChart.swift */; };
+		A1000001000000000000008A /* StatisticRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008A /* StatisticRow.swift */; };
+		A1000001000000000000008B /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008B /* ShareSheet.swift */; };
+		A1000001000000000000008C /* ReportAnalyticsEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008C /* ReportAnalyticsEngineTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -215,6 +232,23 @@
 		A20000010000000000000079 /* CustomTemplateListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTemplateListView.swift; sourceTree = "<group>"; };
 		A2000001000000000000007A /* CustomTemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTemplateEditorView.swift; sourceTree = "<group>"; };
 		A2000001000000000000007B /* EndorsementServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndorsementServiceTests.swift; sourceTree = "<group>"; };
+		A2000001000000000000007C /* ReportFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportFilter.swift; sourceTree = "<group>"; };
+		A2000001000000000000007D /* ReportAnalyticsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportAnalyticsEngine.swift; sourceTree = "<group>"; };
+		A2000001000000000000007E /* ReportPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportPayload.swift; sourceTree = "<group>"; };
+		A2000001000000000000007F /* ReportExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportExporter.swift; sourceTree = "<group>"; };
+		A20000010000000000000080 /* ReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportService.swift; sourceTree = "<group>"; };
+		A20000010000000000000081 /* ReportDefinitionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDefinitionService.swift; sourceTree = "<group>"; };
+		A20000010000000000000082 /* ReportExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportExtensions.swift; sourceTree = "<group>"; };
+		A20000010000000000000083 /* ReportsDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsDashboardView.swift; sourceTree = "<group>"; };
+		A20000010000000000000084 /* ReportDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDetailView.swift; sourceTree = "<group>"; };
+		A20000010000000000000085 /* ReportBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportBuilderView.swift; sourceTree = "<group>"; };
+		A20000010000000000000086 /* ReportPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportPreviewView.swift; sourceTree = "<group>"; };
+		A20000010000000000000087 /* SavedReportsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedReportsListView.swift; sourceTree = "<group>"; };
+		A20000010000000000000088 /* AnalyticsSummaryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsSummaryCard.swift; sourceTree = "<group>"; };
+		A20000010000000000000089 /* TimeBreakdownChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBreakdownChart.swift; sourceTree = "<group>"; };
+		A2000001000000000000008A /* StatisticRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticRow.swift; sourceTree = "<group>"; };
+		A2000001000000000000008B /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
+		A2000001000000000000008C /* ReportAnalyticsEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportAnalyticsEngineTests.swift; sourceTree = "<group>"; };
 		A50000010000000000000001 /* AeroLogUltimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroLogUltimate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50000010000000000000002 /* AeroLogUltimateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroLogUltimateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -270,6 +304,7 @@
 				A20000010000000000000032 /* FlightValidationTests.swift */,
 				A20000010000000000000068 /* CurrencyEngineTests.swift */,
 				A2000001000000000000007B /* EndorsementServiceTests.swift */,
+				A2000001000000000000008C /* ReportAnalyticsEngineTests.swift */,
 			);
 			path = AeroLogUltimateTests;
 			sourceTree = "<group>";
@@ -326,8 +361,11 @@
 				A20000010000000000000062 /* CurrencyService.swift */,
 				A2000001000000000000006D /* EndorsementService.swift */,
 				A2000001000000000000006E /* EndorsementTemplateService.swift */,
+				A20000010000000000000080 /* ReportService.swift */,
+				A20000010000000000000081 /* ReportDefinitionService.swift */,
 				A7000001000000000000001A /* Currency */,
 				A7000001000000000000001C /* Endorsements */,
+				A70000010000000000000020 /* Reports */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -350,6 +388,7 @@
 				A70000010000000000000016 /* Aircraft */,
 				A70000010000000000000019 /* Currency */,
 				A7000001000000000000001B /* Endorsements */,
+				A7000001000000000000001F /* Reports */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -391,6 +430,29 @@
 			path = Endorsements;
 			sourceTree = "<group>";
 		};
+		A7000001000000000000001F /* Reports */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000083 /* ReportsDashboardView.swift */,
+				A20000010000000000000084 /* ReportDetailView.swift */,
+				A20000010000000000000085 /* ReportBuilderView.swift */,
+				A20000010000000000000086 /* ReportPreviewView.swift */,
+				A20000010000000000000087 /* SavedReportsListView.swift */,
+			);
+			path = Reports;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000020 /* Reports */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000007C /* ReportFilter.swift */,
+				A2000001000000000000007D /* ReportAnalyticsEngine.swift */,
+				A2000001000000000000007E /* ReportPayload.swift */,
+				A2000001000000000000007F /* ReportExporter.swift */,
+			);
+			path = Reports;
+			sourceTree = "<group>";
+		};
 		A70000010000000000000013 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -408,6 +470,7 @@
 				A20000010000000000000043 /* FlightExtensions.swift */,
 				A20000010000000000000044 /* MediaTransferable.swift */,
 				A2000001000000000000006A /* EndorsementExtensions.swift */,
+				A20000010000000000000082 /* ReportExtensions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -446,6 +509,10 @@
 				A20000010000000000000063 /* CurrencyStatusCard.swift */,
 				A2000001000000000000006F /* SignatureCanvasView.swift */,
 				A20000010000000000000070 /* EndorsementStatusBadge.swift */,
+				A20000010000000000000088 /* AnalyticsSummaryCard.swift */,
+				A20000010000000000000089 /* TimeBreakdownChart.swift */,
+				A2000001000000000000008A /* StatisticRow.swift */,
+				A2000001000000000000008B /* ShareSheet.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -741,6 +808,22 @@
 				A10000010000000000000078 /* ImportSigningPackageView.swift in Sources */,
 				A10000010000000000000079 /* CustomTemplateListView.swift in Sources */,
 				A1000001000000000000007A /* CustomTemplateEditorView.swift in Sources */,
+				A1000001000000000000007C /* ReportFilter.swift in Sources */,
+				A1000001000000000000007D /* ReportAnalyticsEngine.swift in Sources */,
+				A1000001000000000000007E /* ReportPayload.swift in Sources */,
+				A1000001000000000000007F /* ReportExporter.swift in Sources */,
+				A10000010000000000000080 /* ReportService.swift in Sources */,
+				A10000010000000000000081 /* ReportDefinitionService.swift in Sources */,
+				A10000010000000000000082 /* ReportExtensions.swift in Sources */,
+				A10000010000000000000083 /* ReportsDashboardView.swift in Sources */,
+				A10000010000000000000084 /* ReportDetailView.swift in Sources */,
+				A10000010000000000000085 /* ReportBuilderView.swift in Sources */,
+				A10000010000000000000086 /* ReportPreviewView.swift in Sources */,
+				A10000010000000000000087 /* SavedReportsListView.swift in Sources */,
+				A10000010000000000000088 /* AnalyticsSummaryCard.swift in Sources */,
+				A10000010000000000000089 /* TimeBreakdownChart.swift in Sources */,
+				A1000001000000000000008A /* StatisticRow.swift in Sources */,
+				A1000001000000000000008B /* ShareSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -753,6 +836,7 @@
 				A10000010000000000000032 /* FlightValidationTests.swift in Sources */,
 				A10000010000000000000068 /* CurrencyEngineTests.swift in Sources */,
 				A1000001000000000000007B /* EndorsementServiceTests.swift in Sources */,
+				A1000001000000000000008C /* ReportAnalyticsEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

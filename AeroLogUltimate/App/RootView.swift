@@ -8,6 +8,7 @@ struct RootView: View {
     @State private var selectedFlight: Flight?
     @State private var selectedCurrency: CurrencyCalculationResult?
     @State private var selectedEndorsement: Endorsement?
+    @State private var selectedReportType: ReportType?
 
     init(navigation: NavigationCoordinator) {
         self.navigation = navigation
@@ -48,6 +49,7 @@ struct RootView: View {
             if newTab != .logbook { selectedFlight = nil }
             if newTab != .currency { selectedCurrency = nil }
             if newTab != .endorsements { selectedEndorsement = nil }
+            if newTab != .reports { selectedReportType = nil }
         }
     }
 
@@ -69,6 +71,10 @@ struct RootView: View {
         case .endorsements:
             NavigationStack {
                 EndorsementListView(selectedEndorsement: $selectedEndorsement)
+            }
+        case .reports:
+            NavigationStack {
+                ReportsDashboardView(selectedReportType: $selectedReportType)
             }
         default:
             PlaceholderTabView(tab: navigation.selectedTab)
@@ -113,6 +119,18 @@ struct RootView: View {
                     Label("Endorsement Detail", systemImage: "signature")
                 } description: {
                     Text("Select an endorsement to view the full text and signature.")
+                }
+            }
+        } else if navigation.selectedTab == .reports {
+            if let reportType = selectedReportType {
+                NavigationStack {
+                    ReportDetailView(reportType: reportType)
+                }
+            } else {
+                ContentUnavailableView {
+                    Label("Report Detail", systemImage: "chart.bar.doc.horizontal")
+                } description: {
+                    Text("Select a report type to view details and generate exports.")
                 }
             }
         } else {
