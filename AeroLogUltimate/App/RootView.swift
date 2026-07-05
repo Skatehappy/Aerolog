@@ -27,10 +27,19 @@ struct RootView: View {
     // MARK: - Sidebar
 
     private var sidebar: some View {
-        List(selection: $navigation.selectedTab) {
+        List {
             ForEach(AppTab.allCases) { tab in
-                Label(tab.title, systemImage: tab.systemImage)
-                    .tag(tab)
+                Button {
+                    navigation.selectedTab = tab
+                } label: {
+                    Label(tab.title, systemImage: tab.systemImage)
+                }
+                .buttonStyle(.plain)
+                .listRowBackground(
+                    navigation.selectedTab == tab
+                        ? Color.accentColor.opacity(0.15)
+                        : Color.clear
+                )
             }
         }
         .navigationTitle(SettingsStore.appName)

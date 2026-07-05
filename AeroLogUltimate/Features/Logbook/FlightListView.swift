@@ -51,10 +51,19 @@ struct FlightListView: View {
                         .buttonStyle(.borderedProminent)
                 }
             } else {
-                List(selection: $selectedFlight) {
+                List {
                     ForEach(visibleFlights) { flight in
-                        FlightRowView(flight: flight)
-                            .tag(flight)
+                        Button {
+                            selectedFlight = flight
+                        } label: {
+                            FlightRowView(flight: flight)
+                        }
+                        .buttonStyle(.plain)
+                        .listRowBackground(
+                            selectedFlight?.persistentModelID == flight.persistentModelID
+                                ? Color.accentColor.opacity(0.12)
+                                : Color.clear
+                        )
                     }
                 }
             }

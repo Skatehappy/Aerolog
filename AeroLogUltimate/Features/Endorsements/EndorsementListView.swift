@@ -39,10 +39,19 @@ struct EndorsementListView: View {
                         .buttonStyle(.borderedProminent)
                 }
             } else {
-                List(selection: $selectedEndorsement) {
+                List {
                     ForEach(visible) { endorsement in
-                        EndorsementRowView(endorsement: endorsement)
-                            .tag(endorsement)
+                        Button {
+                            selectedEndorsement = endorsement
+                        } label: {
+                            EndorsementRowView(endorsement: endorsement)
+                        }
+                        .buttonStyle(.plain)
+                        .listRowBackground(
+                            selectedEndorsement?.persistentModelID == endorsement.persistentModelID
+                                ? Color.accentColor.opacity(0.12)
+                                : Color.clear
+                        )
                     }
                 }
             }
