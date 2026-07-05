@@ -13,4 +13,14 @@ enum SettingsStore {
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
     }
+
+    /// Local backup archives (JSON or `.aerologbackup` directory bundles).
+    static var backupsDirectory: URL {
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let directory = appSupport.appendingPathComponent("AeroLogUltimate/Backups", isDirectory: true)
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return directory
+    }
+
+    static let backupFileExtension = "aerologbackup"
 }

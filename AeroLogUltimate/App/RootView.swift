@@ -82,6 +82,10 @@ struct RootView: View {
             NavigationStack {
                 TrainingDashboardView(selectedRelationshipID: $selectedRelationshipID)
             }
+        case .settings:
+            NavigationStack {
+                SettingsDashboardView()
+            }
         default:
             PlaceholderTabView(tab: navigation.selectedTab)
         }

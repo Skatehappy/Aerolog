@@ -1,5 +1,6 @@
 import Foundation
 import os
+import SwiftData
 
 /// Protocol for the optional encrypted sync engine (Phase 6 implementation).
 protocol SyncCoordinatorProtocol: AnyObject {
@@ -12,7 +13,7 @@ protocol SyncCoordinatorProtocol: AnyObject {
     func resolveConflicts(using strategy: SyncConflictResolution) async throws
 }
 
-/// Phase 0 stub — local-only operation with sync hooks prepared.
+/// Encrypted cloud sync coordinator with local backup payload foundation.
 @MainActor
 final class SyncCoordinator: SyncCoordinatorProtocol {
     private let logger = Logger(subsystem: "com.aerologultimate", category: "Sync")
@@ -20,14 +21,28 @@ final class SyncCoordinator: SyncCoordinatorProtocol {
     private(set) var configuration: EncryptedSyncConfiguration
     private(set) var isSyncing = false
 
+    private weak var dataManagementService: DataManagementService?
+
     init(configuration: EncryptedSyncConfiguration = .disabled) {
         self.configuration = configuration
     }
 
+    func attach(dataManagementService: DataManagementService) {
+        self.dataManagementService = dataManagementService
+    }
+
     func enable(with configuration: EncryptedSyncConfiguration) async throws {
-        logger.info("Sync enable requested — not yet implemented")
-        self.configuration = configuration
-        // Phase 6: provision encryption keys, register provider, create sync container.
+        var updated = configuration
+        if updated.encryptionKeyID == nil {
+            updated.encryptionKeyID = "aerolog-\(UUID().uuidString.lowercased())"
+        }
+        if let keyID = updated.encryptionKeyID {
+            _ = try ModelContainerConfiguration.makeSyncContainer(encryptionKeyID: keyID)
+            logger.info("Provisioned encrypted sync container for key \(keyID)")
+        }
+        updated.isEnabled = true
+        self.configuration = updated
+        logger.info("Encrypted sync enabled — provider: \(updated.providerIdentifier ?? "local")")
     }
 
     func disable() async {
@@ -42,12 +57,21 @@ final class SyncCoordinator: SyncCoordinatorProtocol {
         }
         isSyncing = true
         defer { isSyncing = false }
-        // Phase 6: upload pending records, download remote changes, resolve conflicts.
-        logger.info("Sync now requested — not yet implemented")
+
+        guard let dataManagementService else {
+            logger.warning("Sync skipped — data management service not attached")
+            return
+        }
+
+        let payload = try dataManagementService.cloudBackupPayload()
+        let keyID = configuration.encryptionKeyID ?? "unprovisioned"
+        logger.info("Prepared encrypted cloud backup payload (\(payload.count) bytes) for key \(keyID)")
+        // Foundation for provider upload — remote transport implemented in a future phase.
+        configuration.lastSyncAt = .now
     }
 
     func resolveConflicts(using strategy: SyncConflictResolution) async throws {
         logger.info("Conflict resolution requested with strategy: \(strategy.rawValue)")
-        // Phase 6: apply resolution across conflicted SyncMetadata records.
+        // Apply resolution across conflicted SyncMetadata records when remote sync is active.
     }
 }

@@ -141,6 +141,21 @@
 		A1000001000000000000009E /* SyllabusDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009E /* SyllabusDetailView.swift */; };
 		A1000001000000000000009F /* CustomSyllabusEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009F /* CustomSyllabusEditorView.swift */; };
 		A100000100000000000000A0 /* TrainingProgressEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000A0 /* TrainingProgressEngineTests.swift */; };
+		A100000100000000000000A1 /* DataManagementPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000A1 /* DataManagementPayload.swift */; };
+		A100000100000000000000A3 /* CSVLogbookImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000A3 /* CSVLogbookImporter.swift */; };
+		A100000100000000000000A5 /* LogbookImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000A5 /* LogbookImportService.swift */; };
+		A100000100000000000000A7 /* LogbookExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000A7 /* LogbookExportService.swift */; };
+		A100000100000000000000A9 /* BackupRestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000A9 /* BackupRestoreService.swift */; };
+		A100000100000000000000AB /* DataManagementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000AB /* DataManagementService.swift */; };
+		A100000100000000000000AD /* SettingsDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000AD /* SettingsDashboardView.swift */; };
+		A100000100000000000000AF /* DataManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000AF /* DataManagementView.swift */; };
+		A100000100000000000000B1 /* ImportLogbookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000B1 /* ImportLogbookView.swift */; };
+		A100000100000000000000B3 /* ExportOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000B3 /* ExportOptionsView.swift */; };
+		A100000100000000000000B5 /* BackupRestoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000B5 /* BackupRestoreView.swift */; };
+		A100000100000000000000B7 /* SyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000B7 /* SyncSettingsView.swift */; };
+		A100000100000000000000B9 /* DisplayPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000B9 /* DisplayPreferencesView.swift */; };
+		A100000100000000000000BB /* PilotProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000BB /* PilotProfileSettingsView.swift */; };
+		A100000100000000000000BD /* DataManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000BD /* DataManagementTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -289,6 +304,21 @@
 		A2000001000000000000009E /* SyllabusDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyllabusDetailView.swift; sourceTree = "<group>"; };
 		A2000001000000000000009F /* CustomSyllabusEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSyllabusEditorView.swift; sourceTree = "<group>"; };
 		A200000100000000000000A0 /* TrainingProgressEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgressEngineTests.swift; sourceTree = "<group>"; };
+		A200000100000000000000A1 /* DataManagementPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagementPayload.swift; sourceTree = "<group>"; };
+		A200000100000000000000A3 /* CSVLogbookImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVLogbookImporter.swift; sourceTree = "<group>"; };
+		A200000100000000000000A5 /* LogbookImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookImportService.swift; sourceTree = "<group>"; };
+		A200000100000000000000A7 /* LogbookExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogbookExportService.swift; sourceTree = "<group>"; };
+		A200000100000000000000A9 /* BackupRestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRestoreService.swift; sourceTree = "<group>"; };
+		A200000100000000000000AB /* DataManagementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagementService.swift; sourceTree = "<group>"; };
+		A200000100000000000000AD /* SettingsDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDashboardView.swift; sourceTree = "<group>"; };
+		A200000100000000000000AF /* DataManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagementView.swift; sourceTree = "<group>"; };
+		A200000100000000000000B1 /* ImportLogbookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportLogbookView.swift; sourceTree = "<group>"; };
+		A200000100000000000000B3 /* ExportOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportOptionsView.swift; sourceTree = "<group>"; };
+		A200000100000000000000B5 /* BackupRestoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupRestoreView.swift; sourceTree = "<group>"; };
+		A200000100000000000000B7 /* SyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettingsView.swift; sourceTree = "<group>"; };
+		A200000100000000000000B9 /* DisplayPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayPreferencesView.swift; sourceTree = "<group>"; };
+		A200000100000000000000BB /* PilotProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotProfileSettingsView.swift; sourceTree = "<group>"; };
+		A200000100000000000000BD /* DataManagementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagementTests.swift; sourceTree = "<group>"; };
 		A50000010000000000000001 /* AeroLogUltimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroLogUltimate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50000010000000000000002 /* AeroLogUltimateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroLogUltimateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -346,6 +376,7 @@
 				A2000001000000000000007B /* EndorsementServiceTests.swift */,
 				A2000001000000000000008C /* ReportAnalyticsEngineTests.swift */,
 				A200000100000000000000A0 /* TrainingProgressEngineTests.swift */,
+				A200000100000000000000BD /* DataManagementTests.swift */,
 			);
 			path = AeroLogUltimateTests;
 			sourceTree = "<group>";
@@ -408,6 +439,7 @@
 				A7000001000000000000001C /* Endorsements */,
 				A70000010000000000000020 /* Reports */,
 				A70000010000000000000022 /* Training */,
+				A70000010000000000000023 /* DataManagement */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -432,6 +464,7 @@
 				A7000001000000000000001B /* Endorsements */,
 				A7000001000000000000001F /* Reports */,
 				A70000010000000000000021 /* Training */,
+				A70000010000000000000024 /* Settings */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -690,6 +723,34 @@
 			path = Training;
 			sourceTree = "<group>";
 		};
+		A70000010000000000000023 /* DataManagement */ = {
+			isa = PBXGroup;
+			children = (
+				A200000100000000000000A1 /* DataManagementPayload.swift */,
+				A200000100000000000000A3 /* CSVLogbookImporter.swift */,
+				A200000100000000000000A5 /* LogbookImportService.swift */,
+				A200000100000000000000A7 /* LogbookExportService.swift */,
+				A200000100000000000000A9 /* BackupRestoreService.swift */,
+				A200000100000000000000AB /* DataManagementService.swift */,
+			);
+			path = DataManagement;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000024 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				A200000100000000000000AD /* SettingsDashboardView.swift */,
+				A200000100000000000000AF /* DataManagementView.swift */,
+				A200000100000000000000B1 /* ImportLogbookView.swift */,
+				A200000100000000000000B3 /* ExportOptionsView.swift */,
+				A200000100000000000000B5 /* BackupRestoreView.swift */,
+				A200000100000000000000B7 /* SyncSettingsView.swift */,
+				A200000100000000000000B9 /* DisplayPreferencesView.swift */,
+				A200000100000000000000BB /* PilotProfileSettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		A70000010000000000000022 /* Training */ = {
 			isa = PBXGroup;
 			children = (
@@ -919,6 +980,20 @@
 				A1000001000000000000009F /* CustomSyllabusEditorView.swift in Sources */,
 				A1000001000000000000008A /* StatisticRow.swift in Sources */,
 				A1000001000000000000008B /* ShareSheet.swift in Sources */,
+				A100000100000000000000A1 /* DataManagementPayload.swift in Sources */,
+				A100000100000000000000A3 /* CSVLogbookImporter.swift in Sources */,
+				A100000100000000000000A5 /* LogbookImportService.swift in Sources */,
+				A100000100000000000000A7 /* LogbookExportService.swift in Sources */,
+				A100000100000000000000A9 /* BackupRestoreService.swift in Sources */,
+				A100000100000000000000AB /* DataManagementService.swift in Sources */,
+				A100000100000000000000AD /* SettingsDashboardView.swift in Sources */,
+				A100000100000000000000AF /* DataManagementView.swift in Sources */,
+				A100000100000000000000B1 /* ImportLogbookView.swift in Sources */,
+				A100000100000000000000B3 /* ExportOptionsView.swift in Sources */,
+				A100000100000000000000B5 /* BackupRestoreView.swift in Sources */,
+				A100000100000000000000B7 /* SyncSettingsView.swift in Sources */,
+				A100000100000000000000B9 /* DisplayPreferencesView.swift in Sources */,
+				A100000100000000000000BB /* PilotProfileSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -933,6 +1008,7 @@
 				A1000001000000000000007B /* EndorsementServiceTests.swift in Sources */,
 				A1000001000000000000008C /* ReportAnalyticsEngineTests.swift in Sources */,
 				A100000100000000000000A0 /* TrainingProgressEngineTests.swift in Sources */,
+				A100000100000000000000BD /* DataManagementTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

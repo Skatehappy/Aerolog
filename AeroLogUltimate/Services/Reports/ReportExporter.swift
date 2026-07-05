@@ -20,6 +20,48 @@ struct ReportExporter: Sendable {
         return "AeroLog_\(slug)_\(date).\(ext)"
     }
 
+    /// Standalone print-ready PDF for full logbook exports from Settings.
+    func exportLogbookPDF(rows: [FlightLogRow], pilotName: String, certificateNumber: String?) -> Data {
+        let report = GeneratedReport(
+            type: .flightLog,
+            title: "Pilot Logbook",
+            filter: .allTime,
+            format: .pdf,
+            configuration: .faaLogbook,
+            generatedAt: .now,
+            dashboard: nil,
+            totalTime: nil,
+            faa8710: FAA8710Totals(
+                pilotName: pilotName,
+                certificateNumber: certificateNumber,
+                addressLine: nil,
+                generatedAt: .now,
+                totalTime: rows.reduce(0) { $0 + $1.totalTime },
+                picTime: rows.reduce(0) { $0 + $1.picTime },
+                sicTime: rows.reduce(0) { $0 + $1.sicTime },
+                dualReceived: rows.reduce(0) { $0 + $1.dualReceived },
+                soloTime: rows.reduce(0) { $0 + $1.soloTime },
+                crossCountryTime: rows.reduce(0) { $0 + $1.crossCountryTime },
+                nightTime: rows.reduce(0) { $0 + $1.nightTime },
+                actualInstrumentTime: rows.reduce(0) { $0 + $1.actualInstrumentTime },
+                simulatedInstrumentTime: rows.reduce(0) { $0 + $1.simulatedInstrumentTime },
+                dayLandings: rows.reduce(0) { $0 + $1.dayLandings },
+                nightLandings: rows.reduce(0) { $0 + $1.nightLandings },
+                airplaneSingleEngineLand: 0,
+                airplaneMultiEngineLand: 0,
+                rotorcraftHelicopter: 0,
+                simulatorTime: rows.reduce(0) { $0 + $1.simulatorTime },
+                instructorTime: rows.reduce(0) { $0 + $1.dualGiven }
+            ),
+            flightLog: rows,
+            airports: nil,
+            aircraft: nil,
+            studentProgress: nil,
+            currencyResults: nil
+        )
+        return pdfRenderer.render(report)
+    }
+
     // MARK: - CSV
 
     private func exportCSV(_ report: GeneratedReport) throws -> Data {
