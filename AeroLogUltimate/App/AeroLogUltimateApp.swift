@@ -22,7 +22,7 @@ struct AeroLogUltimateApp: App {
                 .modelContainer(environment.dataStore.container)
         }
         .commands {
-            AppCommands(shortcutCenter: environment.shortcutCenter)
+            AppCommands()
         }
     }
 }

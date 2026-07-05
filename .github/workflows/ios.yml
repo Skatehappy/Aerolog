@@ -46,17 +46,54 @@ jobs:
       - name: Run unit tests
         run: |
           DESTINATION=$(python3 - <<'PY'
-          import json, subprocess
+          import json, re, subprocess
+
           out = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
           data = json.loads(out)
+
+          preferred_patterns = [
+              r"iPad \(10th generation\)",
+              r"iPad Air",
+              r"iPad Pro \(11-inch\)",
+              r"iPad mini",
+              r"iPad Pro \(12\.9-inch\)",
+          ]
+          avoid_patterns = [r"M5", r"13-inch \(M5\)"]
+
+          def score(name: str) -> int:
+              for index, pattern in enumerate(preferred_patterns):
+                  if re.search(pattern, name):
+                      return index
+              return len(preferred_patterns)
+
+          candidates = []
           for runtime in sorted(data["devices"].keys(), reverse=True):
               if "iOS" not in runtime:
                   continue
               for device in data["devices"][runtime]:
-                  if device.get("isAvailable") and "iPad" in device["name"]:
-                      print(f"platform=iOS Simulator,id={device['udid']}")
-                      raise SystemExit
-          raise SystemExit("No available iPad simulator found")
+                  if not device.get("isAvailable"):
+                      continue
+                  name = device["name"]
+                  if "iPad" not in name:
+                      continue
+                  if any(re.search(pattern, name) for pattern in avoid_patterns):
+                      continue
+                  candidates.append((score(name), device))
+
+          if not candidates:
+              for runtime in sorted(data["devices"].keys(), reverse=True):
+                  if "iOS" not in runtime:
+                      continue
+                  for device in data["devices"][runtime]:
+                      if device.get("isAvailable") and "iPad" in device["name"]:
+                          candidates.append((score(device["name"]), device))
+
+          if not candidates:
+              raise SystemExit("No available iPad simulator found")
+
+          candidates.sort(key=lambda item: item[0])
+          device = candidates[0][1]
+          print(f"platform=iOS Simulator,id={device['udid']}")
           PY
           )
           echo "Using destination: $DESTINATION"

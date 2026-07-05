@@ -160,6 +160,7 @@
 		A100000100000000000000C0 /* IPadAdaptiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C0 /* IPadAdaptiveLayout.swift */; };
 		A100000100000000000000C2 /* AppShortcutCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C2 /* AppShortcutCenter.swift */; };
 		A100000100000000000000C4 /* AppCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C4 /* AppCommands.swift */; };
+		A100000100000000000000D1 /* AppShortcutNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000D1 /* AppShortcutNotifications.swift */; };
 		A100000100000000000000C6 /* PencilCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C6 /* PencilCanvasView.swift */; };
 		A100000100000000000000C8 /* PencilNotesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000C8 /* PencilNotesSheet.swift */; };
 		A100000100000000000000CA /* AviationDetailPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000CA /* AviationDetailPlaceholder.swift */; };
@@ -333,6 +334,7 @@
 		A200000100000000000000C0 /* IPadAdaptiveLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPadAdaptiveLayout.swift; sourceTree = "<group>"; };
 		A200000100000000000000C2 /* AppShortcutCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShortcutCenter.swift; sourceTree = "<group>"; };
 		A200000100000000000000C4 /* AppCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommands.swift; sourceTree = "<group>"; };
+		A200000100000000000000D1 /* AppShortcutNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShortcutNotifications.swift; sourceTree = "<group>"; };
 		A200000100000000000000C6 /* PencilCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilCanvasView.swift; sourceTree = "<group>"; };
 		A200000100000000000000C8 /* PencilNotesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilNotesSheet.swift; sourceTree = "<group>"; };
 		A200000100000000000000CA /* AviationDetailPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AviationDetailPlaceholder.swift; sourceTree = "<group>"; };
@@ -693,6 +695,7 @@
 				A2000001000000000000000B /* NavigationCoordinator.swift */,
 				A200000100000000000000C2 /* AppShortcutCenter.swift */,
 				A200000100000000000000C4 /* AppCommands.swift */,
+				A200000100000000000000D1 /* AppShortcutNotifications.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -1044,6 +1047,7 @@
 				A100000100000000000000C0 /* IPadAdaptiveLayout.swift in Sources */,
 				A100000100000000000000C2 /* AppShortcutCenter.swift in Sources */,
 				A100000100000000000000C4 /* AppCommands.swift in Sources */,
+				A100000100000000000000D1 /* AppShortcutNotifications.swift in Sources */,
 				A100000100000000000000C6 /* PencilCanvasView.swift in Sources */,
 				A100000100000000000000C8 /* PencilNotesSheet.swift in Sources */,
 				A100000100000000000000CA /* AviationDetailPlaceholder.swift in Sources */,

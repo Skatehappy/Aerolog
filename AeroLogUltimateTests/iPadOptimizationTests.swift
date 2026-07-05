@@ -28,6 +28,14 @@ final class iPadOptimizationTests: XCTestCase {
         XCTAssertNil(center.consume())
     }
 
+    func testShortcutNotificationsPostSelectTabWithObject() {
+        let expectation = expectation(forNotification: .appShortcutSelectTab, object: nil) { notification in
+            notification.object as? AppTab == .logbook
+        }
+        AppShortcutNotifications.post(.selectTab(.logbook))
+        wait(for: [expectation], timeout: 1)
+    }
+
     func testAviationSurfaceAdaptsToDarkPalette() {
         let dark = AviationSurface(colorScheme: .dark, paletteEnabled: true)
         let light = AviationSurface(colorScheme: .light, paletteEnabled: true)

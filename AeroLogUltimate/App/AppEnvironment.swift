@@ -8,7 +8,6 @@ final class AppEnvironment {
     let dataStore: DataStore
     let settings: AppSettings
     let navigation: NavigationCoordinator
-    let shortcutCenter: AppShortcutCenter
     let syncCoordinator: SyncCoordinator
 
     let attachmentStorage: AttachmentStorageService
@@ -29,7 +28,6 @@ final class AppEnvironment {
         self.dataStore = dataStore
         self.settings = AppSettings()
         self.navigation = NavigationCoordinator()
-        self.shortcutCenter = AppShortcutCenter()
         self.syncCoordinator = SyncCoordinator(configuration: UserPreferences.shared.syncConfiguration)
 
         self.attachmentStorage = AttachmentStorageService()

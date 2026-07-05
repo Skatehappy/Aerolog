@@ -30,8 +30,21 @@ struct RootView: View {
                 .splitColumnStyle(.detail)
         }
         .navigationSplitViewStyle(.balanced)
-        .onChange(of: environment?.shortcutCenter.actionGeneration) { _, _ in
-            handleShortcut()
+        .onReceive(NotificationCenter.default.publisher(for: .appShortcutNewFlight)) { _ in
+            handleShortcut(.newFlight)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .appShortcutFocusSearch)) { _ in
+            handleShortcut(.focusSearch)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .appShortcutToggleSidebar)) { _ in
+            handleShortcut(.toggleSidebar)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .appShortcutSave)) { _ in
+            handleShortcut(.save)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .appShortcutSelectTab)) { notification in
+            guard let tab = notification.object as? AppTab else { return }
+            handleShortcut(.selectTab(tab))
         }
     }
 
@@ -109,7 +122,7 @@ struct RootView: View {
                     systemImage: "book.closed",
                     description: "Choose a finalized entry to view details, or press ⌘N to log a new flight.",
                     actionTitle: "Log Flight",
-                    action: { environment?.shortcutCenter.trigger(.newFlight) }
+                    action: { AppShortcutNotifications.post(.newFlight) }
                 )
             }
         case .currency:
@@ -163,8 +176,7 @@ struct RootView: View {
 
     // MARK: - Shortcuts
 
-    private func handleShortcut() {
-        guard let action = environment?.shortcutCenter.consume() else { return }
+    private func handleShortcut(_ action: AppShortcutAction) {
         switch action {
         case .newFlight:
             navigation.selectedTab = .logbook
