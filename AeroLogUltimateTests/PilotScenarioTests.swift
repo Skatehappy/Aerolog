@@ -232,11 +232,14 @@ final class PilotScenarioTests: XCTestCase {
         let store = try AppDataStore.makeInMemory()
         let pilot = try configureSarah(store: store)
         let flightService = FlightService(dataStore: store)
+        let aircraft = try registerAircraft(store: store)
         let flight = try flightService.createDraft()
         flight.pilot = pilot
+        flight.aircraft = aircraft
         flight.departureICAO = "KPAO"
         flight.arrivalICAO = "KSQL"
         flight.totalTime = 0.8
+        flight.picTime = 0.8
         try flightService.finalize(flight)
 
         let sync = SyncCoordinator(configuration: .disabled)
@@ -298,7 +301,7 @@ final class PilotScenarioTests: XCTestCase {
 
         let favorite = try makeFinalizedFlight(
             store: store, pilot: pilot, aircraft: aircraft,
-            daysAgo: 12, dayLandings: 1, role: .pic
+            daysAgo: 40, dayLandings: 1, role: .pic
         )
         favorite.departureICAO = "KPAO"
         favorite.arrivalICAO = "KTRK"
