@@ -111,7 +111,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = A40000010000000000000001 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = A50000010000000000000001;
+			remoteGlobalIDString = A80000010000000000000001;
 			remoteInfo = AeroLogUltimate;
 		};
 /* End PBXContainerItemProxy section */
