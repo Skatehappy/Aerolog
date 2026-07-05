@@ -208,7 +208,7 @@ final class CurrencyEngineTests: XCTestCase {
 
         let result = engine.calculate(requirement: requirement, pilot: pilot, flights: [flight])
 
-        XCTAssertEqual(result.detail.countedFlightHours, 2.5, accuracy: 0.001)
+        XCTAssertEqual(result.detail.countedFlightHours ?? 0, 2.5, accuracy: 0.001)
         XCTAssertEqual(result.status, .current)
     }
 
