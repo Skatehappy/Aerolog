@@ -21,25 +21,40 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
-      - name: List available iPad simulators
-        run: xcrun simctl list devices available | grep -i ipad | head -5
+      - name: Install iOS Simulator platform
+        run: xcodebuild -downloadPlatform iOS
 
       - name: Build for iOS Simulator
         run: |
           xcodebuild \
             -project AeroLogUltimate.xcodeproj \
             -scheme AeroLogUltimate \
-            -destination 'generic/platform=iOS Simulator' \
+            -sdk iphonesimulator \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             build
 
       - name: Run unit tests
         run: |
+          DESTINATION=$(python3 - <<'PY'
+          import json, subprocess
+          out = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
+          data = json.loads(out)
+          for runtime in sorted(data["devices"].keys(), reverse=True):
+              if "iOS" not in runtime:
+                  continue
+              for device in data["devices"][runtime]:
+                  if device.get("isAvailable") and "iPad" in device["name"]:
+                      print(f"platform=iOS Simulator,id={device['udid']}")
+                      raise SystemExit
+          raise SystemExit("No available iPad simulator found")
+          PY
+          )
+          echo "Using destination: $DESTINATION"
           xcodebuild \
             -project AeroLogUltimate.xcodeproj \
             -scheme AeroLogUltimate \
-            -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4),OS=18.2' \
+            -destination "$DESTINATION" \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             test
