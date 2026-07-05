@@ -52,6 +52,34 @@ extension FlightCondition {
     }
 }
 
+// MARK: - Training
+
+extension TrainingGoal {
+    var displayName: String {
+        switch self {
+        case .privatePilot: "Private Pilot"
+        case .instrumentRating: "Instrument Rating"
+        case .commercialPilot: "Commercial Pilot"
+        case .cfi: "CFI"
+        case .cfii: "CFII"
+        case .multiEngine: "Multi-Engine"
+        case .tailwheel: "Tailwheel"
+        case .custom: "Custom Goal"
+        }
+    }
+}
+
+extension TrainingRelationshipStatus {
+    var displayName: String {
+        switch self {
+        case .active: "Active"
+        case .paused: "Paused"
+        case .completed: "Completed"
+        case .terminated: "Terminated"
+        }
+    }
+}
+
 // MARK: - Aircraft
 
 extension AircraftCategory {

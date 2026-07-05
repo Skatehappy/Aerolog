@@ -9,6 +9,7 @@ struct RootView: View {
     @State private var selectedCurrency: CurrencyCalculationResult?
     @State private var selectedEndorsement: Endorsement?
     @State private var selectedReportType: ReportType?
+    @State private var selectedRelationshipID: UUID?
 
     init(navigation: NavigationCoordinator) {
         self.navigation = navigation
@@ -50,6 +51,7 @@ struct RootView: View {
             if newTab != .currency { selectedCurrency = nil }
             if newTab != .endorsements { selectedEndorsement = nil }
             if newTab != .reports { selectedReportType = nil }
+            if newTab != .training { selectedRelationshipID = nil }
         }
     }
 
@@ -75,6 +77,10 @@ struct RootView: View {
         case .reports:
             NavigationStack {
                 ReportsDashboardView(selectedReportType: $selectedReportType)
+            }
+        case .training:
+            NavigationStack {
+                TrainingDashboardView(selectedRelationshipID: $selectedRelationshipID)
             }
         default:
             PlaceholderTabView(tab: navigation.selectedTab)
@@ -131,6 +137,18 @@ struct RootView: View {
                     Label("Report Detail", systemImage: "chart.bar.doc.horizontal")
                 } description: {
                     Text("Select a report type to view details and generate exports.")
+                }
+            }
+        } else if navigation.selectedTab == .training {
+            if let relationshipID = selectedRelationshipID {
+                NavigationStack {
+                    StudentDetailView(relationshipID: relationshipID)
+                }
+            } else {
+                ContentUnavailableView {
+                    Label("Student Detail", systemImage: "person.2")
+                } description: {
+                    Text("Select a student to view progress, log lessons, and check checkride readiness.")
                 }
             }
         } else {

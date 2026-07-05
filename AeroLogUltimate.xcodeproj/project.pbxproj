@@ -124,6 +124,23 @@
 		A1000001000000000000008D /* ReportConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008D /* ReportConfiguration.swift */; };
 		A1000001000000000000008E /* ReportPDFRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008E /* ReportPDFRenderer.swift */; };
 		A1000001000000000000008F /* AnalyticsChartViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000008F /* AnalyticsChartViews.swift */; };
+		A10000010000000000000090 /* Syllabus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000090 /* Syllabus.swift */; };
+		A10000010000000000000091 /* SyllabusLesson.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000091 /* SyllabusLesson.swift */; };
+		A10000010000000000000092 /* SyllabusCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000092 /* SyllabusCatalog.swift */; };
+		A10000010000000000000093 /* TrainingPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000093 /* TrainingPayload.swift */; };
+		A10000010000000000000094 /* TrainingProgressEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000094 /* TrainingProgressEngine.swift */; };
+		A10000010000000000000095 /* SyllabusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000095 /* SyllabusService.swift */; };
+		A10000010000000000000096 /* TrainingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000096 /* TrainingService.swift */; };
+		A10000010000000000000097 /* TrainingDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000097 /* TrainingDashboardView.swift */; };
+		A10000010000000000000098 /* TrainingRelationshipRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000098 /* TrainingRelationshipRowView.swift */; };
+		A10000010000000000000099 /* StudentEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000099 /* StudentEditorView.swift */; };
+		A1000001000000000000009A /* StudentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009A /* StudentDetailView.swift */; };
+		A1000001000000000000009B /* LessonLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009B /* LessonLogView.swift */; };
+		A1000001000000000000009C /* CheckrideReadinessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009C /* CheckrideReadinessView.swift */; };
+		A1000001000000000000009D /* SyllabusListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009D /* SyllabusListView.swift */; };
+		A1000001000000000000009E /* SyllabusDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009E /* SyllabusDetailView.swift */; };
+		A1000001000000000000009F /* CustomSyllabusEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000009F /* CustomSyllabusEditorView.swift */; };
+		A100000100000000000000A0 /* TrainingProgressEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000100000000000000A0 /* TrainingProgressEngineTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -255,6 +272,23 @@
 		A2000001000000000000008D /* ReportConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportConfiguration.swift; sourceTree = "<group>"; };
 		A2000001000000000000008E /* ReportPDFRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportPDFRenderer.swift; sourceTree = "<group>"; };
 		A2000001000000000000008F /* AnalyticsChartViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsChartViews.swift; sourceTree = "<group>"; };
+		A20000010000000000000090 /* Syllabus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Syllabus.swift; sourceTree = "<group>"; };
+		A20000010000000000000091 /* SyllabusLesson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyllabusLesson.swift; sourceTree = "<group>"; };
+		A20000010000000000000092 /* SyllabusCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyllabusCatalog.swift; sourceTree = "<group>"; };
+		A20000010000000000000093 /* TrainingPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPayload.swift; sourceTree = "<group>"; };
+		A20000010000000000000094 /* TrainingProgressEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgressEngine.swift; sourceTree = "<group>"; };
+		A20000010000000000000095 /* SyllabusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyllabusService.swift; sourceTree = "<group>"; };
+		A20000010000000000000096 /* TrainingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingService.swift; sourceTree = "<group>"; };
+		A20000010000000000000097 /* TrainingDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingDashboardView.swift; sourceTree = "<group>"; };
+		A20000010000000000000098 /* TrainingRelationshipRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingRelationshipRowView.swift; sourceTree = "<group>"; };
+		A20000010000000000000099 /* StudentEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentEditorView.swift; sourceTree = "<group>"; };
+		A2000001000000000000009A /* StudentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentDetailView.swift; sourceTree = "<group>"; };
+		A2000001000000000000009B /* LessonLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonLogView.swift; sourceTree = "<group>"; };
+		A2000001000000000000009C /* CheckrideReadinessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckrideReadinessView.swift; sourceTree = "<group>"; };
+		A2000001000000000000009D /* SyllabusListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyllabusListView.swift; sourceTree = "<group>"; };
+		A2000001000000000000009E /* SyllabusDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyllabusDetailView.swift; sourceTree = "<group>"; };
+		A2000001000000000000009F /* CustomSyllabusEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSyllabusEditorView.swift; sourceTree = "<group>"; };
+		A200000100000000000000A0 /* TrainingProgressEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgressEngineTests.swift; sourceTree = "<group>"; };
 		A50000010000000000000001 /* AeroLogUltimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AeroLogUltimate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50000010000000000000002 /* AeroLogUltimateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AeroLogUltimateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -311,6 +345,7 @@
 				A20000010000000000000068 /* CurrencyEngineTests.swift */,
 				A2000001000000000000007B /* EndorsementServiceTests.swift */,
 				A2000001000000000000008C /* ReportAnalyticsEngineTests.swift */,
+				A200000100000000000000A0 /* TrainingProgressEngineTests.swift */,
 			);
 			path = AeroLogUltimateTests;
 			sourceTree = "<group>";
@@ -372,6 +407,7 @@
 				A7000001000000000000001A /* Currency */,
 				A7000001000000000000001C /* Endorsements */,
 				A70000010000000000000020 /* Reports */,
+				A70000010000000000000022 /* Training */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -395,6 +431,7 @@
 				A70000010000000000000019 /* Currency */,
 				A7000001000000000000001B /* Endorsements */,
 				A7000001000000000000001F /* Reports */,
+				A70000010000000000000021 /* Training */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -621,6 +658,8 @@
 				A20000010000000000000018 /* CurrencyRequirement.swift */,
 				A20000010000000000000019 /* CurrencySnapshot.swift */,
 				A2000001000000000000001A /* TrainingRelationship.swift */,
+				A20000010000000000000090 /* Syllabus.swift */,
+				A20000010000000000000091 /* SyllabusLesson.swift */,
 				A2000001000000000000001B /* ReportDefinition.swift */,
 				A2000001000000000000001C /* Attachment.swift */,
 			);
@@ -633,6 +672,34 @@
 				A2000001000000000000001D /* AeroLogSchema.swift */,
 			);
 			path = Schema;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000021 /* Training */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000097 /* TrainingDashboardView.swift */,
+				A20000010000000000000098 /* TrainingRelationshipRowView.swift */,
+				A20000010000000000000099 /* StudentEditorView.swift */,
+				A2000001000000000000009A /* StudentDetailView.swift */,
+				A2000001000000000000009B /* LessonLogView.swift */,
+				A2000001000000000000009C /* CheckrideReadinessView.swift */,
+				A2000001000000000000009D /* SyllabusListView.swift */,
+				A2000001000000000000009E /* SyllabusDetailView.swift */,
+				A2000001000000000000009F /* CustomSyllabusEditorView.swift */,
+			);
+			path = Training;
+			sourceTree = "<group>";
+		};
+		A70000010000000000000022 /* Training */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000092 /* SyllabusCatalog.swift */,
+				A20000010000000000000093 /* TrainingPayload.swift */,
+				A20000010000000000000094 /* TrainingProgressEngine.swift */,
+				A20000010000000000000095 /* SyllabusService.swift */,
+				A20000010000000000000096 /* TrainingService.swift */,
+			);
+			path = Training;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -834,6 +901,22 @@
 				A10000010000000000000088 /* AnalyticsSummaryCard.swift in Sources */,
 				A10000010000000000000089 /* TimeBreakdownChart.swift in Sources */,
 				A1000001000000000000008F /* AnalyticsChartViews.swift in Sources */,
+				A10000010000000000000090 /* Syllabus.swift in Sources */,
+				A10000010000000000000091 /* SyllabusLesson.swift in Sources */,
+				A10000010000000000000092 /* SyllabusCatalog.swift in Sources */,
+				A10000010000000000000093 /* TrainingPayload.swift in Sources */,
+				A10000010000000000000094 /* TrainingProgressEngine.swift in Sources */,
+				A10000010000000000000095 /* SyllabusService.swift in Sources */,
+				A10000010000000000000096 /* TrainingService.swift in Sources */,
+				A10000010000000000000097 /* TrainingDashboardView.swift in Sources */,
+				A10000010000000000000098 /* TrainingRelationshipRowView.swift in Sources */,
+				A10000010000000000000099 /* StudentEditorView.swift in Sources */,
+				A1000001000000000000009A /* StudentDetailView.swift in Sources */,
+				A1000001000000000000009B /* LessonLogView.swift in Sources */,
+				A1000001000000000000009C /* CheckrideReadinessView.swift in Sources */,
+				A1000001000000000000009D /* SyllabusListView.swift in Sources */,
+				A1000001000000000000009E /* SyllabusDetailView.swift in Sources */,
+				A1000001000000000000009F /* CustomSyllabusEditorView.swift in Sources */,
 				A1000001000000000000008A /* StatisticRow.swift in Sources */,
 				A1000001000000000000008B /* ShareSheet.swift in Sources */,
 			);
@@ -849,6 +932,7 @@
 				A10000010000000000000068 /* CurrencyEngineTests.swift in Sources */,
 				A1000001000000000000007B /* EndorsementServiceTests.swift in Sources */,
 				A1000001000000000000008C /* ReportAnalyticsEngineTests.swift in Sources */,
+				A100000100000000000000A0 /* TrainingProgressEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

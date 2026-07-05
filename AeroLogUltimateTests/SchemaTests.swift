@@ -4,7 +4,9 @@ import SwiftData
 
 final class SchemaTests: XCTestCase {
     func testSchemaIncludesAllModelTypes() {
-        XCTAssertEqual(AeroLogSchema.modelTypes.count, 13)
+        XCTAssertEqual(AeroLogSchema.modelTypes.count, 15)
+        XCTAssertTrue(AeroLogSchema.modelTypes.contains(where: { $0 == Syllabus.self }))
+        XCTAssertTrue(AeroLogSchema.modelTypes.contains(where: { $0 == SyllabusLesson.self }))
         XCTAssertTrue(AeroLogSchema.modelTypes.contains(where: { $0 == Flight.self }))
         XCTAssertTrue(AeroLogSchema.modelTypes.contains(where: { $0 == PilotProfile.self }))
     }

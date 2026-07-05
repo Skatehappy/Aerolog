@@ -14,6 +14,8 @@ final class TrainingRelationship {
 
     var syllabusName: String?
     var syllabusVersion: String?
+    /// Built-in catalog identifier (e.g. `ppl-part61`). Nil when using a custom syllabus.
+    var syllabusCatalogID: String?
     var currentLessonNumber: String?
 
     var notes: String?
@@ -29,6 +31,9 @@ final class TrainingRelationship {
 
     @Relationship(deleteRule: .nullify)
     var student: PilotProfile?
+
+    @Relationship(deleteRule: .nullify)
+    var customSyllabus: Syllabus?
 
     @Relationship(deleteRule: .nullify, inverse: \Flight.studentRelationship)
     var flights: [Flight]?

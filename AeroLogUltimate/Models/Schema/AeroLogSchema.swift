@@ -21,6 +21,8 @@ enum AeroLogSchema {
         CurrencyRequirement.self,
         CurrencySnapshot.self,
         TrainingRelationship.self,
+        Syllabus.self,
+        SyllabusLesson.self,
         ReportDefinition.self,
         Attachment.self
     ]

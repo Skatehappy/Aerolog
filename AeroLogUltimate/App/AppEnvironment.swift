@@ -20,6 +20,8 @@ final class AppEnvironment {
     let endorsementTemplateService: EndorsementTemplateService
     let reportService: ReportService
     let reportDefinitionService: ReportDefinitionService
+    let trainingService: TrainingService
+    let syllabusService: SyllabusService
 
     init(dataStore: DataStore) {
         self.dataStore = dataStore
@@ -37,6 +39,8 @@ final class AppEnvironment {
         self.endorsementTemplateService = EndorsementTemplateService(dataStore: dataStore)
         self.reportService = ReportService(dataStore: dataStore)
         self.reportDefinitionService = ReportDefinitionService(dataStore: dataStore)
+        self.trainingService = TrainingService(dataStore: dataStore)
+        self.syllabusService = SyllabusService(dataStore: dataStore)
 
         navigation.selectedTab = UserPreferences.shared.lastSelectedTab
     }
