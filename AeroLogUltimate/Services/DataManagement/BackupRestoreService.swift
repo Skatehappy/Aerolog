@@ -24,7 +24,7 @@ struct BackupRestoreService {
            let size = attributes[.size] as? Int64 {
             totalBytes = size
         } else {
-            totalBytes = Int64(package.encode().count)
+            totalBytes = Int64((try? package.encode().count) ?? 0)
         }
 
         return BackupCreationResult(
@@ -109,9 +109,16 @@ struct BackupRestoreService {
 
     // MARK: - Archive IO
 
+    private func backupTimestamp(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyyMMdd_HHmmss"
+        return formatter.string(from: date)
+    }
+
     private func writeArchive(package: AeroLogBackupPackage, includeAttachments: Bool) throws -> URL {
         let fileManager = FileManager.default
-        let timestamp = package.createdAt.formatted(.iso8601.year().month().day().hour().minute().second())
+        let timestamp = backupTimestamp(from: package.createdAt)
         let baseName = "AeroLog_Backup_\(timestamp)"
 
         if includeAttachments && !package.attachments.isEmpty {

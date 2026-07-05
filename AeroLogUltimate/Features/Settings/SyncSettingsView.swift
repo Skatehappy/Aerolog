@@ -92,7 +92,7 @@ struct SyncSettingsView: View {
         config.autoSyncOnWiFiOnly = wifiOnly
         config.conflictResolution = conflictResolution
         environment?.settings.syncConfiguration = config
-        environment?.syncCoordinator.configuration = config
+        environment?.syncCoordinator.applyConfiguration(config)
     }
 
     private func updateSyncEnabled(_ enabled: Bool) async {

@@ -31,6 +31,10 @@ final class SyncCoordinator: SyncCoordinatorProtocol {
         self.dataManagementService = dataManagementService
     }
 
+    func applyConfiguration(_ configuration: EncryptedSyncConfiguration) {
+        self.configuration = configuration
+    }
+
     func enable(with configuration: EncryptedSyncConfiguration) async throws {
         var updated = configuration
         if updated.encryptionKeyID == nil {

@@ -42,7 +42,7 @@ struct LogbookImportService {
         var skipped = 0
         var warnings: [String] = []
 
-        let aircraftCache = try buildAircraftCache()
+        var aircraftCache = try buildAircraftCache()
 
         for row in rows {
             if let externalID = row.externalID,
@@ -178,7 +178,11 @@ struct LogbookImportService {
                 role: portable.role
             )
             flight.syncMetadata?.syncID = portable.syncID
-            flight.pilot = portable.pilotSyncID.flatMap { pilotMap[$0] } ?? try dataStore.primaryPilotProfile()
+            if let pilotSyncID = portable.pilotSyncID, let pilot = pilotMap[pilotSyncID] {
+                flight.pilot = pilot
+            } else {
+                flight.pilot = try dataStore.primaryPilotProfile()
+            }
             flight.aircraft = portable.aircraftSyncID.flatMap { aircraftMap[$0] }
             flight.departureICAO = portable.departureICAO
             flight.arrivalICAO = portable.arrivalICAO
