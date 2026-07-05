@@ -452,28 +452,7 @@
 		A70000010000000000000004 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A200000100000000000000D2 /* WeightBalanceLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceLog.swift; sourceTree = "<group>"; };
-		A200000100000000000000D3 /* FlightExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightExpense.swift; sourceTree = "<group>"; };
-		A200000100000000000000D4 /* MaintenanceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceItem.swift; sourceTree = "<group>"; };
-		A200000100000000000000D5 /* FlightSearchCriteria.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightSearchCriteria.swift; sourceTree = "<group>"; };
-		A200000100000000000000D6 /* NaturalLanguageSearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalLanguageSearchEngine.swift; sourceTree = "<group>"; };
-		A200000100000000000000D7 /* WeightBalanceCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceCalculator.swift; sourceTree = "<group>"; };
-		A200000100000000000000D8 /* ExpenseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseService.swift; sourceTree = "<group>"; };
-		A200000100000000000000D9 /* MaintenanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceService.swift; sourceTree = "<group>"; };
-		A200000100000000000000D10 /* MaintenanceReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceReminderScheduler.swift; sourceTree = "<group>"; };
-		A200000100000000000000D11 /* FlightFuelSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFuelSection.swift; sourceTree = "<group>"; };
-		A200000100000000000000D12 /* FlightWeightBalanceSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightWeightBalanceSection.swift; sourceTree = "<group>"; };
-		A200000100000000000000D13 /* FlightExpensesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightExpensesSection.swift; sourceTree = "<group>"; };
-		A200000100000000000000D14 /* AircraftPerformanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftPerformanceView.swift; sourceTree = "<group>"; };
-		A200000100000000000000D15 /* MaintenanceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceListView.swift; sourceTree = "<group>"; };
-		A200000100000000000000D16 /* MaintenanceEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceEditorView.swift; sourceTree = "<group>"; };
-		A200000100000000000000D17 /* AircraftHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftHubView.swift; sourceTree = "<group>"; };
-		A200000100000000000000D18 /* CompactRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactRootView.swift; sourceTree = "<group>"; };
-		A200000100000000000000D19 /* AdaptiveRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveRootView.swift; sourceTree = "<group>"; };
-		A200000100000000000000D20 /* NaturalLanguageSearchEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalLanguageSearchEngineTests.swift; sourceTree = "<group>"; };
-		A200000100000000000000D21 /* WeightBalanceCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightBalanceCalculatorTests.swift; sourceTree = "<group>"; };
-		A200000100000000000000D22 /* AdvancedFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedFeaturesTests.swift; sourceTree = "<group>"; };
-		A50000010000000000000001 /* AeroLogUltimate.app */,
+				A50000010000000000000001 /* AeroLogUltimate.app */,
 				A50000010000000000000002 /* AeroLogUltimateTests.xctest */,
 			);
 			name = Products;
@@ -496,6 +475,7 @@
 				A7000001000000000000000B /* Sync */,
 				A7000001000000000000000C /* Navigation */,
 				A7000001000000000000000D /* Settings */,
+				A70000010000000000000029 /* Notifications */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -531,6 +511,8 @@
 				A70000010000000000000020 /* Reports */,
 				A70000010000000000000022 /* Training */,
 				A70000010000000000000023 /* DataManagement */,
+				A70000010000000000000027 /* Search */,
+				A70000010000000000000028 /* WeightBalance */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -846,6 +828,9 @@
 				A20000010000000000000091 /* SyllabusLesson.swift */,
 				A2000001000000000000001B /* ReportDefinition.swift */,
 				A2000001000000000000001C /* Attachment.swift */,
+				A200000100000000000000D2 /* WeightBalanceLog.swift */,
+				A200000100000000000000D3 /* FlightExpense.swift */,
+				A200000100000000000000D4 /* MaintenanceItem.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";

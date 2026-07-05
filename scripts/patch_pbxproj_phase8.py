@@ -49,8 +49,10 @@ for suffix, name, target in entries:
 
 pbx = pbx.replace("/* End PBXBuildFile section */", "\n".join(build_lines) + "\n/* End PBXBuildFile section */")
 pbx = pbx.replace(
-    "\t\tA50000010000000000000001 /* AeroLogUltimate.app */",
-    "\n".join(file_lines) + "\n\t\tA50000010000000000000001 /* AeroLogUltimate.app */",
+    "\t\tA200000100000000000000D0 /* iPadOptimizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPadOptimizationTests.swift; sourceTree = \"<group>\"; };\n\t\tA50000010000000000000001 /* AeroLogUltimate.app */",
+    "\t\tA200000100000000000000D0 /* iPadOptimizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPadOptimizationTests.swift; sourceTree = \"<group>\"; };\n"
+    + "\n".join(file_lines)
+    + "\n\t\tA50000010000000000000001 /* AeroLogUltimate.app */",
 )
 
 if "00000027 /* Search */" not in pbx:
