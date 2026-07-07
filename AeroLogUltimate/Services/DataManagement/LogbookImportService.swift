@@ -82,10 +82,12 @@ struct LogbookImportService {
         }
 
         var aircraftCache = try buildAircraftCache()
+        // M4: index existing external IDs once rather than scanning every flight
+        // per row (O(n²) → O(n)). Grows as we insert so intra-file dupes still skip.
+        var seenExternalIDs = Set(try dataStore.fetch(FetchDescriptor<Flight>()).compactMap { $0.externalID })
 
         for row in rows {
-            if let externalID = row.externalID,
-               try flightExists(externalID: externalID) {
+            if let externalID = row.externalID, seenExternalIDs.contains(externalID) {
                 skipped += 1
                 continue
             }
@@ -143,6 +145,7 @@ struct LogbookImportService {
                 dataStore.insert(approach)
             }
 
+            if let externalID = row.externalID { seenExternalIDs.insert(externalID) }
             importedFlights += 1
         }
 
@@ -190,9 +193,19 @@ struct LogbookImportService {
             try clearUserData()
         }
 
+        // M4: index existing records by syncID ONCE. The merge branches below
+        // otherwise re-fetched an entire table per package record (O(n²)), which
+        // froze the UI for minutes on a large restore.
+        let existingProfiles = indexBySyncID(try dataStore.fetch(FetchDescriptor<PilotProfile>())) { $0.syncMetadata?.syncID }
+        let existingAircraft = indexBySyncID(try dataStore.fetch(FetchDescriptor<Aircraft>())) { $0.syncMetadata?.syncID }
+        let existingFlights = indexBySyncID(try dataStore.fetch(FetchDescriptor<Flight>())) { $0.syncMetadata?.syncID }
+        let existingMaintenance = indexBySyncID(try dataStore.fetch(FetchDescriptor<MaintenanceItem>())) { $0.syncMetadata?.syncID }
+        let existingExpenses = indexBySyncID(try dataStore.fetch(FetchDescriptor<FlightExpense>())) { $0.syncMetadata?.syncID }
+        let existingEndorsements = indexBySyncID(try dataStore.fetch(FetchDescriptor<Endorsement>())) { $0.syncMetadata?.syncID }
+
         var pilotMap: [UUID: PilotProfile] = [:]
         for portable in package.pilots {
-            if strategy == .merge, let existing = try profile(syncID: portable.syncID) {
+            if strategy == .merge, let existing = existingProfiles[portable.syncID] {
                 pilotMap[portable.syncID] = existing
                 continue
             }
@@ -215,7 +228,7 @@ struct LogbookImportService {
         var aircraftMap: [UUID: Aircraft] = [:]
         var importedAircraft = 0
         for portable in package.aircraft {
-            if strategy == .merge, let existing = try aircraft(syncID: portable.syncID) {
+            if strategy == .merge, let existing = existingAircraft[portable.syncID] {
                 aircraftMap[portable.syncID] = existing
                 continue
             }
@@ -239,7 +252,7 @@ struct LogbookImportService {
             importedAircraft += 1
 
             for item in portable.maintenanceItems ?? [] {
-                if strategy == .merge, try maintenanceItem(syncID: item.syncID) != nil {
+                if strategy == .merge, existingMaintenance[item.syncID] != nil {
                     continue
                 }
                 let maintenance = MaintenanceItem(
@@ -261,7 +274,7 @@ struct LogbookImportService {
         var importedFlights = 0
         var skipped = 0
         for portable in package.flights {
-            if strategy == .merge, let existing = try flight(syncID: portable.syncID) {
+            if strategy == .merge, let existing = existingFlights[portable.syncID] {
                 _ = existing
                 skipped += 1
                 continue
@@ -375,7 +388,7 @@ struct LogbookImportService {
             }
 
             for expense in portable.expenses ?? [] {
-                if strategy == .merge, try expenseItem(syncID: expense.syncID) != nil {
+                if strategy == .merge, existingExpenses[expense.syncID] != nil {
                     continue
                 }
                 let flightExpense = FlightExpense(
@@ -396,7 +409,7 @@ struct LogbookImportService {
         }
 
         for portable in package.endorsements {
-            if strategy == .merge, try endorsement(syncID: portable.syncID) != nil {
+            if strategy == .merge, existingEndorsements[portable.syncID] != nil {
                 continue
             }
             let endorsement = Endorsement(
@@ -467,39 +480,13 @@ struct LogbookImportService {
         return aircraft
     }
 
-    private func flightExists(externalID: String) throws -> Bool {
-        let flights = try dataStore.fetch(FetchDescriptor<Flight>())
-        return flights.contains { $0.externalID == externalID }
-    }
-
-    private func flight(syncID: UUID) throws -> Flight? {
-        let flights = try dataStore.fetch(FetchDescriptor<Flight>())
-        return flights.first { $0.syncMetadata?.syncID == syncID }
-    }
-
-    private func aircraft(syncID: UUID) throws -> Aircraft? {
-        let aircraft = try dataStore.fetch(FetchDescriptor<Aircraft>())
-        return aircraft.first { $0.syncMetadata?.syncID == syncID }
-    }
-
-    private func profile(syncID: UUID) throws -> PilotProfile? {
-        let profiles = try dataStore.fetch(FetchDescriptor<PilotProfile>())
-        return profiles.first { $0.syncMetadata?.syncID == syncID }
-    }
-
-    private func endorsement(syncID: UUID) throws -> Endorsement? {
-        let endorsements = try dataStore.fetch(FetchDescriptor<Endorsement>())
-        return endorsements.first { $0.syncMetadata?.syncID == syncID }
-    }
-
-    private func maintenanceItem(syncID: UUID) throws -> MaintenanceItem? {
-        let items = try dataStore.fetch(FetchDescriptor<MaintenanceItem>())
-        return items.first { $0.syncMetadata?.syncID == syncID }
-    }
-
-    private func expenseItem(syncID: UUID) throws -> FlightExpense? {
-        let expenses = try dataStore.fetch(FetchDescriptor<FlightExpense>())
-        return expenses.first { $0.syncMetadata?.syncID == syncID }
+    /// M4: build a syncID → model index once so restore merge checks are O(1).
+    private func indexBySyncID<T>(_ models: [T], _ syncID: (T) -> UUID?) -> [UUID: T] {
+        var map: [UUID: T] = [:]
+        for model in models {
+            if let id = syncID(model) { map[id] = model }
+        }
+        return map
     }
 
     private func csvHeaderLine(from data: Data) throws -> [String] {
@@ -513,13 +500,12 @@ struct LogbookImportService {
     }
 
     private func countDuplicateRows(in rows: [CSVFlightImportRow]) throws -> Int {
-        var count = 0
-        for row in rows {
-            if let externalID = row.externalID, try flightExists(externalID: externalID) {
-                count += 1
-            }
+        // M4: index once instead of scanning all flights per row.
+        let existing = Set(try dataStore.fetch(FetchDescriptor<Flight>()).compactMap { $0.externalID })
+        return rows.reduce(0) { count, row in
+            if let externalID = row.externalID, existing.contains(externalID) { return count + 1 }
+            return count
         }
-        return count
     }
 
     private func clearUserData() throws {
@@ -532,10 +518,17 @@ struct LogbookImportService {
         for item in try dataStore.fetch(FetchDescriptor<MaintenanceItem>()) {
             dataStore.delete(item)
         }
+        // M6: delete ALL aircraft — the previous `registration.isEmpty == false`
+        // guard left blank-registration aircraft behind as orphans.
         for aircraft in try dataStore.fetch(FetchDescriptor<Aircraft>()) {
-            if aircraft.registration.isEmpty == false {
-                dataStore.delete(aircraft)
-            }
+            dataStore.delete(aircraft)
+        }
+        // M6: remove attachment records and their on-disk files so pilot/report
+        // linked attachments don't survive as orphans pointing at deleted files.
+        let storage = AttachmentStorageService()
+        for attachment in try dataStore.fetch(FetchDescriptor<Attachment>()) {
+            try? storage.delete(relativePath: attachment.relativeStoragePath)
+            dataStore.delete(attachment)
         }
         try dataStore.save()
     }

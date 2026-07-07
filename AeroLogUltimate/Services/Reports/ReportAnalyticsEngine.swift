@@ -58,7 +58,7 @@ struct ReportAnalyticsEngine: Sendable {
             fullStopDayLandings: scoped.reduce(0) { $0 + $1.fullStopDayLandings },
             fullStopNightLandings: scoped.reduce(0) { $0 + $1.fullStopNightLandings },
             holds: scoped.reduce(0) { $0 + $1.holds },
-            approachCount: scoped.reduce(0) { $0 + ($1.approaches?.count ?? 0) }
+            approachCount: scoped.reduce(0) { $0 + $1.totalApproachCount }
         )
     }
 
@@ -141,7 +141,7 @@ struct ReportAnalyticsEngine: Sendable {
                 fullStopDayLandings: flight.fullStopDayLandings,
                 fullStopNightLandings: flight.fullStopNightLandings,
                 holds: flight.holds,
-                approachCount: flight.approaches?.count ?? 0,
+                approachCount: flight.totalApproachCount,
                 instructorName: flight.instructorName,
                 remarks: flight.remarks
             )

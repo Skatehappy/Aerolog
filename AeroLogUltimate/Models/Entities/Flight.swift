@@ -126,6 +126,13 @@ final class Flight {
     var isDraft: Bool { status == .draft }
     var isFinalized: Bool { status == .finalized }
 
+    /// M1: total instrument approaches flown — the sum of each record's
+    /// approachCount, NOT the number of records. One "3× ILS" record = 3.
+    /// Single source of truth so reports and the currency engine agree.
+    var totalApproachCount: Int {
+        (approaches ?? []).reduce(0) { $0 + $1.approachCount }
+    }
+
     var hobbsTime: Double? {
         guard let start = hobbsStart, let end = hobbsEnd, end >= start else { return nil }
         return end - start

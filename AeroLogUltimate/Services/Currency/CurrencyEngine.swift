@@ -109,7 +109,9 @@ struct CurrencyEngine {
             from: flights.filter {
                 isSoleManipulator($0)
                     && $0.flightDate >= windowStart
-                    && ($0.nightTime > 0 || $0.conditions.contains(.night))
+                    // M3: presence of night full-stop landings qualifies the flight
+                    // even if night time wasn't separately logged (data-entry shortcut).
+                    && ($0.nightTime > 0 || $0.conditions.contains(.night) || $0.fullStopNightLandings > 0)
             },
             day: false,
             fullStopOnly: true
@@ -503,7 +505,10 @@ struct CurrencyEngine {
                 && matchesTypeRating($0, designator: designator)
         }
 
-        let hours = matching.reduce(0) { $0 + max($1.picTime, $1.totalTime) }
+        // M2: flights are already filtered to PIC — sum actual PIC time rather
+        // than max(pic, total), which overstated and mislabeled hours when
+        // picTime < totalTime.
+        let hours = matching.reduce(0) { $0 + $1.picTime }
 
         let isCurrent = designator.isEmpty ? !matching.isEmpty : (requiredHours > 0 ? hours >= requiredHours : !matching.isEmpty)
         let lastDate = matching.map(\.flightDate).max()
@@ -559,7 +564,8 @@ struct CurrencyEngine {
                 && ($0.aircraft.map(predicate) == true)
         }
 
-        let hours = matching.reduce(0) { $0 + max($1.picTime, $1.totalTime) }
+        // M2: sum actual PIC time (already filtered to PIC), not max(pic, total).
+        let hours = matching.reduce(0) { $0 + $1.picTime }
         let isCurrent = hours >= requiredHours
         let lastDate = matching.map(\.flightDate).max()
         let expiresAt = lastDate.flatMap {

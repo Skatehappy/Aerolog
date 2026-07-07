@@ -70,19 +70,24 @@ struct BackupRestoreService {
     ) throws -> Int {
         var restored = 0
         let flights = try dataStore.fetch(FetchDescriptor<Flight>())
+        // M5: a bad merge can produce duplicate syncIDs — uniqueKeysWithValues
+        // would crash. Keep the first on collision instead.
         let flightMap = Dictionary(
-            uniqueKeysWithValues: flights.compactMap { flight -> (UUID, Flight)? in
+            flights.compactMap { flight -> (UUID, Flight)? in
                 guard let syncID = flight.syncMetadata?.syncID else { return nil }
                 return (syncID, flight)
-            }
+            },
+            uniquingKeysWith: { first, _ in first }
         )
 
+        // M4: fetch existing attachment syncIDs ONCE, not per portable attachment.
+        let existingAttachmentIDs: Set<UUID> = strategy == .merge
+            ? Set(try dataStore.fetch(FetchDescriptor<Attachment>()).compactMap { $0.syncMetadata?.syncID })
+            : []
+
         for portable in package.attachments {
-            if strategy == .merge {
-                let existing = try dataStore.fetch(FetchDescriptor<Attachment>())
-                if existing.contains(where: { $0.syncMetadata?.syncID == portable.syncID }) {
-                    continue
-                }
+            if strategy == .merge, existingAttachmentIDs.contains(portable.syncID) {
+                continue
             }
 
             let attachment = Attachment(
