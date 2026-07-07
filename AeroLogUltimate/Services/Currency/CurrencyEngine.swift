@@ -138,6 +138,9 @@ struct CurrencyEngine {
     ) -> CurrencyTuple {
         let requiredApproaches = requirement.requiredApproaches ?? 6
         let requiredHolds = 1
+        // L3: 61.57(c) is fixed at 6 CALENDAR months by regulation. The requirement's
+        // lookbackDays field does not apply to instrument currency and is
+        // intentionally ignored here — do not wire it in.
         let windowMonths = 6
         // H1: window begins the first day of the calendar month 6 months back, so
         // approaches flown early in that month legally count.
