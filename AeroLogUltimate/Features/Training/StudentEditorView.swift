@@ -14,6 +14,29 @@ struct StudentEditorView: View {
     @State private var selectedCustomSyllabus: Syllabus?
     @State private var errorMessage: String?
 
+    /// Non-nil when editing an existing student; nil when creating a new one.
+    private let editingRelationship: TrainingRelationship?
+    private var isNew: Bool { editingRelationship == nil }
+
+    /// Create a new student and training relationship.
+    init() {
+        self.editingRelationship = nil
+    }
+
+    /// Edit an existing student relationship (name, goal, syllabus). Follows the
+    /// same "existing record" convention as AircraftEditorView(aircraft:isNew:).
+    init(relationship: TrainingRelationship) {
+        self.editingRelationship = relationship
+        _firstName = State(initialValue: relationship.student?.firstName ?? "")
+        _lastName = State(initialValue: relationship.student?.lastName ?? "")
+        _goal = State(initialValue: relationship.goal)
+        _selectedSyllabusID = State(initialValue: relationship.syllabusCatalogID
+            ?? SyllabusCatalog.definitions(for: relationship.goal).first?.id
+            ?? SyllabusCatalog.privatePilot.id)
+        _useCustomSyllabus = State(initialValue: relationship.customSyllabus != nil)
+        _selectedCustomSyllabus = State(initialValue: relationship.customSyllabus)
+    }
+
     var body: some View {
         Form {
             Section("Student") {
@@ -56,12 +79,14 @@ struct StudentEditorView: View {
                 }
             }
             Section {
-                Button("Create Student") { create() }
+                Button(isNew ? "Create Student" : "Save Changes") {
+                    if isNew { create() } else { commitEdit() }
+                }
                     .fontWeight(.semibold)
                     .disabled(firstName.isEmpty || lastName.isEmpty)
             }
         }
-        .navigationTitle("Add Student")
+        .navigationTitle(isNew ? "Add Student" : "Edit Student")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -104,6 +129,32 @@ struct StudentEditorView: View {
                     instructor: instructor,
                     builtInSyllabusID: selectedSyllabusID
                 )
+            }
+            dismiss()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func commitEdit() {
+        guard let relationship = editingRelationship,
+              let service = environment?.trainingService else { return }
+        do {
+            try service.updateStudent(
+                relationship,
+                firstName: firstName,
+                lastName: lastName,
+                goal: goal
+            )
+            // Only reassign the syllabus when it actually changed, so a plain
+            // name/goal edit doesn't reset the student's current-lesson pointer.
+            if useCustomSyllabus {
+                if let custom = selectedCustomSyllabus,
+                   custom.persistentModelID != relationship.customSyllabus?.persistentModelID {
+                    try service.assignCustomSyllabus(relationship, syllabus: custom)
+                }
+            } else if selectedSyllabusID != relationship.syllabusCatalogID {
+                try service.assignSyllabus(relationship, builtInID: selectedSyllabusID)
             }
             dismiss()
         } catch {

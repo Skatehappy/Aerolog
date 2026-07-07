@@ -13,6 +13,8 @@ struct CurrencyDashboardView: View {
     }
     @State private var showRecencySettings = false
     @State private var showCustomEditor = false
+    @State private var editingRequirement: CurrencyRequirement?
+    @State private var customRequirements: [CurrencyRequirement] = []
     @State private var isLoading = true
     @State private var errorMessage: String?
 
@@ -39,9 +41,14 @@ struct CurrencyDashboardView: View {
                 PilotRecencySettingsView()
             }
         }
-        .sheet(isPresented: $showCustomEditor) {
+        .sheet(isPresented: $showCustomEditor, onDismiss: { refresh() }) {
             NavigationStack {
                 CustomCurrencyEditorView()
+            }
+        }
+        .sheet(item: $editingRequirement, onDismiss: { refresh() }) { requirement in
+            NavigationStack {
+                CustomCurrencyEditorView(requirement: requirement)
             }
         }
         .alert("Error", isPresented: .init(
@@ -102,6 +109,7 @@ struct CurrencyDashboardView: View {
 
             ForEach(items) { result in
                 Button {
+                    print("[R2][item3] attention card tapped:", result.requirementName)  // TEMP DEBUG (Round 2)
                     selectedResult = result
                 } label: {
                     CurrencyStatusCard(result: result, isSelected: selectedResult?.id == result.id)
@@ -144,6 +152,7 @@ struct CurrencyDashboardView: View {
 
                     ForEach(items) { result in
                         Button {
+                            print("[R2][item3] group card tapped:", result.requirementName)  // TEMP DEBUG (Round 2)
                             selectedResult = result
                         } label: {
                             CurrencyStatusCard(
@@ -177,6 +186,15 @@ struct CurrencyDashboardView: View {
                 } label: {
                     Label("Add Custom Currency", systemImage: "plus.circle")
                 }
+                if !customRequirements.isEmpty {
+                    Menu {
+                        ForEach(customRequirements, id: \.persistentModelID) { requirement in
+                            Button(requirement.displayName) { editingRequirement = requirement }
+                        }
+                    } label: {
+                        Label("Edit Custom Currency", systemImage: "pencil")
+                    }
+                }
             } label: {
                 Label("Options", systemImage: "ellipsis.circle")
             }
@@ -188,6 +206,7 @@ struct CurrencyDashboardView: View {
         isLoading = true
         do {
             summary = try service.calculateDashboard()
+            customRequirements = try service.allRequirements().filter { $0.currencyType == .custom }
             if selectedResult == nil {
                 selectedResult = summary?.attentionItems.first
             }

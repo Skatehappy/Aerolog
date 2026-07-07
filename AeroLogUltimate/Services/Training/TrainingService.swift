@@ -156,6 +156,23 @@ final class TrainingService {
         try dataStore.save()
     }
 
+    /// Updates an existing student's identity and training goal. Syllabus changes
+    /// are handled separately (via assignSyllabus/assignCustomSyllabus) so a plain
+    /// name/goal edit doesn't reset the student's current-lesson pointer.
+    func updateStudent(
+        _ relationship: TrainingRelationship,
+        firstName: String,
+        lastName: String,
+        goal: TrainingGoal
+    ) throws {
+        relationship.student?.firstName = firstName.trimmingCharacters(in: .whitespaces)
+        relationship.student?.lastName = lastName.trimmingCharacters(in: .whitespaces)
+        relationship.student?.touch()
+        relationship.goal = goal
+        relationship.touch()
+        try dataStore.save()
+    }
+
     func assignSyllabus(
         _ relationship: TrainingRelationship,
         builtInID: String

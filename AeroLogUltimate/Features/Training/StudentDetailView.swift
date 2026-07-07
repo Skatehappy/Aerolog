@@ -15,6 +15,7 @@ struct StudentDetailView: View {
     @State private var showGroundLog = false
     @State private var showReadiness = false
     @State private var showReport = false
+    @State private var showEdit = false
     @State private var generatedReport: GeneratedReport?
     @State private var errorMessage: String?
 
@@ -39,6 +40,22 @@ struct StudentDetailView: View {
         }
         .navigationTitle(summary?.studentName ?? "Student")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if relationship != nil {
+                ToolbarItem(placement: .primaryAction) {
+                    Button { showEdit = true } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showEdit, onDismiss: { refresh() }) {
+            if let relationship {
+                NavigationStack {
+                    StudentEditorView(relationship: relationship)
+                }
+            }
+        }
         .sheet(isPresented: $showLessonLog) {
             if let relationship {
                 NavigationStack {

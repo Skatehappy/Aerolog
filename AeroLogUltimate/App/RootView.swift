@@ -35,6 +35,19 @@ struct RootView: View {
                 .id(navigation.selectedTab)
         }
         .navigationSplitViewStyle(.balanced)
+        // TEMP DEBUG (Round 2) — remove after live diagnosis.
+        // item 3: confirms the selectedCurrency binding propagates to RootView on a card tap.
+        // If this fires but the detail pane doesn't change, the bug is in detailColumn rendering
+        // (e.g. the .id(selectedTab) keeping identity while only selection changed), not selection.
+        .onChange(of: selectedCurrency) { _, newValue in
+            print("[R2][item3] RootView.selectedCurrency ->", newValue?.requirementName ?? "nil")
+        }
+        // item 4: confirms tab switches and whether prior-tab selections were cleared.
+        .onChange(of: navigation.selectedTab) { oldTab, newTab in
+            print("[R2][item4] tab \(oldTab.rawValue) -> \(newTab.rawValue); "
+                + "selectedFlight=\(selectedFlight != nil) selectedCurrency=\(selectedCurrency != nil) "
+                + "columnVisibility=\(String(describing: navigation.columnVisibility))")
+        }
         .onReceive(NotificationCenter.default.publisher(for: .appShortcutNewFlight)) { _ in
             handleShortcut(.newFlight)
         }

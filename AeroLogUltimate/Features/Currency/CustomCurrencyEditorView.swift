@@ -17,6 +17,31 @@ struct CustomCurrencyEditorView: View {
     @State private var useHours = false
     @State private var errorMessage: String?
 
+    /// Non-nil when editing an existing custom requirement; nil when creating one.
+    private let editingRequirement: CurrencyRequirement?
+    private var isNew: Bool { editingRequirement == nil }
+
+    /// Create a new custom currency requirement.
+    init() {
+        self.editingRequirement = nil
+    }
+
+    /// Edit an existing custom currency requirement. Follows the same "existing
+    /// record" convention as AircraftEditorView(aircraft:isNew:).
+    init(requirement: CurrencyRequirement) {
+        self.editingRequirement = requirement
+        _name = State(initialValue: requirement.displayName)
+        _lookbackDays = State(initialValue: requirement.lookbackDays)
+        _requiredLandings = State(initialValue: requirement.requiredLandings ?? 0)
+        _useLandings = State(initialValue: requirement.requiredLandings != nil)
+        _requiredNightLandings = State(initialValue: requirement.requiredNightLandings ?? 0)
+        _useNightLandings = State(initialValue: requirement.requiredNightLandings != nil)
+        _requiredApproaches = State(initialValue: requirement.requiredApproaches ?? 0)
+        _useApproaches = State(initialValue: requirement.requiredApproaches != nil)
+        _requiredHours = State(initialValue: requirement.requiredFlightHours ?? 0.0)
+        _useHours = State(initialValue: requirement.requiredFlightHours != nil)
+    }
+
     var body: some View {
         Form {
             Section("Name") {
@@ -46,7 +71,7 @@ struct CustomCurrencyEditorView: View {
                 }
             }
         }
-        .navigationTitle("Custom Currency")
+        .navigationTitle(isNew ? "Custom Currency" : "Edit Custom Currency")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -77,15 +102,26 @@ struct CustomCurrencyEditorView: View {
             return
         }
 
+        let trimmedName = name.trimmingCharacters(in: .whitespaces)
         do {
-            try environment?.currencyService.createCustomRequirement(
-                name: name.trimmingCharacters(in: .whitespaces),
-                lookbackDays: lookbackDays,
-                requiredLandings: useLandings ? requiredLandings : nil,
-                requiredNightLandings: useNightLandings ? requiredNightLandings : nil,
-                requiredApproaches: useApproaches ? requiredApproaches : nil,
-                requiredFlightHours: useHours ? requiredHours : nil
-            )
+            if let requirement = editingRequirement {
+                requirement.displayName = trimmedName
+                requirement.lookbackDays = lookbackDays
+                requirement.requiredLandings = useLandings ? requiredLandings : nil
+                requirement.requiredNightLandings = useNightLandings ? requiredNightLandings : nil
+                requirement.requiredApproaches = useApproaches ? requiredApproaches : nil
+                requirement.requiredFlightHours = useHours ? requiredHours : nil
+                try environment?.currencyService.saveRequirement(requirement)
+            } else {
+                try environment?.currencyService.createCustomRequirement(
+                    name: trimmedName,
+                    lookbackDays: lookbackDays,
+                    requiredLandings: useLandings ? requiredLandings : nil,
+                    requiredNightLandings: useNightLandings ? requiredNightLandings : nil,
+                    requiredApproaches: useApproaches ? requiredApproaches : nil,
+                    requiredFlightHours: useHours ? requiredHours : nil
+                )
+            }
             dismiss()
         } catch {
             errorMessage = error.localizedDescription
