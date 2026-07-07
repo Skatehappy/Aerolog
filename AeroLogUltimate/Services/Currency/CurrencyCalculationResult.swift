@@ -1,7 +1,7 @@
 import Foundation
 
 /// In-memory result from the currency engine before persisting to SwiftData.
-struct CurrencyCalculationResult: Identifiable, Sendable {
+struct CurrencyCalculationResult: Identifiable, Equatable, Sendable {
     var id: UUID { requirementSyncID }
     let requirementSyncID: UUID
     let requirementName: String

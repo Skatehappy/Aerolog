@@ -80,11 +80,8 @@ struct PilotProfileSettingsView: View {
         pilot.cfiCertificateNumber = isCFI && !cfiCertificateNumber.isEmpty ? cfiCertificateNumber : nil
         do {
             try service.update(pilot)
-            print("[R2][item1] update() succeeded — calling dismiss()")  // TEMP DEBUG (Round 2)
             dismiss()
-            print("[R2][item1] dismiss() returned")  // TEMP DEBUG (Round 2)
         } catch {
-            print("[R2][item1] update() threw:", error.localizedDescription)  // TEMP DEBUG (Round 2)
             errorMessage = error.localizedDescription
         }
     }

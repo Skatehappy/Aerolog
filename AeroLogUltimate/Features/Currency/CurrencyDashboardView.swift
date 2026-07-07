@@ -109,7 +109,6 @@ struct CurrencyDashboardView: View {
 
             ForEach(items) { result in
                 Button {
-                    print("[R2][item3] attention card tapped:", result.requirementName)  // TEMP DEBUG (Round 2)
                     selectedResult = result
                 } label: {
                     CurrencyStatusCard(result: result, isSelected: selectedResult?.id == result.id)
@@ -152,7 +151,6 @@ struct CurrencyDashboardView: View {
 
                     ForEach(items) { result in
                         Button {
-                            print("[R2][item3] group card tapped:", result.requirementName)  // TEMP DEBUG (Round 2)
                             selectedResult = result
                         } label: {
                             CurrencyStatusCard(
