@@ -77,6 +77,13 @@ struct FlightEditorView: View {
             isPresented: $showDeleteConfirm,
             onConfirm: deleteFlight
         )
+        .deleteConfirmation(
+            title: "Discard New Flight?",
+            message: "This entry hasn't been saved. Discarding removes it from your logbook.",
+            confirmLabel: "Discard",
+            isPresented: $showDiscardConfirm,
+            onConfirm: discardNewFlight
+        )
         .alert("Validation", isPresented: $showValidationAlert) {
             if validationErrors.isEmpty {
                 Button("Finalize Anyway") { performFinalize() }
@@ -119,10 +126,21 @@ struct FlightEditorView: View {
     private var editorToolbar: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
             Button("Cancel") {
-                if isNew && flight.totalTime == 0 && flight.departureICAO.isEmpty {
-                    modelContext.delete(flight)
+                // A new flight is persisted the moment it's created (createDraft
+                // saves it), so cancelling must actively discard it — otherwise a
+                // stray draft is left behind. Empty drafts are discarded silently;
+                // if the user entered anything, confirm first to avoid dropping
+                // partially-filled work by accident. Editing an existing flight
+                // just dismisses without deleting.
+                guard isNew else {
+                    dismiss()
+                    return
                 }
-                dismiss()
+                if flight.totalTime == 0 && flight.departureICAO.isEmpty {
+                    discardNewFlight()
+                } else {
+                    showDiscardConfirm = true
+                }
             }
         }
 
@@ -199,5 +217,18 @@ struct FlightEditorView: View {
         } catch {
             saveError = error.localizedDescription
         }
+    }
+
+    /// Hard-deletes a cancelled new draft so nothing lingers in the logbook.
+    /// Uses permanentlyDelete (not the soft-delete path) because the entry was
+    /// never intentionally saved — it shouldn't leave a sync tombstone behind.
+    private func discardNewFlight() {
+        if let service = environment?.flightService {
+            try? service.permanentlyDelete(flight)
+        } else {
+            modelContext.delete(flight)
+            try? modelContext.save()
+        }
+        dismiss()
     }
 }
