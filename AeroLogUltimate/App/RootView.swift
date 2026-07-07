@@ -35,19 +35,6 @@ struct RootView: View {
                 .id(navigation.selectedTab)
         }
         .navigationSplitViewStyle(.balanced)
-        // TEMP DEBUG (Round 2) — remove after live diagnosis.
-        // item 3: confirms the selectedCurrency binding propagates to RootView on a card tap.
-        // If this fires but the detail pane doesn't change, the bug is in detailColumn rendering
-        // (e.g. the .id(selectedTab) keeping identity while only selection changed), not selection.
-        .onChange(of: selectedCurrency) { _, newValue in
-            print("[R2][item3] RootView.selectedCurrency ->", newValue?.requirementName ?? "nil")
-        }
-        // item 4: confirms tab switches and whether prior-tab selections were cleared.
-        .onChange(of: navigation.selectedTab) { oldTab, newTab in
-            print("[R2][item4] tab \(oldTab.rawValue) -> \(newTab.rawValue); "
-                + "selectedFlight=\(selectedFlight != nil) selectedCurrency=\(selectedCurrency != nil) "
-                + "columnVisibility=\(String(describing: navigation.columnVisibility))")
-        }
         .onReceive(NotificationCenter.default.publisher(for: .appShortcutNewFlight)) { _ in
             handleShortcut(.newFlight)
         }
@@ -90,10 +77,26 @@ struct RootView: View {
             ideal: environment?.settings.compactSidebar == true ? 240 : AviationTheme.sidebarIdealWidth,
             max: 320
         )
-        .onChange(of: navigation.selectedTab) { _, newTab in
+        .onChange(of: navigation.selectedTab) { oldTab, newTab in
             UserPreferences.shared.lastSelectedTab = newTab
             clearSelections(except: newTab)
+            logTabChange(from: oldTab, to: newTab)  // TEMP DEBUG (Round 2)
         }
+        // TEMP DEBUG (Round 2) — item 3: confirms selectedCurrency propagates to RootView on a
+        // card tap. If this fires but the detail pane doesn't change, the bug is in detailColumn
+        // rendering (e.g. .id(selectedTab) holding identity across a selection-only change).
+        .onChange(of: selectedCurrency) { _, newValue in
+            print("[R2][item3] RootView.selectedCurrency ->", newValue?.requirementName ?? "nil")
+        }
+    }
+
+    // TEMP DEBUG (Round 2) — remove after live diagnosis. Kept as a plain function so the heavy
+    // string building stays out of the view-builder expressions (avoids type-check timeouts).
+    private func logTabChange(from oldTab: AppTab, to newTab: AppTab) {
+        let flight = selectedFlight != nil
+        let currency = selectedCurrency != nil
+        let visibility = String(describing: navigation.columnVisibility)
+        print("[R2][item4] tab \(oldTab.rawValue) -> \(newTab.rawValue); selectedFlight=\(flight) selectedCurrency=\(currency) columnVisibility=\(visibility)")
     }
 
     // MARK: - Content
