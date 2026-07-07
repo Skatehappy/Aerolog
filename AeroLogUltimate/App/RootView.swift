@@ -25,9 +25,14 @@ struct RootView: View {
         } content: {
             contentColumn
                 .splitColumnStyle(.content)
+                // Bug A: force SwiftUI to treat each tab's column (and the
+                // NavigationStack inside it) as a distinct identity so a prior
+                // tab's pushed navigation state can't linger under the new tab.
+                .id(navigation.selectedTab)
         } detail: {
             detailColumn
                 .splitColumnStyle(.detail)
+                .id(navigation.selectedTab)
         }
         .navigationSplitViewStyle(.balanced)
         .onReceive(NotificationCenter.default.publisher(for: .appShortcutNewFlight)) { _ in
@@ -165,6 +170,28 @@ struct RootView: View {
                     description: "Select a student to view progress, log lessons, and check checkride readiness."
                 )
             }
+        case .aircraft:
+            // Bug B: Aircraft has no lifted selection binding — AircraftListView
+            // navigates via its own NavigationLink push inside the content column
+            // (this is also the correct behavior in CompactRootView on iPhone, so
+            // we intentionally do NOT lift selection out here). Give the detail
+            // column a tab-appropriate placeholder instead of the generic default.
+            // See report: converting this to a true detail-pane experience needs
+            // Rob's sign-off + Mac verification.
+            AviationDetailPlaceholder(
+                title: "Aircraft",
+                systemImage: "airplane",
+                description: "Your fleet and training devices. Tap an aircraft to view its hub, performance notes, and maintenance."
+            )
+        case .settings:
+            // Bug B: Settings is a self-contained push list (also single-column on
+            // iPhone). It does not currently warrant a dedicated detail pane —
+            // holding for Rob's confirmation before building out detail content.
+            AviationDetailPlaceholder(
+                title: "Settings",
+                systemImage: "gearshape",
+                description: "Choose a settings category from the list to manage your profile, data, sync, and display preferences."
+            )
         default:
             AviationDetailPlaceholder(
                 title: "Detail",
