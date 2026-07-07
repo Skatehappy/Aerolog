@@ -5,14 +5,23 @@ import SwiftData
 struct AircraftListView: View {
     @Environment(\.appEnvironment) private var environment
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @Query(sort: \Aircraft.registration) private var allAircraft: [Aircraft]
+
+    // On iPad (regular width) this drives RootView's detail column; on iPhone
+    // (compact) it is unused and rows fall back to a NavigationLink push.
+    @Binding var selectedAircraft: Aircraft?
 
     @State private var showInactive = false
     @State private var editorAircraft: Aircraft?
     @State private var isCreatingNew = false
     @State private var searchText = ""
     @State private var errorMessage: String?
+
+    init(selectedAircraft: Binding<Aircraft?> = .constant(nil)) {
+        _selectedAircraft = selectedAircraft
+    }
 
     private var filteredAircraft: [Aircraft] {
         allAircraft.filter { aircraft in
@@ -79,31 +88,52 @@ struct AircraftListView: View {
     @ViewBuilder
     private func aircraftRows(simulators: Bool) -> some View {
         ForEach(filteredAircraft.filter { $0.isSimulator == simulators }) { aircraft in
+            aircraftRow(aircraft)
+                .swipeActions(edge: .trailing) {
+                    if aircraft.isActive {
+                        Button("Deactivate", role: .destructive) {
+                            do {
+                                try environment?.aircraftService.deactivate(aircraft)
+                            } catch {
+                                errorMessage = error.localizedDescription
+                            }
+                        }
+                    } else {
+                        Button("Reactivate") {
+                            do {
+                                try environment?.aircraftService.reactivate(aircraft)
+                            } catch {
+                                errorMessage = error.localizedDescription
+                            }
+                        }
+                        .tint(.green)
+                    }
+                }
+        }
+    }
+
+    // iPad (regular): tap selects into the detail column via the lifted binding.
+    // iPhone (compact): tap pushes the hub onto the tab's own NavigationStack.
+    @ViewBuilder
+    private func aircraftRow(_ aircraft: Aircraft) -> some View {
+        if horizontalSizeClass == .compact {
             NavigationLink {
                 AircraftHubView(aircraft: aircraft)
             } label: {
                 AircraftRowView(aircraft: aircraft)
             }
-            .swipeActions(edge: .trailing) {
-                if aircraft.isActive {
-                    Button("Deactivate", role: .destructive) {
-                        do {
-                            try environment?.aircraftService.deactivate(aircraft)
-                        } catch {
-                            errorMessage = error.localizedDescription
-                        }
-                    }
-                } else {
-                    Button("Reactivate") {
-                        do {
-                            try environment?.aircraftService.reactivate(aircraft)
-                        } catch {
-                            errorMessage = error.localizedDescription
-                        }
-                    }
-                    .tint(.green)
-                }
+        } else {
+            Button {
+                selectedAircraft = aircraft
+            } label: {
+                AircraftRowView(aircraft: aircraft)
             }
+            .buttonStyle(.plain)
+            .listRowBackground(
+                selectedAircraft?.persistentModelID == aircraft.persistentModelID
+                    ? Color.accentColor.opacity(0.12)
+                    : Color.clear
+            )
         }
     }
 

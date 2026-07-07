@@ -6,6 +6,7 @@ struct RootView: View {
     @Bindable private var navigation: NavigationCoordinator
 
     @State private var selectedFlight: Flight?
+    @State private var selectedAircraft: Aircraft?
     @State private var selectedCurrency: CurrencyCalculationResult?
     @State private var selectedEndorsement: Endorsement?
     @State private var selectedReportType: ReportType?
@@ -32,7 +33,6 @@ struct RootView: View {
         } detail: {
             detailColumn
                 .splitColumnStyle(.detail)
-                .id(navigation.selectedTab)
         }
         .navigationSplitViewStyle(.balanced)
         .onReceive(NotificationCenter.default.publisher(for: .appShortcutNewFlight)) { _ in
@@ -96,7 +96,7 @@ struct RootView: View {
                 saveRequest: saveRequest
             )
         case .aircraft:
-            NavigationStack { AircraftListView() }
+            NavigationStack { AircraftListView(selectedAircraft: $selectedAircraft) }
         case .currency:
             NavigationStack { CurrencyDashboardView(selectedResult: $selectedCurrency) }
         case .endorsements:
@@ -171,18 +171,20 @@ struct RootView: View {
                 )
             }
         case .aircraft:
-            // Bug B: Aircraft has no lifted selection binding — AircraftListView
-            // navigates via its own NavigationLink push inside the content column
-            // (this is also the correct behavior in CompactRootView on iPhone, so
-            // we intentionally do NOT lift selection out here). Give the detail
-            // column a tab-appropriate placeholder instead of the generic default.
-            // See report: converting this to a true detail-pane experience needs
-            // Rob's sign-off + Mac verification.
-            AviationDetailPlaceholder(
-                title: "Aircraft",
-                systemImage: "airplane",
-                description: "Your fleet and training devices. Tap an aircraft to view its hub, performance notes, and maintenance."
-            )
+            // Aircraft selection is now lifted into RootView (like every other tab)
+            // so the detail pane is driven by state that clearSelections(except:)
+            // resets on tab change — fixes the aircraft hub lingering in the detail
+            // column after switching menu items. On iPhone (compact), AircraftListView
+            // still pushes via NavigationLink instead of setting this binding.
+            if let aircraft = selectedAircraft {
+                NavigationStack { AircraftHubView(aircraft: aircraft) }
+            } else {
+                AviationDetailPlaceholder(
+                    title: "Aircraft",
+                    systemImage: "airplane",
+                    description: "Your fleet and training devices. Tap an aircraft to view its hub, performance notes, and maintenance."
+                )
+            }
         case .settings:
             // Bug B: Settings is a self-contained push list (also single-column on
             // iPhone). It does not currently warrant a dedicated detail pane —
@@ -222,6 +224,7 @@ struct RootView: View {
 
     private func clearSelections(except tab: AppTab) {
         if tab != .logbook { selectedFlight = nil }
+        if tab != .aircraft { selectedAircraft = nil }
         if tab != .currency { selectedCurrency = nil }
         if tab != .endorsements { selectedEndorsement = nil }
         if tab != .reports { selectedReportType = nil }

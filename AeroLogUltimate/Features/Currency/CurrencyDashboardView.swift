@@ -36,7 +36,7 @@ struct CurrencyDashboardView: View {
         }
         .navigationTitle("Currency")
         .toolbar { toolbarContent }
-        .sheet(isPresented: $showRecencySettings) {
+        .sheet(isPresented: $showRecencySettings, onDismiss: { refresh() }) {
             NavigationStack {
                 PilotRecencySettingsView()
             }
