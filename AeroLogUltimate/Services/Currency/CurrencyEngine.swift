@@ -77,7 +77,8 @@ struct CurrencyEngine {
         let events = landingEvents(
             from: flights.filter { isSoleManipulator($0) && $0.flightDate >= windowStart },
             day: true,
-            fullStopOnly: false
+            fullStopOnly: false,
+            includeNight: true
         )
 
         return landingCurrencyResult(
@@ -136,7 +137,9 @@ struct CurrencyEngine {
         let requiredApproaches = requirement.requiredApproaches ?? 6
         let requiredHolds = 1
         let windowMonths = 6
-        let windowStart = CurrencyDateUtilities.windowStart(months: windowMonths, from: referenceDate)
+        // H1: window begins the first day of the calendar month 6 months back, so
+        // approaches flown early in that month legally count.
+        let windowStart = CurrencyDateUtilities.startOfCalendarMonthWindow(months: windowMonths, from: referenceDate)
         let windowEnd = CurrencyDateUtilities.startOfDay(referenceDate)
 
         let instrumentFlights = flights.filter {
@@ -250,7 +253,7 @@ struct CurrencyEngine {
                 && ($0.aircraft?.isTailwheel == true)
         }
 
-        let events = landingEvents(from: tailwheelFlights, day: true, fullStopOnly: true)
+        let events = landingEvents(from: tailwheelFlights, day: true, fullStopOnly: true, includeNight: true)
 
         return landingCurrencyResult(
             regulation: "14 CFR 61.57(a)(1)(ii)",
@@ -305,8 +308,9 @@ struct CurrencyEngine {
             return (.unknown, "No flight review on record", "Set your last flight review date in pilot profile", nil, windowStart, windowEnd, detail)
         }
 
-        let expiresAt = CurrencyDateUtilities.calendar.date(byAdding: .month, value: windowMonths, to: CurrencyDateUtilities.startOfDay(lastReview))
-        let isCurrent = lastReview >= windowStart
+        // H1: calendar-month expiration — valid through the last day of the 24th month.
+        let expiresAt: Date? = CurrencyDateUtilities.endOfCalendarMonth(afterAdding: windowMonths, to: lastReview)
+        let isCurrent = expiresAt.map { CurrencyDateUtilities.startOfDay(referenceDate) <= $0 } ?? false
         let daysRemaining = expiresAt.map { CurrencyDateUtilities.daysUntil($0, from: referenceDate) }
         let status = resolveStatus(isCurrent: isCurrent, expiresAt: expiresAt, leadDays: requirement.reminderLeadDays, hasData: true)
 
@@ -380,8 +384,9 @@ struct CurrencyEngine {
             return (.expired, "IPC required — not on record", "Not current for IFR operations", nil, windowStart, nil, detail)
         }
 
-        let expiresAt = CurrencyDateUtilities.calendar.date(byAdding: .month, value: windowMonths, to: CurrencyDateUtilities.startOfDay(lastIPC))
-        let isCurrent = lastIPC >= windowStart
+        // H1: calendar-month expiration — valid through the last day of the 6th month.
+        let expiresAt: Date? = CurrencyDateUtilities.endOfCalendarMonth(afterAdding: windowMonths, to: lastIPC)
+        let isCurrent = expiresAt.map { CurrencyDateUtilities.startOfDay(referenceDate) <= $0 } ?? false
         let daysRemaining = expiresAt.map { CurrencyDateUtilities.daysUntil($0, from: referenceDate) }
         let status = resolveStatus(isCurrent: isCurrent, expiresAt: expiresAt, leadDays: requirement.reminderLeadDays, hasData: true)
 
@@ -653,10 +658,13 @@ struct CurrencyEngine {
         let total = events.reduce(0) { $0 + $1.count }
 
         let isCurrent = total >= required
-        let eventDates = events.map(\.date)
+        // H3: anchor expiry on the Nth-most-recent LANDING, not the Nth-most-recent
+        // flight — expand each event's date by its landing count and pass the true
+        // required count (a single flight with multiple landings anchored too early).
+        let expandedDates = events.flatMap { Array(repeating: $0.date, count: $0.count) }
         let expiresAt = CurrencyDateUtilities.rollingExpiration(
-            eventDates: eventDates,
-            requiredCount: min(required, max(1, events.count)),
+            eventDates: expandedDates,
+            requiredCount: required,
             windowDays: windowDays
         )
 
@@ -710,13 +718,21 @@ struct CurrencyEngine {
     private func landingEvents(
         from flights: [Flight],
         day: Bool,
-        fullStopOnly: Bool
+        fullStopOnly: Bool,
+        includeNight: Bool = false
     ) -> [QualifyingEvent] {
         flights
             .sorted { $0.flightDate > $1.flightDate }
             .compactMap { flight -> QualifyingEvent? in
                 let count: Int = if day {
-                    fullStopOnly ? flight.fullStopDayLandings : flight.dayLandings
+                    // H2: 61.57(a) day-passenger and tailwheel currency also count
+                    // landings made at night — a night landing still satisfies the
+                    // 90-day takeoff/landing requirement.
+                    if fullStopOnly {
+                        flight.fullStopDayLandings + (includeNight ? flight.fullStopNightLandings : 0)
+                    } else {
+                        flight.dayLandings + (includeNight ? flight.nightLandings : 0)
+                    }
                 } else if fullStopOnly {
                     flight.fullStopNightLandings
                 } else {

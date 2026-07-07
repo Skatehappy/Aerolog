@@ -338,7 +338,17 @@ struct BackupSnapshotBuilder {
             fuelRemaining: flight.fuelRemaining,
             fuelUnit: flight.fuelUnit,
             weightBalanceLog: portableWeightBalance,
-            expenses: portableExpenses.isEmpty ? nil : portableExpenses
+            expenses: portableExpenses.isEmpty ? nil : portableExpenses,
+            hobbsStart: flight.hobbsStart,
+            hobbsEnd: flight.hobbsEnd,
+            tachStart: flight.tachStart,
+            tachEnd: flight.tachEnd,
+            lessonTitle: flight.lessonTitle,
+            lessonNumber: flight.lessonNumber,
+            maneuversPracticed: flight.maneuversPracticed,
+            finalizedAt: flight.finalizedAt,
+            editHistoryJSON: flight.editHistoryJSON,
+            createdAt: flight.createdAt
         )
     }
 

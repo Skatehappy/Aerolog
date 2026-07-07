@@ -312,8 +312,25 @@ struct LogbookImportService {
             if let fuelUnit = portable.fuelUnit {
                 flight.fuelUnit = fuelUnit
             }
+            // H4: restore the fields v1 backups dropped. Optional → old backups
+            // (nil) fall back to the previous behavior without crashing.
+            flight.hobbsStart = portable.hobbsStart
+            flight.hobbsEnd = portable.hobbsEnd
+            flight.tachStart = portable.tachStart
+            flight.tachEnd = portable.tachEnd
+            flight.lessonTitle = portable.lessonTitle
+            flight.lessonNumber = portable.lessonNumber
+            flight.maneuversPracticed = portable.maneuversPracticed
+            if let editHistoryJSON = portable.editHistoryJSON {
+                flight.editHistoryJSON = editHistoryJSON
+            }
+            if let createdAt = portable.createdAt {
+                flight.createdAt = createdAt
+            }
             if portable.status == .finalized {
-                flight.finalizedAt = portable.flightDate
+                // L5/H4: preserve the original finalization timestamp; only fall
+                // back to flightDate for pre-v2 backups that didn't carry it.
+                flight.finalizedAt = portable.finalizedAt ?? portable.flightDate
             }
 
             for leg in portable.legs {

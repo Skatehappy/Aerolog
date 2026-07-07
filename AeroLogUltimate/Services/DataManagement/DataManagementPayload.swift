@@ -119,7 +119,9 @@ struct AeroLogBackupPackage: Codable, Identifiable, Sendable {
 
     var id: String { manifest.backupID }
 
-    static let currentVersion = 1
+    // v2 (H4): PortableFlight carries hobbs/tach, lesson tag, finalizedAt,
+    // edit-history, createdAt. New fields are optional so v1 backups still import.
+    static let currentVersion = 2
 
     init(
         createdAt: Date = .now,
@@ -295,6 +297,20 @@ struct PortableFlight: Codable, Sendable {
     let fuelUnit: FuelUnit?
     let weightBalanceLog: PortableWeightBalanceLog?
     let expenses: [PortableFlightExpense]?
+    // H4: added in backup v2. Optional so v1 backups still decode. Dropping these
+    // on round-trip lost hobbs/tach (breaking maintenance tracking after a device
+    // migration), the training lesson tag, the finalization timestamp, and the
+    // append-only edit-history audit trail.
+    let hobbsStart: Double?
+    let hobbsEnd: Double?
+    let tachStart: Double?
+    let tachEnd: Double?
+    let lessonTitle: String?
+    let lessonNumber: String?
+    let maneuversPracticed: String?
+    let finalizedAt: Date?
+    let editHistoryJSON: String?
+    let createdAt: Date?
 }
 
 struct PortableWeightBalanceLog: Codable, Sendable {
