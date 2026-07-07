@@ -11,13 +11,18 @@ struct StudentDetailView: View {
     @State private var summary: StudentTrainingSummary?
     @State private var lessonProgress: [LessonProgressItem] = []
     @State private var readiness: CheckrideReadinessReport?
-    @State private var showLessonLog = false
-    @State private var showGroundLog = false
-    @State private var showReadiness = false
-    @State private var showReport = false
-    @State private var showEdit = false
+    @State private var activeSheet: ActiveSheet?
     @State private var generatedReport: GeneratedReport?
     @State private var errorMessage: String?
+
+    // A single sheet driver. SwiftUI only reliably presents ONE
+    // .sheet(isPresented:) per view — stacking five of them made edit / lesson
+    // logging / readiness / report all come up blank. Route every modal through
+    // one .sheet(item:) instead.
+    private enum ActiveSheet: Identifiable {
+        case edit, flightLesson, groundLesson, readiness, report
+        var id: Self { self }
+    }
 
     var body: some View {
         Group {
@@ -43,44 +48,33 @@ struct StudentDetailView: View {
         .toolbar {
             if relationship != nil {
                 ToolbarItem(placement: .primaryAction) {
-                    Button { showEdit = true } label: {
+                    Button { activeSheet = .edit } label: {
                         Label("Edit", systemImage: "pencil")
                     }
                 }
             }
         }
-        .sheet(isPresented: $showEdit, onDismiss: { refresh() }) {
-            if let relationship {
-                NavigationStack {
-                    StudentEditorView(relationship: relationship)
+        .sheet(item: $activeSheet, onDismiss: { refresh() }) { sheet in
+            switch sheet {
+            case .edit:
+                if let relationship {
+                    NavigationStack { StudentEditorView(relationship: relationship) }
                 }
-            }
-        }
-        .sheet(isPresented: $showLessonLog) {
-            if let relationship {
-                NavigationStack {
-                    LessonLogView(relationship: relationship, mode: .flight)
+            case .flightLesson:
+                if let relationship {
+                    NavigationStack { LessonLogView(relationship: relationship, mode: .flight) }
                 }
-            }
-        }
-        .sheet(isPresented: $showGroundLog) {
-            if let relationship {
-                NavigationStack {
-                    LessonLogView(relationship: relationship, mode: .ground)
+            case .groundLesson:
+                if let relationship {
+                    NavigationStack { LessonLogView(relationship: relationship, mode: .ground) }
                 }
-            }
-        }
-        .sheet(isPresented: $showReadiness) {
-            if let readiness {
-                NavigationStack {
-                    CheckrideReadinessView(report: readiness)
+            case .readiness:
+                if let readiness {
+                    NavigationStack { CheckrideReadinessView(report: readiness) }
                 }
-            }
-        }
-        .sheet(isPresented: $showReport) {
-            if let generatedReport {
-                NavigationStack {
-                    ReportPreviewView(report: generatedReport)
+            case .report:
+                if let generatedReport {
+                    NavigationStack { ReportPreviewView(report: generatedReport) }
                 }
             }
         }
@@ -136,17 +130,17 @@ struct StudentDetailView: View {
 
     private func actionsSection(_ relationship: TrainingRelationship) -> some View {
         VStack(spacing: 10) {
-            Button { showLessonLog = true } label: {
+            Button { activeSheet = .flightLesson } label: {
                 Label("Log Flight Lesson", systemImage: "airplane")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            Button { showGroundLog = true } label: {
+            Button { activeSheet = .groundLesson } label: {
                 Label("Log Ground Instruction", systemImage: "book")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)
-            Button { showReadiness = true } label: {
+            Button { activeSheet = .readiness } label: {
                 Label("Checkride Readiness", systemImage: "checkmark.seal")
                     .frame(maxWidth: .infinity)
             }
@@ -232,7 +226,7 @@ struct StudentDetailView: View {
         guard let service = environment?.reportService else { return }
         do {
             generatedReport = try service.generate(type: .studentProgress)
-            showReport = true
+            activeSheet = .report
         } catch {
             errorMessage = error.localizedDescription
         }

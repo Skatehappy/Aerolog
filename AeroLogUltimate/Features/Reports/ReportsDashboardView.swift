@@ -12,10 +12,17 @@ struct ReportsDashboardView: View {
     @State private var dashboard: AnalyticsDashboard?
     @State private var filter: ReportFilter = .allTime
     @State private var isLoading = true
-    @State private var showBuilder = false
-    @State private var showSaved = false
+    @State private var activeSheet: ActiveSheet?
     @State private var builderType: ReportType?
     @State private var errorMessage: String?
+
+    // Single sheet driver — stacking .sheet(isPresented:) for the builder and the
+    // saved-reports list made the report builder present blank. Route both
+    // through one .sheet(item:).
+    private enum ActiveSheet: Identifiable {
+        case builder, saved
+        var id: Self { self }
+    }
 
     init(selectedReportType: Binding<ReportType?> = .constant(nil)) {
         _selectedReportType = selectedReportType
@@ -39,14 +46,16 @@ struct ReportsDashboardView: View {
         }
         .navigationTitle("Reports")
         .toolbar { toolbarContent }
-        .sheet(isPresented: $showBuilder) {
-            NavigationStack {
-                ReportBuilderView(initialType: builderType, initialFilter: filter)
-            }
-        }
-        .sheet(isPresented: $showSaved) {
-            NavigationStack {
-                SavedReportsListView()
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .builder:
+                NavigationStack {
+                    ReportBuilderView(initialType: builderType, initialFilter: filter)
+                }
+            case .saved:
+                NavigationStack {
+                    SavedReportsListView()
+                }
             }
         }
         .alert("Error", isPresented: .init(
@@ -120,7 +129,7 @@ struct ReportsDashboardView: View {
                     Button {
                         builderType = type
                         selectedReportType = type
-                        showBuilder = true
+                        activeSheet = .builder
                     } label: {
                         VStack(alignment: .leading, spacing: 6) {
                             Image(systemName: type.systemImage)
@@ -156,14 +165,14 @@ struct ReportsDashboardView: View {
         ToolbarItem(placement: .primaryAction) {
             Button {
                 builderType = nil
-                showBuilder = true
+                activeSheet = .builder
             } label: {
                 Label("New Report", systemImage: "plus")
             }
         }
         ToolbarItem(placement: .secondaryAction) {
             Menu {
-                Button { showSaved = true } label: {
+                Button { activeSheet = .saved } label: {
                     Label("Saved Reports", systemImage: "bookmark")
                 }
                 Button { refresh() } label: {

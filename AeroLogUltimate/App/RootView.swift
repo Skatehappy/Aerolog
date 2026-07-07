@@ -96,7 +96,7 @@ struct RootView: View {
                 saveRequest: saveRequest
             )
         case .aircraft:
-            NavigationStack { AircraftListView(selectedAircraft: $selectedAircraft) }
+            NavigationStack { AircraftListView(selectedAircraft: $selectedAircraft, usesColumnSelection: true) }
         case .currency:
             NavigationStack { CurrencyDashboardView(selectedResult: $selectedCurrency) }
         case .endorsements:
@@ -133,6 +133,9 @@ struct RootView: View {
         case .currency:
             if let result = selectedCurrency {
                 NavigationStack { CurrencyDetailView(result: result) }
+                    // Rebuild when a different currency item is selected so the
+                    // detail doesn't stay pinned to the first (auto-selected) one.
+                    .id(result.id)
             } else {
                 AviationDetailPlaceholder(
                     title: "Currency Detail",
@@ -143,6 +146,7 @@ struct RootView: View {
         case .endorsements:
             if let endorsement = selectedEndorsement {
                 NavigationStack { EndorsementDetailView(endorsement: endorsement) }
+                    .id(endorsement.persistentModelID)
             } else {
                 AviationDetailPlaceholder(
                     title: "Endorsement Detail",
@@ -153,6 +157,7 @@ struct RootView: View {
         case .reports:
             if let reportType = selectedReportType {
                 NavigationStack { ReportDetailView(reportType: reportType) }
+                    .id(reportType)
             } else {
                 AviationDetailPlaceholder(
                     title: "Report Detail",
@@ -163,6 +168,9 @@ struct RootView: View {
         case .training:
             if let relationshipID = selectedRelationshipID {
                 NavigationStack { StudentDetailView(relationshipID: relationshipID) }
+                    // StudentDetailView loads via .task keyed to its id, so force a
+                    // rebuild when a different student is selected.
+                    .id(relationshipID)
             } else {
                 AviationDetailPlaceholder(
                     title: "Student Detail",
@@ -178,6 +186,7 @@ struct RootView: View {
             // still pushes via NavigationLink instead of setting this binding.
             if let aircraft = selectedAircraft {
                 NavigationStack { AircraftHubView(aircraft: aircraft) }
+                    .id(aircraft.persistentModelID)
             } else {
                 AviationDetailPlaceholder(
                     title: "Aircraft",

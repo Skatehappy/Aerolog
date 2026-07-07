@@ -13,8 +13,7 @@ struct LessonLogView: View {
     @State private var selectedLessonNumber: String?
     @State private var lessons: [ResolvedLesson] = []
     @State private var groundDuration: Double = 1.0
-    @State private var createdFlightID: UUID?
-    @State private var showFlightEditor = false
+    @State private var createdFlight: Flight?
     @State private var errorMessage: String?
 
     var body: some View {
@@ -56,11 +55,9 @@ struct LessonLogView: View {
                 Button("Cancel") { dismiss() }
             }
         }
-        .sheet(isPresented: $showFlightEditor) {
-            if let flight = try? environment?.flightService.flight(syncID: createdFlightID ?? UUID()) {
-                NavigationStack {
-                    FlightEditorView(flight: flight, isNew: true)
-                }
+        .sheet(item: $createdFlight) { flight in
+            NavigationStack {
+                FlightEditorView(flight: flight, isNew: true)
             }
         }
         .alert("Error", isPresented: .init(
@@ -98,9 +95,8 @@ struct LessonLogView: View {
                     duration: groundDuration
                 )
             }
-            createdFlightID = flight.syncID
             if mode == .flight {
-                showFlightEditor = true
+                createdFlight = flight
             } else {
                 dismiss()
             }

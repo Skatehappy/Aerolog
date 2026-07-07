@@ -146,8 +146,12 @@ struct FlightListView: View {
         guard let env = environment else { return }
         do {
             let flight = try env.flightService.createDraft()
+            // Open the editor directly via editorFlight. Do NOT assign
+            // selectedFlight here: that fires .onChange(of: selectedFlight),
+            // which flips isCreatingNew back to false and makes the editor treat
+            // a brand-new draft as an existing one — so Cancel wouldn't discard
+            // it and the eagerly-saved draft was left behind (looking doubled).
             isCreatingNew = true
-            selectedFlight = flight
             editorFlight = flight
         } catch {
             // Production: surface error toast

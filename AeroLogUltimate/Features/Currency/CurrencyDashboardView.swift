@@ -11,12 +11,26 @@ struct CurrencyDashboardView: View {
     init(selectedResult: Binding<CurrencyCalculationResult?> = .constant(nil)) {
         _selectedResult = selectedResult
     }
-    @State private var showRecencySettings = false
-    @State private var showCustomEditor = false
-    @State private var editingRequirement: CurrencyRequirement?
+    @State private var activeSheet: ActiveSheet?
     @State private var customRequirements: [CurrencyRequirement] = []
     @State private var isLoading = true
     @State private var errorMessage: String?
+
+    // Single sheet driver. Three stacked .sheet modifiers meant the recency
+    // editor (needed to update currency dates) could present blank; route all
+    // three through one .sheet(item:).
+    private enum ActiveSheet: Identifiable {
+        case recency
+        case customEditor
+        case editRequirement(CurrencyRequirement)
+        var id: String {
+            switch self {
+            case .recency: "recency"
+            case .customEditor: "customEditor"
+            case .editRequirement(let requirement): "edit-\(requirement.persistentModelID)"
+            }
+        }
+    }
 
     var body: some View {
         Group {
@@ -36,19 +50,14 @@ struct CurrencyDashboardView: View {
         }
         .navigationTitle("Currency")
         .toolbar { toolbarContent }
-        .sheet(isPresented: $showRecencySettings, onDismiss: { refresh() }) {
-            NavigationStack {
-                PilotRecencySettingsView()
-            }
-        }
-        .sheet(isPresented: $showCustomEditor, onDismiss: { refresh() }) {
-            NavigationStack {
-                CustomCurrencyEditorView()
-            }
-        }
-        .sheet(item: $editingRequirement, onDismiss: { refresh() }) { requirement in
-            NavigationStack {
-                CustomCurrencyEditorView(requirement: requirement)
+        .sheet(item: $activeSheet, onDismiss: { refresh() }) { sheet in
+            switch sheet {
+            case .recency:
+                NavigationStack { PilotRecencySettingsView() }
+            case .customEditor:
+                NavigationStack { CustomCurrencyEditorView() }
+            case .editRequirement(let requirement):
+                NavigationStack { CustomCurrencyEditorView(requirement: requirement) }
             }
         }
         .alert("Error", isPresented: .init(
@@ -175,19 +184,19 @@ struct CurrencyDashboardView: View {
         ToolbarItem(placement: .secondaryAction) {
             Menu {
                 Button {
-                    showRecencySettings = true
+                    activeSheet = .recency
                 } label: {
                     Label("Pilot Recency Dates", systemImage: "person.text.rectangle")
                 }
                 Button {
-                    showCustomEditor = true
+                    activeSheet = .customEditor
                 } label: {
                     Label("Add Custom Currency", systemImage: "plus.circle")
                 }
                 if !customRequirements.isEmpty {
                     Menu {
                         ForEach(customRequirements, id: \.persistentModelID) { requirement in
-                            Button(requirement.displayName) { editingRequirement = requirement }
+                            Button(requirement.displayName) { activeSheet = .editRequirement(requirement) }
                         }
                     } label: {
                         Label("Edit Custom Currency", systemImage: "pencil")

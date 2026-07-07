@@ -5,13 +5,18 @@ import SwiftData
 struct AircraftListView: View {
     @Environment(\.appEnvironment) private var environment
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @Query(sort: \Aircraft.registration) private var allAircraft: [Aircraft]
 
-    // On iPad (regular width) this drives RootView's detail column; on iPhone
-    // (compact) it is unused and rows fall back to a NavigationLink push.
+    // On iPad this drives RootView's detail column via the lifted binding; on
+    // iPhone it is unused and rows fall back to a NavigationLink push.
     @Binding var selectedAircraft: Aircraft?
+
+    // Passed explicitly by the parent layout (true from the iPad RootView, false
+    // from the iPhone CompactRootView). We must NOT infer this from
+    // horizontalSizeClass: inside a NavigationSplitView column that environment
+    // value is unreliable, which left the aircraft hub stuck via a stray push.
+    let usesColumnSelection: Bool
 
     @State private var showInactive = false
     @State private var editorAircraft: Aircraft?
@@ -19,8 +24,12 @@ struct AircraftListView: View {
     @State private var searchText = ""
     @State private var errorMessage: String?
 
-    init(selectedAircraft: Binding<Aircraft?> = .constant(nil)) {
+    init(
+        selectedAircraft: Binding<Aircraft?> = .constant(nil),
+        usesColumnSelection: Bool = false
+    ) {
         _selectedAircraft = selectedAircraft
+        self.usesColumnSelection = usesColumnSelection
     }
 
     private var filteredAircraft: [Aircraft] {
@@ -112,17 +121,11 @@ struct AircraftListView: View {
         }
     }
 
-    // iPad (regular): tap selects into the detail column via the lifted binding.
-    // iPhone (compact): tap pushes the hub onto the tab's own NavigationStack.
+    // iPad: tap selects into the detail column via the lifted binding.
+    // iPhone: tap pushes the hub onto the tab's own NavigationStack.
     @ViewBuilder
     private func aircraftRow(_ aircraft: Aircraft) -> some View {
-        if horizontalSizeClass == .compact {
-            NavigationLink {
-                AircraftHubView(aircraft: aircraft)
-            } label: {
-                AircraftRowView(aircraft: aircraft)
-            }
-        } else {
+        if usesColumnSelection {
             Button {
                 selectedAircraft = aircraft
             } label: {
@@ -134,6 +137,12 @@ struct AircraftListView: View {
                     ? Color.accentColor.opacity(0.12)
                     : Color.clear
             )
+        } else {
+            NavigationLink {
+                AircraftHubView(aircraft: aircraft)
+            } label: {
+                AircraftRowView(aircraft: aircraft)
+            }
         }
     }
 
