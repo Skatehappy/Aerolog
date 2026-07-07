@@ -120,13 +120,45 @@ struct LogbookImportService {
             flight.simulatorTime = row.simulatorTime ?? 0
             flight.dayLandings = row.dayLandings ?? 0
             flight.nightLandings = row.nightLandings ?? 0
+            flight.fullStopDayLandings = row.fullStopDayLandings ?? 0
+            flight.fullStopNightLandings = row.fullStopNightLandings ?? 0
+            flight.holds = row.holds ?? 0
             flight.instructorName = row.instructorName
             flight.remarks = row.remarks
             flight.externalID = row.externalID
             flight.finalize()
 
             dataStore.insert(flight)
+
+            // C1: synthesize an approach record so instrument currency counts the
+            // imported approaches (the engine sums InstrumentApproach.approachCount).
+            if let approaches = row.approachCount, approaches > 0 {
+                let airport = flight.arrivalICAO.isEmpty ? flight.departureICAO : flight.arrivalICAO
+                let approach = InstrumentApproach(
+                    approachType: .other,
+                    airportICAO: airport.isEmpty ? nil : airport,
+                    approachCount: approaches
+                )
+                approach.flight = flight
+                dataStore.insert(approach)
+            }
+
             importedFlights += 1
+        }
+
+        // C1: if the source carried no full-stop / hold / approach data but did
+        // carry night or instrument time, warn that those currencies can't be
+        // computed from it — rather than silently showing NOT CURRENT.
+        let hasCurrencyDetail = rows.contains {
+            ($0.fullStopDayLandings ?? 0) > 0 || ($0.fullStopNightLandings ?? 0) > 0
+                || ($0.holds ?? 0) > 0 || ($0.approachCount ?? 0) > 0
+        }
+        let hasNightOrInstrument = rows.contains {
+            ($0.nightLandings ?? 0) > 0 || ($0.nightTime ?? 0) > 0
+                || ($0.actualInstrumentTime ?? 0) > 0 || ($0.simulatedInstrumentTime ?? 0) > 0
+        }
+        if !hasCurrencyDetail && hasNightOrInstrument {
+            warnings.append("This file had no full-stop landing, hold, or approach columns, so night-passenger and instrument currency can't be computed from it. Those were left at zero — edit the affected flights to set full-stop landings and approaches.")
         }
 
         if importedFlights == 0 && skipped > 0 {
@@ -373,6 +405,11 @@ struct LogbookImportService {
         }
 
         try dataStore.save()
+
+        // C2: a restored package can carry its own primary pilot alongside the
+        // seeded blank one. Collapse to a single primary (the one that owns the
+        // restored flights) so currency/reports/new-flights bind correctly.
+        try dataStore.reconcilePrimaryProfiles()
 
         return LogbookImportResult(
             format: .aerologBackup,

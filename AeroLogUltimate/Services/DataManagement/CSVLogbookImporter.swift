@@ -71,8 +71,16 @@ struct CSVLogbookImporter: Sendable {
         row.simulatedInstrumentTime = value(.simulatedInstrumentTime).flatMap(TimeFormatting.parse)
         row.groundInstructionTime = value(.groundInstructionTime).flatMap(TimeFormatting.parse)
         row.simulatorTime = value(.simulatorTime).flatMap(TimeFormatting.parse)
-        row.dayLandings = value(.dayLandings).flatMap(Int.init)
-        row.nightLandings = value(.nightLandings).flatMap(Int.init)
+        // L4: parse landing counts via Double-then-round so ForeFlight's "3.0"
+        // (and stray decimals) don't drop to nil and silently lose landings.
+        row.dayLandings = parseInt(value(.dayLandings))
+        row.nightLandings = parseInt(value(.nightLandings))
+        row.fullStopDayLandings = parseInt(value(.fullStopDayLandings))
+        row.fullStopNightLandings = parseInt(value(.fullStopNightLandings))
+        row.holds = parseInt(value(.holds))
+        // Approach count: an explicit numeric column, or a ForeFlight-style
+        // Approach1..Approach6 spread (count the non-empty description columns).
+        row.approachCount = parseInt(value(.approaches)) ?? foreFlightApproachCount(values: values, headers: headers)
         row.instructorName = value(.instructorName)
         row.remarks = value(.remarks)
         row.externalID = value(.externalID)
@@ -91,7 +99,6 @@ struct CSVLogbookImporter: Sendable {
             row.totalTimeWasInferred = true
         }
 
-        _ = headers
         return row
     }
 
@@ -121,6 +128,31 @@ struct CSVLogbookImporter: Sendable {
         if normalized.contains("dual given") || normalized.contains("cfi") { return .dualGiven }
         if normalized.contains("solo") { return .solo }
         return nil
+    }
+
+    /// Parse an integer count tolerating decimals/whitespace ("3", " 3 ", "3.0").
+    private func parseInt(_ text: String?) -> Int? {
+        guard let text else { return nil }
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty { return nil }
+        if let intValue = Int(trimmed) { return intValue }
+        if let doubleValue = Double(trimmed) { return Int(doubleValue.rounded()) }
+        return nil
+    }
+
+    /// ForeFlight exports approaches as Approach1..Approach6 description columns
+    /// rather than a count. Count the non-empty ones so instrument currency works.
+    private func foreFlightApproachCount(values: [String], headers: [String]) -> Int? {
+        var count = 0
+        for (index, header) in headers.enumerated() where index < values.count {
+            guard header.hasPrefix("approach"),
+                  let suffixFirst = header.dropFirst("approach".count).first,
+                  suffixFirst.isNumber else { continue }
+            if !values[index].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                count += 1
+            }
+        }
+        return count > 0 ? count : nil
     }
 
     private func parseDate(_ text: String?) -> Date? {
@@ -216,6 +248,10 @@ private enum CSVColumn: CaseIterable {
     case simulatorTime
     case dayLandings
     case nightLandings
+    case fullStopDayLandings
+    case fullStopNightLandings
+    case holds
+    case approaches
     case instructorName
     case remarks
     case externalID
@@ -245,6 +281,10 @@ private enum CSVColumn: CaseIterable {
         .simulatorTime: ["simulator", "simulatortime", "ftd"],
         .dayLandings: ["daylandings", "landingsday", "day"],
         .nightLandings: ["nightlandings", "landingsnight", "nightldg"],
+        .fullStopDayLandings: ["fullstopdaylandings", "daylandingsfullstop", "daylandingfullstop", "dayfs", "fsday", "dayfullstop"],
+        .fullStopNightLandings: ["fullstopnightlandings", "nightlandingsfullstop", "nightlandingfullstop", "nightfs", "fsnight", "nightfullstop"],
+        .holds: ["holds", "hold", "holdings", "instrumenthold"],
+        .approaches: ["approaches", "approach", "instrumentapproaches", "approachcount", "numapproaches", "approachesflown"],
         .instructorName: ["instructor", "instructorname", "cfi"],
         .remarks: ["remarks", "comments", "notes", "remark"],
         .externalID: ["externalid", "flightid", "id", "uuid"]

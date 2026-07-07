@@ -19,6 +19,9 @@ final class DataStore {
         let container = try ModelContainerConfiguration.makeLocalContainer()
         let store = DataStore(container: container)
         try store.seedIfNeeded()
+        // Repair installs that already have >1 primary profile from an earlier
+        // restore (C2) so the app binds to the pilot that owns the flights.
+        try store.reconcilePrimaryProfiles()
         return store
     }
 
@@ -162,10 +165,49 @@ final class DataStore {
     // MARK: - Primary Pilot
 
     func primaryPilotProfile() throws -> PilotProfile? {
-        var descriptor = FetchDescriptor<PilotProfile>(
+        let primaries = try context.fetch(FetchDescriptor<PilotProfile>(
             predicate: #Predicate { $0.isPrimaryProfile == true }
-        )
-        descriptor.fetchLimit = 1
-        return try context.fetch(descriptor).first
+        ))
+        if primaries.count > 1 {
+            // Self-heal if two primaries ever coexist (e.g. a restore inserted a
+            // second one before reconcile ran) so callers never bind to the wrong
+            // pilot nondeterministically.
+            return try reconcilePrimaryProfiles() ?? primaries.first
+        }
+        return primaries.first
+    }
+
+    /// Ensures exactly one primary pilot profile exists. `seedIfNeeded()` creates
+    /// a blank primary on first launch; a backup restore can insert a second
+    /// `isPrimaryProfile = true` pilot. With two primaries `primaryPilotProfile()`
+    /// picked nondeterministically, so currency/reports/new-flights could bind to
+    /// the blank pilot while history lived on the imported one. Keep the profile
+    /// that owns flights (tie-break: one with a name), demote the rest.
+    @discardableResult
+    func reconcilePrimaryProfiles() throws -> PilotProfile? {
+        let primaries = try context.fetch(FetchDescriptor<PilotProfile>(
+            predicate: #Predicate { $0.isPrimaryProfile == true }
+        ))
+        guard primaries.count > 1 else { return primaries.first }
+
+        var flightCount: [PersistentIdentifier: Int] = [:]
+        for flight in try context.fetch(FetchDescriptor<Flight>()) {
+            guard let pilotID = flight.pilot?.persistentModelID else { continue }
+            flightCount[pilotID, default: 0] += 1
+        }
+
+        let keeper = primaries.max { lhs, rhs in
+            let lc = flightCount[lhs.persistentModelID] ?? 0
+            let rc = flightCount[rhs.persistentModelID] ?? 0
+            if lc != rc { return lc < rc }
+            let lNamed = !(lhs.firstName.isEmpty && lhs.lastName.isEmpty)
+            let rNamed = !(rhs.firstName.isEmpty && rhs.lastName.isEmpty)
+            return !lNamed && rNamed
+        }
+        for profile in primaries where profile.persistentModelID != keeper?.persistentModelID {
+            profile.isPrimaryProfile = false
+        }
+        try save()
+        return keeper
     }
 }

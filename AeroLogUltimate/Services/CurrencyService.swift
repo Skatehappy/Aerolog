@@ -175,7 +175,14 @@ final class CurrencyService {
 
     private func endorsements(for pilot: PilotProfile) throws -> [Endorsement] {
         try dataStore.fetch(FetchDescriptor<Endorsement>())
-            .filter { $0.student?.persistentModelID == pilot.persistentModelID && $0.status == .signed }
+            .filter {
+                $0.student?.persistentModelID == pilot.persistentModelID
+                    && $0.status == .signed
+                    // C3: exclude soft-deleted endorsements — a deleted flight
+                    // review / IPC must stop granting currency (every other read
+                    // path filters this; this one didn't).
+                    && !($0.syncMetadata?.isSoftDeleted ?? false)
+            }
     }
 
     static func decodeDetail(from snapshot: CurrencySnapshot) -> CurrencyDetailPayload? {

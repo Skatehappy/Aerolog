@@ -372,6 +372,13 @@ struct CSVFlightImportRow: Sendable {
     var simulatorTime: Double?
     var dayLandings: Int?
     var nightLandings: Int?
+    // C1: full-stop landings, holds, and approach count drive night-passenger,
+    // tailwheel, and instrument currency. Without them, imported logbooks show
+    // those currencies as expired regardless of real history.
+    var fullStopDayLandings: Int?
+    var fullStopNightLandings: Int?
+    var holds: Int?
+    var approachCount: Int?
     var instructorName: String?
     var remarks: String?
     var externalID: String?
