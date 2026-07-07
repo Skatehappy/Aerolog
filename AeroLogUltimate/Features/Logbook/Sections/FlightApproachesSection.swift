@@ -4,6 +4,8 @@ struct FlightApproachesSection: View {
     @Environment(\.appEnvironment) private var environment
     @Bindable var flight: Flight
 
+    @State private var errorMessage: String?
+
     var body: some View {
         Section {
             if (flight.approaches ?? []).isEmpty {
@@ -39,19 +41,35 @@ struct FlightApproachesSection: View {
                 }
                 .onDelete { indexSet in
                     let approaches = flight.approaches ?? []
-                    for index in indexSet {
-                        try? environment?.flightService.removeApproach(approaches[index], from: flight)
+                    do {
+                        for index in indexSet {
+                            try environment?.flightService.removeApproach(approaches[index], from: flight)
+                        }
+                    } catch {
+                        errorMessage = error.localizedDescription
                     }
                 }
             }
 
             Button {
-                try? environment?.flightService.addApproach(to: flight)
+                do {
+                    try environment?.flightService.addApproach(to: flight)
+                } catch {
+                    errorMessage = error.localizedDescription
+                }
             } label: {
                 Label("Add Approach", systemImage: "plus.circle")
             }
         } header: {
             FormSectionHeader(title: "Instrument Approaches", systemImage: "arrow.down.to.line")
+        }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
         }
     }
 }

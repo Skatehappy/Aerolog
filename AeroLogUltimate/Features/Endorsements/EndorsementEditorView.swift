@@ -207,8 +207,12 @@ struct EndorsementEditorView: View {
             }
             if endorsement.isSigned {
                 Button("Revoke", role: .destructive) {
-                    try? environment?.endorsementService.revoke(endorsement)
-                    dismiss()
+                    do {
+                        try environment?.endorsementService.revoke(endorsement)
+                        dismiss()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
                 }
             }
         }

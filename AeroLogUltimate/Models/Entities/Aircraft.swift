@@ -18,6 +18,20 @@ final class Aircraft {
     var aircraftClass: AircraftClass
     var simulatorLevel: SimulatorLevel
 
+    /// Light Sport Aircraft airworthiness/certification class. LSA is not an FAA
+    /// *category* (it cuts across categories), so it is modeled as a flag rather
+    /// than an `AircraftCategory` case.
+    /// Default `false` on the declaration so SwiftData lightweight migration can
+    /// backfill existing aircraft rows without a custom migration stage.
+    var isLSA: Bool = false
+
+    /// Motorglider sub-classification, meaningful only when `category == .glider`.
+    /// Modeled as a flag (per CC directive #3) rather than a new top-level
+    /// category, since motorglider time is logged under glider or airplane
+    /// depending on how the flight was flown. Defaulted on the declaration for
+    /// lightweight migration.
+    var isMotorglider: Bool = false
+
     // MARK: Capabilities
 
     var isComplex: Bool
@@ -87,7 +101,9 @@ final class Aircraft {
         model: String = "",
         category: AircraftCategory = .airplane,
         aircraftClass: AircraftClass = .singleEngineLand,
-        simulatorLevel: SimulatorLevel = .none
+        simulatorLevel: SimulatorLevel = .none,
+        isLSA: Bool = false,
+        isMotorglider: Bool = false
     ) {
         self.registration = registration
         self.make = make
@@ -95,6 +111,8 @@ final class Aircraft {
         self.category = category
         self.aircraftClass = aircraftClass
         self.simulatorLevel = simulatorLevel
+        self.isLSA = isLSA
+        self.isMotorglider = isMotorglider
         self.isComplex = false
         self.isHighPerformance = false
         self.isTailwheel = false

@@ -147,11 +147,15 @@ struct FlightEditorView: View {
     // MARK: - Actions
 
     private func enableMultiLeg() {
-        if (flight.legs?.count ?? 0) == 0 {
-            try? environment?.flightService.addLeg(to: flight)
-            if (flight.legs?.count ?? 0) < 2 {
-                try? environment?.flightService.addLeg(to: flight)
+        do {
+            if (flight.legs?.count ?? 0) == 0 {
+                try environment?.flightService.addLeg(to: flight)
+                if (flight.legs?.count ?? 0) < 2 {
+                    try environment?.flightService.addLeg(to: flight)
+                }
             }
+        } catch {
+            saveError = error.localizedDescription
         }
     }
 

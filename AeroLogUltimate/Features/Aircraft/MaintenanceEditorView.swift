@@ -9,6 +9,8 @@ struct MaintenanceEditorView: View {
     let aircraft: Aircraft
     let isNew: Bool
 
+    @State private var errorMessage: String?
+
     var body: some View {
         Form {
             Section("Item") {
@@ -53,8 +55,12 @@ struct MaintenanceEditorView: View {
             if !isNew {
                 Section {
                     Button("Mark Completed") {
-                        try? environment?.maintenanceService.markCompleted(item)
-                        dismiss()
+                        do {
+                            try environment?.maintenanceService.markCompleted(item)
+                            dismiss()
+                        } catch {
+                            errorMessage = error.localizedDescription
+                        }
                     }
                 }
             }
@@ -72,6 +78,14 @@ struct MaintenanceEditorView: View {
                 Button("Save") { save() }
             }
         }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 
     private func save() {
@@ -82,7 +96,12 @@ struct MaintenanceEditorView: View {
         } else {
             item.touch()
         }
-        try? environment?.dataStore.save()
+        do {
+            try environment?.dataStore.save()
+        } catch {
+            errorMessage = error.localizedDescription
+            return
+        }
         Task {
             await MaintenanceReminderScheduler.rescheduleAll(using: environment!.maintenanceService)
         }

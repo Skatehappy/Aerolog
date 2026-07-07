@@ -4,6 +4,7 @@ import SwiftData
 /// Edit the primary pilot profile used for reports and exports.
 struct PilotProfileSettingsView: View {
     @Environment(\.appEnvironment) private var environment
+    @Environment(\.dismiss) private var dismiss
 
     @Query(filter: #Predicate<PilotProfile> { $0.isPrimaryProfile == true })
     private var primaryProfiles: [PilotProfile]
@@ -79,6 +80,7 @@ struct PilotProfileSettingsView: View {
         pilot.cfiCertificateNumber = isCFI && !cfiCertificateNumber.isEmpty ? cfiCertificateNumber : nil
         do {
             try service.update(pilot)
+            dismiss()
         } catch {
             errorMessage = error.localizedDescription
         }

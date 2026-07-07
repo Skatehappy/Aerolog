@@ -40,7 +40,11 @@ struct SavedReportsListView: View {
                     }
                     .swipeActions {
                         Button("Delete", role: .destructive) {
-                            try? environment?.reportDefinitionService.delete(definition)
+                            do {
+                                try environment?.reportDefinitionService.delete(definition)
+                            } catch {
+                                errorMessage = error.localizedDescription
+                            }
                         }
                     }
                 }

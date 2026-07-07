@@ -10,6 +10,7 @@ struct CustomTemplateListView: View {
 
     @State private var editorTemplate: EndorsementTemplate?
     @State private var isCreating = false
+    @State private var errorMessage: String?
 
     var body: some View {
         Group {
@@ -42,7 +43,11 @@ struct CustomTemplateListView: View {
                     }
                     .swipeActions {
                         Button("Delete", role: .destructive) {
-                            try? environment?.endorsementTemplateService.delete(template)
+                            do {
+                                try environment?.endorsementTemplateService.delete(template)
+                            } catch {
+                                errorMessage = error.localizedDescription
+                            }
                         }
                     }
                 }
@@ -64,6 +69,14 @@ struct CustomTemplateListView: View {
             NavigationStack {
                 CustomTemplateEditorView(template: template, isNew: isCreating)
             }
+        }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
         }
     }
 

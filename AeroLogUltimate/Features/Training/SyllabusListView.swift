@@ -83,9 +83,13 @@ struct SyllabusListView: View {
     }
 
     private func deleteSyllabi(at offsets: IndexSet) {
-        for index in offsets {
-            let syllabus = customSyllabi[index]
-            try? environment?.syllabusService.delete(syllabus)
+        do {
+            for index in offsets {
+                let syllabus = customSyllabi[index]
+                try environment?.syllabusService.delete(syllabus)
+            }
+        } catch {
+            errorMessage = error.localizedDescription
         }
         refresh()
     }

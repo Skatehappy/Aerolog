@@ -7,6 +7,7 @@ struct FlightWeightBalanceSection: View {
     @State private var log: WeightBalanceLog?
     @State private var stations: [WeightBalanceStation] = []
     @State private var calculation: WeightBalanceCalculator.Result?
+    @State private var errorMessage: String?
 
     var body: some View {
         Section {
@@ -24,6 +25,14 @@ struct FlightWeightBalanceSection: View {
             }
         } header: {
             FormSectionHeader(title: "Weight & Balance", systemImage: "scalemass")
+        }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
         }
         .onAppear { loadLog(createIfNeeded: false) }
         .onChange(of: log?.emptyWeight) { _, _ in recalculate() }
@@ -53,7 +62,9 @@ struct FlightWeightBalanceSection: View {
                 WeightBalanceStation(name: "Fuel", weight: 0, arm: 0)
             ]
             recalculate()
-        } catch {}
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     private func recalculate() {
@@ -68,7 +79,11 @@ struct FlightWeightBalanceSection: View {
         )
         log.rampWeight = calculation?.totalWeight
         log.rampCG = calculation?.centerOfGravity
-        try? environment?.flightService.updateWeightBalance(log)
+        do {
+            try environment?.flightService.updateWeightBalance(log)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }
 

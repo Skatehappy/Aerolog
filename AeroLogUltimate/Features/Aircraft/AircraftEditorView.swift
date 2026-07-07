@@ -68,6 +68,17 @@ struct AircraftEditorView: View {
                     Toggle("Type Rating Required", isOn: $aircraft.requiresTypeRating)
                 }
 
+                Section {
+                    Toggle("Light Sport (LSA)", isOn: $aircraft.isLSA)
+                    if aircraft.category == .glider {
+                        Toggle("Motorglider", isOn: $aircraft.isMotorglider)
+                    }
+                } header: {
+                    Text("Airworthiness")
+                } footer: {
+                    Text("LSA is a certification class that can apply to any category. Motorglider applies only to gliders.")
+                }
+
                 Section("Time Tracking") {
                     Toggle("Track Hobbs", isOn: $aircraft.tracksHobbs)
                     Toggle("Track Tach", isOn: $aircraft.tracksTach)
@@ -175,10 +186,18 @@ struct AircraftEditorView: View {
             return
         }
 
+        guard let service = environment?.aircraftService else {
+            validationError = "The app environment is unavailable, so the aircraft could not be saved."
+            return
+        }
         aircraft.registration = id
         aircraft.make = make
         aircraft.model = model
-        try? environment?.aircraftService.save(aircraft)
-        dismiss()
+        do {
+            try service.save(aircraft)
+            dismiss()
+        } catch {
+            validationError = error.localizedDescription
+        }
     }
 }

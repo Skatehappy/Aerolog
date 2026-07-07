@@ -6,6 +6,7 @@ struct MaintenanceListView: View {
 
     @State private var editorItem: MaintenanceItem?
     @State private var isCreatingNew = false
+    @State private var errorMessage: String?
 
     private var items: [MaintenanceItem] {
         environment?.maintenanceService.items(for: aircraft, includeCompleted: false) ?? []
@@ -53,6 +54,14 @@ struct MaintenanceListView: View {
             guard environment?.settings.enableMaintenanceReminders == true else { return }
             await MaintenanceReminderScheduler.rescheduleAll(using: environment!.maintenanceService)
         }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 
     private func createNew() {
@@ -62,8 +71,12 @@ struct MaintenanceListView: View {
     }
 
     private func deleteItems(at offsets: IndexSet) {
-        for index in offsets {
-            try? environment?.maintenanceService.delete(items[index])
+        do {
+            for index in offsets {
+                try environment?.maintenanceService.delete(items[index])
+            }
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 }

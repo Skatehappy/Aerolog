@@ -6,7 +6,7 @@ import SwiftData
 /// All `@Model` types must be registered here for SwiftData container creation and migrations.
 enum AeroLogSchema {
     /// Current schema version. Increment when making breaking model changes.
-    static let versionIdentifier = "1.2.0"
+    static let versionIdentifier = "1.3.0"
 
     /// All persisted model types in dependency-safe order.
     static let modelTypes: [any PersistentModel.Type] = [
@@ -37,6 +37,6 @@ enum AeroLogSchema {
 
     /// Semantic version for migration planning (`AeroLogMigrationPlan`).
     static var schemaVersion: Schema.Version {
-        Schema.Version(1, 2, 0)
+        Schema.Version(1, 3, 0)
     }
 }

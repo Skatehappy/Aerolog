@@ -9,6 +9,8 @@ struct CustomTemplateEditorView: View {
     @Bindable var template: EndorsementTemplate
     let isNew: Bool
 
+    @State private var errorMessage: String?
+
     var body: some View {
         Form {
             Section("Template Info") {
@@ -55,10 +57,22 @@ struct CustomTemplateEditorView: View {
                     .fontWeight(.semibold)
             }
         }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 
     private func save() {
-        try? environment?.endorsementTemplateService.save(template)
-        dismiss()
+        do {
+            try environment?.endorsementTemplateService.save(template)
+            dismiss()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }

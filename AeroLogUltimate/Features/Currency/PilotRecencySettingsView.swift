@@ -20,6 +20,7 @@ struct PilotRecencySettingsView: View {
     @State private var cfiExpiration: Date = .now
     @State private var hasCFI = false
     @State private var isCFI = false
+    @State private var errorMessage: String?
 
     private var pilot: PilotProfile? { primaryProfiles.first }
 
@@ -73,6 +74,14 @@ struct PilotRecencySettingsView: View {
             }
         }
         .onAppear { loadFromProfile() }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 
     private func loadFromProfile() {
@@ -98,15 +107,28 @@ struct PilotRecencySettingsView: View {
     }
 
     private func save() {
-        guard let pilot else { dismiss(); return }
+        // Surface an explicit error rather than a silent dismiss when the primary
+        // profile is missing — this distinguishes "no primary profile" from a
+        // persistence failure so we can tell which failure mode occurred (bug #2).
+        guard let pilot else {
+            errorMessage = "No primary pilot profile was found, so recency settings could not be saved. The initial profile seed may not have completed — reopen the app and try again."
+            return
+        }
+        guard let service = environment?.pilotProfileService else {
+            errorMessage = "The app environment is unavailable, so recency settings could not be saved."
+            return
+        }
         pilot.isCFI = isCFI
         pilot.medicalClass = medicalClass
         pilot.medicalExpirationDate = hasMedical ? medicalExpiration : nil
         pilot.lastFlightReviewDate = hasFlightReview ? flightReviewDate : nil
         pilot.lastIPCDate = hasIPC ? ipcDate : nil
         pilot.cfiExpirationDate = (isCFI && hasCFI) ? cfiExpiration : nil
-        pilot.touch()
-        try? environment?.pilotProfileService.update(pilot)
-        dismiss()
+        do {
+            try service.update(pilot)
+            dismiss()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }

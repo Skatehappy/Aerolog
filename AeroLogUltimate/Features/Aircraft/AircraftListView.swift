@@ -12,6 +12,7 @@ struct AircraftListView: View {
     @State private var editorAircraft: Aircraft?
     @State private var isCreatingNew = false
     @State private var searchText = ""
+    @State private var errorMessage: String?
 
     private var filteredAircraft: [Aircraft] {
         allAircraft.filter { aircraft in
@@ -65,6 +66,14 @@ struct AircraftListView: View {
                 AircraftEditorView(aircraft: aircraft, isNew: isCreatingNew)
             }
         }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 
     @ViewBuilder
@@ -78,11 +87,19 @@ struct AircraftListView: View {
             .swipeActions(edge: .trailing) {
                 if aircraft.isActive {
                     Button("Deactivate", role: .destructive) {
-                        try? environment?.aircraftService.deactivate(aircraft)
+                        do {
+                            try environment?.aircraftService.deactivate(aircraft)
+                        } catch {
+                            errorMessage = error.localizedDescription
+                        }
                     }
                 } else {
                     Button("Reactivate") {
-                        try? environment?.aircraftService.reactivate(aircraft)
+                        do {
+                            try environment?.aircraftService.reactivate(aircraft)
+                        } catch {
+                            errorMessage = error.localizedDescription
+                        }
                     }
                     .tint(.green)
                 }

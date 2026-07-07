@@ -10,6 +10,7 @@ struct EndorsementDetailView: View {
     @State private var showShare = false
     @State private var shareURL: URL?
     @State private var showDeleteConfirm = false
+    @State private var errorMessage: String?
 
     var body: some View {
         ScrollView {
@@ -42,9 +43,21 @@ struct EndorsementDetailView: View {
             message: "This endorsement will be removed from your history.",
             isPresented: $showDeleteConfirm,
             onConfirm: {
-                try? environment?.endorsementService.delete(endorsement)
+                do {
+                    try environment?.endorsementService.delete(endorsement)
+                } catch {
+                    errorMessage = error.localizedDescription
+                }
             }
         )
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 
     private var header: some View {

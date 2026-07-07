@@ -269,7 +269,11 @@ struct FlightDetailView: View {
     }
 
     private func revertToDraft() {
-        try? environment?.flightService.revertToDraft(flight)
+        do {
+            try environment?.flightService.revertToDraft(flight)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     private func performDelete() {

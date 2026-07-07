@@ -8,6 +8,7 @@ struct FlightExpensesSection: View {
     @State private var newCategory: ExpenseCategory = .fuel
     @State private var newAmount = ""
     @State private var newVendor = ""
+    @State private var errorMessage: String?
 
     private var expenses: [FlightExpense] {
         environment?.expenseService.expenses(for: flight) ?? []
@@ -72,25 +73,42 @@ struct FlightExpensesSection: View {
             }
             .presentationDetents([.medium])
         }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 
     private func saveExpense() {
         guard let amount = Double(newAmount), amount > 0 else { return }
-        try? environment?.expenseService.addExpense(
-            to: flight,
-            category: newCategory,
-            amount: amount,
-            vendor: newVendor.isEmpty ? nil : newVendor
-        )
+        do {
+            try environment?.expenseService.addExpense(
+                to: flight,
+                category: newCategory,
+                amount: amount,
+                vendor: newVendor.isEmpty ? nil : newVendor
+            )
+        } catch {
+            errorMessage = error.localizedDescription
+            return
+        }
         newAmount = ""
         newVendor = ""
         showAddExpense = false
     }
 
     private func deleteExpenses(at offsets: IndexSet) {
-        for index in offsets {
-            let expense = expenses[index]
-            try? environment?.expenseService.delete(expense)
+        do {
+            for index in offsets {
+                let expense = expenses[index]
+                try environment?.expenseService.delete(expense)
+            }
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 }

@@ -4,6 +4,8 @@ struct FlightLegsSection: View {
     @Environment(\.appEnvironment) private var environment
     @Bindable var flight: Flight
 
+    @State private var errorMessage: String?
+
     var body: some View {
         Section {
             ForEach(flight.sortedLegs, id: \.persistentModelID) { leg in
@@ -48,13 +50,21 @@ struct FlightLegsSection: View {
             }
             .onDelete { indexSet in
                 let legs = flight.sortedLegs
-                for index in indexSet {
-                    try? environment?.flightService.removeLeg(legs[index], from: flight)
+                do {
+                    for index in indexSet {
+                        try environment?.flightService.removeLeg(legs[index], from: flight)
+                    }
+                } catch {
+                    errorMessage = error.localizedDescription
                 }
             }
 
             Button {
-                try? environment?.flightService.addLeg(to: flight)
+                do {
+                    try environment?.flightService.addLeg(to: flight)
+                } catch {
+                    errorMessage = error.localizedDescription
+                }
             } label: {
                 Label("Add Leg", systemImage: "plus.circle")
             }
@@ -69,6 +79,14 @@ struct FlightLegsSection: View {
             }
         } header: {
             FormSectionHeader(title: "Flight Legs", subtitle: "Multi-leg route segments", systemImage: "point.topleft.down.curvedto.point.bottomright.up")
+        }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
         }
     }
 }

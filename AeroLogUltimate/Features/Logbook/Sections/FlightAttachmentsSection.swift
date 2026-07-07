@@ -94,7 +94,11 @@ struct FlightAttachmentsGallery: View {
     private func remove(_ attachment: Attachment) {
         guard let env = environment else { return }
         let service = AttachmentService(dataStore: env.dataStore, storage: env.attachmentStorage)
-        try? service.remove(attachment)
+        do {
+            try service.remove(attachment)
+        } catch {
+            attachmentError = error.localizedDescription
+        }
     }
 }
 
