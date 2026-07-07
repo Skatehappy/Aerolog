@@ -250,6 +250,87 @@ final class CurrencyEngineTests: XCTestCase {
 
     // MARK: - Helpers
 
+    // MARK: - Audit regression tests
+
+    /// H1: 24 calendar months after Jul 5 2024 = valid through Jul 31 2026.
+    func testEndOfCalendarMonthHelper_H1() {
+        let jul5 = ISO8601DateFormatter().date(from: "2024-07-05T12:00:00Z")!
+        let expiry = CurrencyDateUtilities.endOfCalendarMonth(afterAdding: 24, to: jul5)
+        let comps = Calendar.current.dateComponents([.year, .month, .day], from: expiry)
+        XCTAssertEqual(comps.year, 2026)
+        XCTAssertEqual(comps.month, 7)
+        XCTAssertEqual(comps.day, 31)
+    }
+
+    /// H1: flight review is valid through the LAST day of the 24th calendar month.
+    /// Review 2024-06-10 → exact-day math expires 2026-06-10 (before the 2026-06-15
+    /// reference), but the calendar-month rule keeps it valid through 2026-06-30.
+    func testFlightReviewValidThroughEndOfCalendarMonth_H1() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        pilot.lastFlightReviewDate = ISO8601DateFormatter().date(from: "2024-06-10T12:00:00Z")
+        let requirement = CurrencyRequirement(currencyType: .flightReview, displayName: "BFR", isBuiltIn: true)
+
+        let result = engine.calculate(requirement: requirement, pilot: pilot, flights: [])
+        XCTAssertNotEqual(result.status, .expired, "calendar-month review should still be valid")
+    }
+
+    /// H2: 61.57(a) day-passenger currency counts landings made at night too.
+    func testDayPassengerCountsNightLandings_H2() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        let requirement = CurrencyRequirement(
+            currencyType: .passengerCarryingDay, displayName: "Day", lookbackDays: 90, isBuiltIn: true
+        )
+        requirement.requiredLandings = 3
+
+        let flight = makeFlight(daysAgo: 10, nightLandings: 3, role: .pic)
+        flight.dayLandings = 0
+        flight.pilot = pilot
+
+        let result = engine.calculate(requirement: requirement, pilot: pilot, flights: [flight])
+        XCTAssertEqual(result.status, .current)
+        XCTAssertEqual(result.detail.countedLandings, 3)
+    }
+
+    /// H2: tailwheel currency counts night full-stop landings too.
+    func testTailwheelCountsNightFullStops_H2() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        let requirement = CurrencyRequirement(
+            currencyType: .tailwheel, displayName: "TW", lookbackDays: 90, isBuiltIn: true
+        )
+        requirement.requiredLandings = 3
+
+        let aircraft = Aircraft(registration: "N1TW")
+        aircraft.isTailwheel = true
+        let flight = makeFlight(daysAgo: 5, role: .pic)
+        flight.fullStopDayLandings = 0
+        flight.fullStopNightLandings = 3
+        flight.aircraft = aircraft
+        flight.pilot = pilot
+
+        let result = engine.calculate(requirement: requirement, pilot: pilot, flights: [flight])
+        XCTAssertEqual(result.status, .current)
+    }
+
+    /// H3: landing-currency expiry anchors on the Nth-most-recent LANDING, not the
+    /// Nth-most-recent flight. 1 landing 100d ago, 1 at 70d, 2 at 40d, need 3 →
+    /// the 3rd landing back is 70 days ago, so ~20 days remain (the old per-flight
+    /// anchor used 100 days ago and would have shown expired).
+    func testLandingExpiryExpandsByLandingCount_H3() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        let requirement = CurrencyRequirement(
+            currencyType: .passengerCarryingDay, displayName: "Day", lookbackDays: 90, isBuiltIn: true
+        )
+        requirement.requiredLandings = 3
+
+        let a = makeFlight(daysAgo: 100, dayLandings: 1, role: .pic); a.pilot = pilot
+        let b = makeFlight(daysAgo: 70, dayLandings: 1, role: .pic); b.pilot = pilot
+        let c = makeFlight(daysAgo: 40, dayLandings: 2, role: .pic); c.pilot = pilot
+
+        let result = engine.calculate(requirement: requirement, pilot: pilot, flights: [a, b, c])
+        XCTAssertEqual(result.status, .current)
+        XCTAssertEqual(result.detail.daysRemaining ?? -999, 20, accuracy: 1)
+    }
+
     private func makeFlight(
         daysAgo: Int,
         dayLandings: Int = 0,

@@ -212,4 +212,30 @@ final class DataManagementTests: XCTestCase {
         XCTAssertEqual(rows.first?.departureICAO, "KPAO")
         XCTAssertEqual(rows.first?.aircraftRegistration, "N123")
     }
+
+    /// C1/L4: full-stop, hold, and approach columns import (and "3.0" parses to 3).
+    func testCSVImporterParsesCurrencyColumns() throws {
+        let csv = """
+        Date,Aircraft,Total,Night FS,DayLandingsFullStop,Holds,Approaches
+        2024-01-01,N123,1.0,2.0,1,1,3
+        """
+        let importer = CSVLogbookImporter()
+        let rows = try importer.parse(Data(csv.utf8))
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.fullStopNightLandings, 2)
+        XCTAssertEqual(rows.first?.fullStopDayLandings, 1)
+        XCTAssertEqual(rows.first?.holds, 1)
+        XCTAssertEqual(rows.first?.approachCount, 3)
+    }
+
+    /// C1: ForeFlight-style Approach1..3 columns count as 3 approaches.
+    func testCSVImporterCountsForeFlightApproachColumns() throws {
+        let csv = """
+        Date,Aircraft,Total,Approach1,Approach2,Approach3
+        2024-01-01,N123,1.0,ILS 28R KSFO,RNAV 30 KSQL,
+        """
+        let importer = CSVLogbookImporter()
+        let rows = try importer.parse(Data(csv.utf8))
+        XCTAssertEqual(rows.first?.approachCount, 2)
+    }
 }
