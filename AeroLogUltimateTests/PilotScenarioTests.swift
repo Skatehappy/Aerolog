@@ -381,6 +381,60 @@ final class PilotScenarioTests: XCTestCase {
     // MARK: - Helpers
 
     @discardableResult
+    // MARK: - CFI Maria Vasquez (class-scoped currency, WS1)
+
+    /// Maria instructs in a C172 (dual given), trains toward AMEL in a PA-44 (dual
+    /// received), and we assert class isolation, H5 role-independent landing credit,
+    /// and the endorsement signing rule.
+    func testMariaVasquezClassScopedCurrency() throws {
+        let store = try AppDataStore.makeInMemory()
+        let maria = try XCTUnwrap(try store.primaryPilotProfile())
+        maria.firstName = "Maria"
+        maria.lastName = "Vasquez"
+        maria.isCFI = true
+        maria.cfiCertificateNumber = "CFI123456"
+        maria.setRatings([.instrumentAirplane, .flightInstructor])  // holds SEL base, NOT AMEL yet
+        try store.save()
+
+        let aircraftSvc = AircraftService(dataStore: store)
+        let c172 = try aircraftSvc.create(registration: "N172SP", make: "Cessna", model: "172S")
+        c172.aircraftClass = .singleEngineLand
+        c172.category = .airplane
+        let pa44 = try aircraftSvc.create(registration: "N44PA", make: "Piper", model: "PA-44")
+        pa44.aircraftClass = .multiEngineLand
+        pa44.category = .airplane
+        try store.save()
+
+        // Instructs in the C172 (dual given) — 3 landings within 90 days.
+        for d in [10, 20, 30] {
+            _ = try makeFinalizedFlight(store: store, pilot: maria, aircraft: c172, daysAgo: d, dayLandings: 1, role: .dualGiven)
+        }
+
+        let currency = CurrencyService(dataStore: store, referenceDate: referenceDate)
+        var dashboard = try currency.calculateDashboard(for: maria)
+        func dayResult(_ cls: AircraftClass) -> CurrencyCalculationResult? {
+            dashboard.results.first { $0.currencyType == .passengerCarryingDay && $0.applicableClass == cls }
+        }
+
+        // H5: dual-given landings count → SEL current. AMEL has no twin time yet.
+        XCTAssertEqual(dayResult(.singleEngineLand)?.status, .current)
+        XCTAssertNotEqual(dayResult(.multiEngineLand)?.status, .current)
+
+        // Trains for AMEL: 3 dual-received twin landings → AMEL becomes current.
+        for d in [5, 6, 7] {
+            _ = try makeFinalizedFlight(store: store, pilot: maria, aircraft: pa44, daysAgo: d, dayLandings: 1, role: .dualReceived)
+        }
+        dashboard = try currency.calculateDashboard(for: maria)
+        XCTAssertEqual(dayResult(.multiEngineLand)?.status, .current)
+
+        // Endorsement signing rule: missing certificate number cannot sign.
+        let endoSvc = EndorsementService(dataStore: store)
+        let endo = Endorsement(templateID: .custom, title: "Test", endorsementText: "text")
+        store.insert(endo)
+        try store.save()
+        XCTAssertThrowsError(try endoSvc.sign(endo, signerName: "Maria Vasquez", certificateNumber: "", signatureData: Data([1, 2, 3])))
+    }
+
     private func configureSarah(store: AppDataStore) throws -> PilotProfile {
         let pilot = try store.primaryPilotProfile()!
         pilot.firstName = "Sarah"
