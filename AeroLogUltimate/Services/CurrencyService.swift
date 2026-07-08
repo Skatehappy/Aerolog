@@ -22,8 +22,12 @@ final class CurrencyService {
             return CurrencyDashboardSummary(calculatedAt: .now, results: [])
         }
 
-        let requirements = try enabledRequirements()
         let flights = try qualifyingFlights(for: profile)
+        // C4: auto-create per-class/category currency instances from the flights
+        // present and deprecate the legacy unscoped built-ins.
+        try ensureScopedRequirements(flights: flights)
+
+        let requirements = try enabledRequirements()
         let endorsements = try endorsements(for: profile)
 
         var results: [CurrencyCalculationResult] = []
@@ -54,7 +58,94 @@ final class CurrencyService {
         }
 
         try persistSnapshots(results, pilot: profile, requirements: requirements)
-        return CurrencyDashboardSummary(calculatedAt: .now, results: results.sorted { $0.requirementName < $1.requirementName })
+        return CurrencyDashboardSummary(
+            calculatedAt: .now,
+            results: results.sorted { $0.requirementName < $1.requirementName },
+            anomalyWarnings: anomalyWarnings(profile: profile, flights: flights)
+        )
+    }
+
+    // MARK: - C4 scoped requirements + anomaly sweep
+
+    private func flightHasInstrumentActivity(_ flight: Flight) -> Bool {
+        flight.actualInstrumentTime > 0
+            || flight.simulatedInstrumentTime > 0
+            || !(flight.approaches ?? []).isEmpty
+    }
+
+    /// C4: ensure a per-class Passenger Carrying (Day/Night) requirement exists for
+    /// every class flown, and a per-category Instrument requirement for every
+    /// category with instrument activity. On first scoped run, deprecate the legacy
+    /// unscoped built-ins (isEnabled = false; never deleted — snapshots reference
+    /// them), carrying their user-edited reminderLeadDays onto the new instances.
+    private func ensureScopedRequirements(flights: [Flight]) throws {
+        let all = try allRequirements()
+        let classesPresent = Set(flights.compactMap { $0.aircraft?.aircraftClass })
+        let instrumentCategories = Set(
+            flights.filter(flightHasInstrumentActivity).compactMap { $0.aircraft?.category }
+        )
+        guard !classesPresent.isEmpty || !instrumentCategories.isEmpty else { return }
+
+        let legacyDay = all.first { $0.currencyType == .passengerCarryingDay && $0.applicableClass == nil && $0.isBuiltIn }
+        let legacyNight = all.first { $0.currencyType == .passengerCarryingNight && $0.applicableClass == nil && $0.isBuiltIn }
+        let legacyInstrument = all.first { $0.currencyType == .instrument && $0.applicableCategory == nil && $0.isBuiltIn }
+
+        var changed = false
+
+        for cls in classesPresent {
+            if !all.contains(where: { $0.currencyType == .passengerCarryingDay && $0.applicableClass == cls }) {
+                let req = CurrencyRequirement(currencyType: .passengerCarryingDay, displayName: "Passenger Carrying (Day) — \(cls.abbreviation)", lookbackDays: 90, isBuiltIn: true)
+                req.applicableClass = cls
+                req.requiredLandings = 3
+                req.reminderLeadDays = legacyDay?.reminderLeadDays ?? req.reminderLeadDays
+                dataStore.insert(req); changed = true
+            }
+            if !all.contains(where: { $0.currencyType == .passengerCarryingNight && $0.applicableClass == cls }) {
+                let req = CurrencyRequirement(currencyType: .passengerCarryingNight, displayName: "Passenger Carrying (Night) — \(cls.abbreviation)", lookbackDays: 90, isBuiltIn: true)
+                req.applicableClass = cls
+                req.requiredNightLandings = 3
+                req.reminderLeadDays = legacyNight?.reminderLeadDays ?? req.reminderLeadDays
+                dataStore.insert(req); changed = true
+            }
+        }
+
+        for cat in instrumentCategories {
+            if !all.contains(where: { $0.currencyType == .instrument && $0.applicableCategory == cat }) {
+                let req = CurrencyRequirement(currencyType: .instrument, displayName: "Instrument Currency — \(cat.displayName)", lookbackDays: 180, isBuiltIn: true)
+                req.applicableCategory = cat
+                req.requiredApproaches = 6
+                req.reminderLeadDays = legacyInstrument?.reminderLeadDays ?? req.reminderLeadDays
+                dataStore.insert(req); changed = true
+            }
+        }
+
+        if !classesPresent.isEmpty {
+            for legacy in [legacyDay, legacyNight].compactMap({ $0 }) where legacy.isEnabled {
+                legacy.isEnabled = false; changed = true
+            }
+        }
+        if !instrumentCategories.isEmpty, let legacyInstrument, legacyInstrument.isEnabled {
+            legacyInstrument.isEnabled = false; changed = true
+        }
+
+        if changed { try dataStore.save() }
+    }
+
+    /// WS1.7: informational anomalies — PIC time logged in a class the pilot does
+    /// not hold a rating for. Does not block or modify data.
+    private func anomalyWarnings(profile: PilotProfile, flights: [Flight]) -> [String] {
+        let ratings = Set(profile.ratings)
+        var flaggedClasses: Set<AircraftClass> = []
+        var warnings: [String] = []
+        for flight in flights where flight.picTime > 0 {
+            guard let cls = flight.aircraft?.aircraftClass,
+                  let rating = cls.matchingRating,
+                  !ratings.contains(rating),
+                  !flaggedClasses.contains(cls) else { continue }
+            flaggedClasses.insert(cls)
+            warnings.append("PIC time is logged in \(cls.displayName) but that rating isn't on your pilot profile.")
+        }
+        return warnings
     }
 
     func result(for requirement: CurrencyRequirement, pilot: PilotProfile) throws -> CurrencyCalculationResult {

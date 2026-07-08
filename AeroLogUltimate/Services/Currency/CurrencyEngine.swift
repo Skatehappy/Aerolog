@@ -75,7 +75,14 @@ struct CurrencyEngine {
         let windowEnd = CurrencyDateUtilities.startOfDay(referenceDate)
 
         let events = landingEvents(
-            from: flights.filter { isSoleManipulator($0) && $0.flightDate >= windowStart },
+            // H5: 61.57 landing recency credits logged landings regardless of role
+            // (the reg counts takeoffs/landings, not sole-manipulator time). Scope
+            // to the requirement's class/category; exclude training devices (WS1.6).
+            from: flights.filter {
+                $0.flightDate >= windowStart
+                    && matchesScope($0, requirement: requirement)
+                    && !isSimulatorFlight($0)
+            },
             day: true,
             night: true,
             fullStopOnly: false
@@ -107,8 +114,9 @@ struct CurrencyEngine {
 
         let events = landingEvents(
             from: flights.filter {
-                isSoleManipulator($0)
-                    && $0.flightDate >= windowStart
+                $0.flightDate >= windowStart
+                    && matchesScope($0, requirement: requirement)  // C4 class scope
+                    && !isSimulatorFlight($0)                       // WS1.6 no sim landings
                     // M3: presence of night full-stop landings qualifies the flight
                     // even if night time wasn't separately logged (data-entry shortcut).
                     && ($0.nightTime > 0 || $0.conditions.contains(.night) || $0.fullStopNightLandings > 0)
@@ -150,6 +158,8 @@ struct CurrencyEngine {
 
         let instrumentFlights = flights.filter {
             $0.flightDate >= windowStart && isInstrumentQualifyingRole($0) && hasInstrumentActivity($0)
+                // C4: scope to the requirement's category (sims DO count here).
+                && matchesScope($0, requirement: requirement)
         }
 
         var approachCount = 0
@@ -254,9 +264,11 @@ struct CurrencyEngine {
         let windowEnd = CurrencyDateUtilities.startOfDay(referenceDate)
 
         let tailwheelFlights = flights.filter {
-            isSoleManipulator($0)
-                && $0.flightDate >= windowStart
+            // H5: role-independent landing credit. WS1.6: no training devices.
+            $0.flightDate >= windowStart
                 && ($0.aircraft?.isTailwheel == true)
+                && !isSimulatorFlight($0)
+                && matchesScope($0, requirement: requirement)
         }
 
         let events = landingEvents(from: tailwheelFlights, day: true, night: true, fullStopOnly: true)
@@ -823,10 +835,6 @@ struct CurrencyEngine {
         }
     }
 
-    private func isSoleManipulator(_ flight: Flight) -> Bool {
-        flight.role == .pic || flight.role == .solo
-    }
-
     private func isPIC(_ flight: Flight) -> Bool {
         flight.role == .pic || flight.role == .solo || flight.picTime > 0
     }
@@ -852,5 +860,20 @@ struct CurrencyEngine {
         let reg = aircraft.typeDesignator?.uppercased() ?? ""
         let makeModel = "\(aircraft.make) \(aircraft.model)".uppercased()
         return reg == designator.uppercased() || makeModel.contains(designator.uppercased())
+    }
+
+    /// C4: a flight matches a requirement's scope when the requirement's
+    /// applicableClass/Category (if set) equal the flight's aircraft. Unscoped
+    /// (legacy) requirements match everything, preserving prior behavior.
+    private func matchesScope(_ flight: Flight, requirement: CurrencyRequirement) -> Bool {
+        if let cls = requirement.applicableClass, flight.aircraft?.aircraftClass != cls { return false }
+        if let cat = requirement.applicableCategory, flight.aircraft?.category != cat { return false }
+        return true
+    }
+
+    /// WS1.6: a training-device flight contributes approaches/holds to 61.57(c)
+    /// but zero landings to 61.57(a)/(b)/tailwheel.
+    private func isSimulatorFlight(_ flight: Flight) -> Bool {
+        flight.aircraft?.isSimulator == true || (flight.aircraft?.simulatorLevel ?? .none) != .none
     }
 }

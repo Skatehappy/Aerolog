@@ -24,6 +24,9 @@ struct CurrencyCalculationResult: Identifiable, Equatable, Sendable {
 struct CurrencyDashboardSummary: Sendable {
     let calculatedAt: Date
     let results: [CurrencyCalculationResult]
+    /// WS1.7 anomaly sweep — informational notices (e.g. PIC time in a class the
+    /// pilot doesn't hold). Does not block or modify data.
+    var anomalyWarnings: [String] = []
 
     var currentCount: Int { results.filter { $0.status == .current }.count }
     var expiringSoonCount: Int { results.filter { $0.status == .expiringSoon }.count }

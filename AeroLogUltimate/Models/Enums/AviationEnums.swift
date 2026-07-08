@@ -58,6 +58,56 @@ enum AircraftClass: String, Codable, CaseIterable, Sendable {
     case poweredParachute
 }
 
+extension AircraftClass {
+    /// Short FAA-style label used in scoped-currency names and dashboard groups.
+    var abbreviation: String {
+        switch self {
+        case .singleEngineLand: "ASEL"
+        case .singleEngineSea: "ASES"
+        case .multiEngineLand: "AMEL"
+        case .multiEngineSea: "AMES"
+        case .helicopter: "Helicopter"
+        case .gyroplane: "Gyroplane"
+        case .airship: "Airship"
+        case .balloon: "Balloon"
+        case .weightShiftControl: "Weight-Shift"
+        case .poweredParachute: "Powered Parachute"
+        }
+    }
+
+    var displayName: String { abbreviation }
+
+    /// The pilot rating that authorizes acting as PIC in this class, or nil for
+    /// the base ASEL rating (held by every certificated airplane pilot) and
+    /// classes without a distinct stored rating. Used by the anomaly sweep.
+    var matchingRating: PilotRating? {
+        switch self {
+        case .singleEngineLand: nil
+        case .multiEngineLand: .multiEngineLand
+        case .multiEngineSea: .multiEngineSea
+        case .singleEngineSea: .singleEngineSea
+        case .helicopter: .rotorcraftHelicopter
+        case .airship: .lighterThanAirAirship
+        case .balloon: .lighterThanAirBalloon
+        case .gyroplane, .weightShiftControl, .poweredParachute: nil
+        }
+    }
+}
+
+extension AircraftCategory {
+    var displayName: String {
+        switch self {
+        case .airplane: "Airplane"
+        case .rotorcraft: "Rotorcraft"
+        case .glider: "Glider"
+        case .lighterThanAir: "Lighter-Than-Air"
+        case .poweredLift: "Powered-Lift"
+        case .poweredParachute: "Powered Parachute"
+        case .weightShiftControl: "Weight-Shift Control"
+        }
+    }
+}
+
 /// Simulator / training device classification.
 enum SimulatorLevel: String, Codable, CaseIterable, Sendable {
     case none
