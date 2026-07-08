@@ -75,8 +75,6 @@ extension AircraftClass {
         }
     }
 
-    var displayName: String { abbreviation }
-
     /// The pilot rating that authorizes acting as PIC in this class, or nil for
     /// the base ASEL rating (held by every certificated airplane pilot) and
     /// classes without a distinct stored rating. Used by the anomaly sweep.
@@ -90,20 +88,6 @@ extension AircraftClass {
         case .airship: .lighterThanAirAirship
         case .balloon: .lighterThanAirBalloon
         case .gyroplane, .weightShiftControl, .poweredParachute: nil
-        }
-    }
-}
-
-extension AircraftCategory {
-    var displayName: String {
-        switch self {
-        case .airplane: "Airplane"
-        case .rotorcraft: "Rotorcraft"
-        case .glider: "Glider"
-        case .lighterThanAir: "Lighter-Than-Air"
-        case .poweredLift: "Powered-Lift"
-        case .poweredParachute: "Powered Parachute"
-        case .weightShiftControl: "Weight-Shift Control"
         }
     }
 }

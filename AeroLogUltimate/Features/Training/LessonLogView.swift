@@ -103,7 +103,7 @@ struct LessonLogView: View {
                 // directly so it adds to ground-school totals and closes, without
                 // opening the flight editor. Ground-only entries are exempt from the
                 // aircraft/airport requirements in FlightValidation.
-                try service.finalize(flight)
+                try environment?.flightService.finalize(flight)
                 dismiss()
             }
         } catch {
