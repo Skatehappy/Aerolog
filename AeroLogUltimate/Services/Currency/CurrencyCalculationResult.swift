@@ -14,6 +14,10 @@ struct CurrencyCalculationResult: Identifiable, Equatable, Sendable {
     let windowEndDate: Date?
     let detail: CurrencyDetailPayload
     let calculatedAt: Date
+    /// C4: class/category this result is scoped to (nil for unscoped/legacy rules),
+    /// so the dashboard can group by class and category.
+    var applicableClass: AircraftClass? = nil
+    var applicableCategory: AircraftCategory? = nil
 
     var isActionRequired: Bool {
         status == .expired || status == .expiringSoon

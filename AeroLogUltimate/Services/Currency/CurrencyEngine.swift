@@ -59,7 +59,9 @@ struct CurrencyEngine {
             windowStartDate: result.4,
             windowEndDate: result.5,
             detail: result.6,
-            calculatedAt: referenceDate
+            calculatedAt: referenceDate,
+            applicableClass: requirement.applicableClass,
+            applicableCategory: requirement.applicableCategory
         )
     }
 

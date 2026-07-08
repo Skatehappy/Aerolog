@@ -13,6 +13,7 @@ struct CurrencyDashboardView: View {
     }
     @State private var activeSheet: ActiveSheet?
     @State private var customRequirements: [CurrencyRequirement] = []
+    @State private var heldRatings: Set<PilotRating> = []
     @State private var isLoading = true
     @State private var errorMessage: String?
 
@@ -77,9 +78,13 @@ struct CurrencyDashboardView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 summaryHeader(summary)
+                if !summary.anomalyWarnings.isEmpty {
+                    anomalyBanner(summary.anomalyWarnings)
+                }
                 if !summary.attentionItems.isEmpty {
                     attentionSection(summary.attentionItems)
                 }
+                scopedSections(summary.results)
                 currencySections(summary.results)
             }
             .padding()
@@ -127,6 +132,70 @@ struct CurrencyDashboardView: View {
         }
     }
 
+    private func anomalyBanner(_ warnings: [String]) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Label("Heads up", systemImage: "info.circle")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.blue)
+            ForEach(warnings, id: \.self) { warning in
+                Text(warning)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(Color.blue.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    @ViewBuilder
+    private func resultCard(_ result: CurrencyCalculationResult) -> some View {
+        Button {
+            selectedResult = result
+        } label: {
+            CurrencyStatusCard(result: result, isSelected: selectedResult?.id == result.id)
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// C4: class/category-grouped sections for scoped passenger/instrument currency.
+    /// A class the pilot doesn't hold the rating for is shown as "Training toward".
+    @ViewBuilder
+    private func scopedSections(_ results: [CurrencyCalculationResult]) -> some View {
+        let classResults = results.filter { $0.applicableClass != nil && $0.status != .notApplicable }
+        let classes = AircraftClass.allCases.filter { cls in classResults.contains { $0.applicableClass == cls } }
+        let catResults = results.filter { $0.applicableCategory != nil && $0.currencyType == .instrument && $0.status != .notApplicable }
+        let categories = AircraftCategory.allCases.filter { cat in catResults.contains { $0.applicableCategory == cat } }
+
+        VStack(alignment: .leading, spacing: 16) {
+            ForEach(classes, id: \.self) { cls in
+                let items = classResults.filter { $0.applicableClass == cls }
+                let held = cls.matchingRating.map { heldRatings.contains($0) } ?? true
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(held ? cls.displayName : "Training toward \(cls.displayName)")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                    if !held {
+                        Text("Currency shown for reference — rating not yet held.")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    ForEach(items) { resultCard($0) }
+                }
+            }
+            ForEach(categories, id: \.self) { cat in
+                let items = catResults.filter { $0.applicableCategory == cat }
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Instrument — \(cat.displayName)")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                    ForEach(items) { resultCard($0) }
+                }
+            }
+        }
+    }
+
     private func currencySections(_ results: [CurrencyCalculationResult]) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             currencyGroup(title: "FAA 61.57 — Flight Experience", results: results, types: [
@@ -147,7 +216,11 @@ struct CurrencyDashboardView: View {
         results: [CurrencyCalculationResult],
         types: [CurrencyType]
     ) -> some View {
-        let filtered = results.filter { types.contains($0.currencyType) && $0.status != .notApplicable }
+        // Exclude class/category-scoped results — those render in scopedSections.
+        let filtered = results.filter {
+            types.contains($0.currencyType) && $0.status != .notApplicable
+                && $0.applicableClass == nil && $0.applicableCategory == nil
+        }
         let customs = types.contains(.custom) ? results.filter { $0.currencyType == .custom } : []
         let items = types.contains(.custom) ? customs : filtered
 
@@ -214,6 +287,7 @@ struct CurrencyDashboardView: View {
         do {
             summary = try service.calculateDashboard()
             customRequirements = try service.allRequirements().filter { $0.currencyType == .custom }
+            heldRatings = Set((try? environment?.pilotProfileService.primaryProfile()?.ratings) ?? [])
             if selectedResult == nil {
                 selectedResult = summary?.attentionItems.first
             }
