@@ -86,6 +86,12 @@ struct CurrencyDashboardView: View {
                 }
                 scopedSections(summary.results)
                 currencySections(summary.results)
+                // F4: persistent disclaimer footer.
+                Text("Currency figures are a planning aid — verify against the FARs. As pilot in command you are responsible for your currency and privileges.")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 8)
             }
             .padding()
         }

@@ -15,6 +15,7 @@ final class UserPreferences: @unchecked Sendable {
 
     private enum Key: String {
         case hasCompletedInitialSeed
+        case hasAcknowledgedCurrencyDisclaimer
         case preferredColorScheme
         case defaultFlightRole
         case showDecimalHours
@@ -33,6 +34,12 @@ final class UserPreferences: @unchecked Sendable {
     var hasCompletedInitialSeed: Bool {
         get { defaults.bool(forKey: key(.hasCompletedInitialSeed)) }
         set { defaults.set(newValue, forKey: key(.hasCompletedInitialSeed)) }
+    }
+
+    /// F4: whether the pilot has acknowledged the currency-tool disclaimer.
+    var hasAcknowledgedCurrencyDisclaimer: Bool {
+        get { defaults.bool(forKey: key(.hasAcknowledgedCurrencyDisclaimer)) }
+        set { defaults.set(newValue, forKey: key(.hasAcknowledgedCurrencyDisclaimer)) }
     }
 
     // MARK: - Display
