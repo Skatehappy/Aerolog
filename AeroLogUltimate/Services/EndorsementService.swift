@@ -126,6 +126,11 @@ final class EndorsementService {
         signatureData: Data?,
         instructor: PilotProfile? = nil
     ) throws {
+        // Endorsement rule: both signer name and certificate number are required
+        // before an endorsement can transition to .signed.
+        guard !signerName.trimmingCharacters(in: .whitespaces).isEmpty else {
+            throw EndorsementServiceError.signerNameRequired
+        }
         guard !certificateNumber.trimmingCharacters(in: .whitespaces).isEmpty else {
             throw EndorsementServiceError.certificateNumberRequired
         }
@@ -176,10 +181,15 @@ final class EndorsementService {
     }
 
     private func mergePackage(_ package: RemoteSigningPackage, into endorsement: Endorsement) throws {
-        if package.isSigned {
+        // Endorsement rule: an imported package can only complete the signature
+        // when it carries BOTH a signer name and a certificate number. Missing
+        // either → land as pending (a warning is surfaced by the import view).
+        let signerName = (package.signerName ?? "").trimmingCharacters(in: .whitespaces)
+        let certNumber = (package.signerCertificateNumber ?? "").trimmingCharacters(in: .whitespaces)
+        if package.isSigned && !signerName.isEmpty && !certNumber.isEmpty {
             endorsement.markSigned(
-                signerName: package.signerName ?? "",
-                certificateNumber: package.signerCertificateNumber ?? "",
+                signerName: signerName,
+                certificateNumber: certNumber,
                 signatureData: package.signatureData,
                 signedAt: package.signedAt ?? .now
             )
@@ -187,6 +197,14 @@ final class EndorsementService {
             endorsement.markPendingSignature(token: package.token)
         }
         try dataStore.save()
+    }
+
+    /// Whether an imported package would land as signed. The import view uses this
+    /// to warn when a package arrives incomplete and stays pending.
+    func packageCompletesSignature(_ package: RemoteSigningPackage) -> Bool {
+        package.isSigned
+            && !(package.signerName ?? "").trimmingCharacters(in: .whitespaces).isEmpty
+            && !(package.signerCertificateNumber ?? "").trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     func exportPackage(for endorsement: Endorsement, signatureData: Data? = nil) throws -> Data {
@@ -238,6 +256,7 @@ final class EndorsementService {
 
 enum EndorsementServiceError: LocalizedError {
     case certificateNumberRequired
+    case signerNameRequired
     case signatureRequired
     case signedEndorsementImmutable
     case notFound
@@ -245,6 +264,7 @@ enum EndorsementServiceError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .certificateNumberRequired: "Instructor certificate number is required."
+        case .signerNameRequired: "The instructor's name is required to sign."
         case .signatureRequired: "A signature is required before completing the endorsement."
         case .signedEndorsementImmutable: "Signed endorsements cannot be edited. Revoke and re-issue if a correction is required."
         case .notFound: "Endorsement not found."
