@@ -120,7 +120,7 @@ struct PilotRecencySettingsView: View {
     private func loadFromProfile() {
         guard let pilot else { return }
         isCFI = pilot.isCFI
-        medicalMode = pilot.medicalMode
+        medicalMode = pilot.medicalMode ?? .classMedical
         if let exp = pilot.medicalExpirationDate {
             hasMedical = true
             medicalExpiration = exp
@@ -134,8 +134,8 @@ struct PilotRecencySettingsView: View {
             hasBasicMedCourse = true
             basicMedCourse = course
         }
-        flightReviewSource = pilot.flightReviewSource
-        ipcSource = pilot.ipcSource
+        flightReviewSource = pilot.flightReviewSource ?? .flightReview
+        ipcSource = pilot.ipcSource ?? .ipc
         if let bfr = pilot.lastFlightReviewDate {
             hasFlightReview = true
             flightReviewDate = bfr

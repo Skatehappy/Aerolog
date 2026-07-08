@@ -36,13 +36,14 @@ final class PilotProfile {
     var medicalClass: MedicalClass?
     var medicalIssueDate: Date?
     var medicalExpirationDate: Date?
-    // F1 BasicMed (schema 1.4.0, additive with defaults).
-    var medicalMode: MedicalMode = MedicalMode.classMedical
+    // F1 BasicMed (schema 1.4.0). Optional for reliable SwiftData lightweight
+    // migration — treat nil medicalMode as .classMedical at read sites.
+    var medicalMode: MedicalMode?
     var basicMedExamDate: Date?
     var basicMedCourseDate: Date?
-    // F2 recency sources (schema 1.4.0, additive with defaults).
-    var flightReviewSource: FlightReviewSource = FlightReviewSource.flightReview
-    var ipcSource: IPCSource = IPCSource.ipc
+    // F2 recency sources (schema 1.4.0, optional → nil means the default source).
+    var flightReviewSource: FlightReviewSource?
+    var ipcSource: IPCSource?
 
     // MARK: Recency Events (supplement logbook-derived currency)
 
