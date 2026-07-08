@@ -170,6 +170,38 @@ enum PilotRating: String, Codable, CaseIterable, Sendable {
     case multiEngineInstructor
 }
 
+extension PilotRating {
+    var displayName: String {
+        switch self {
+        case .instrumentAirplane: "Instrument — Airplane"
+        case .instrumentHelicopter: "Instrument — Helicopter"
+        case .multiEngineLand: "Airplane Multi-Engine Land (AMEL)"
+        case .multiEngineSea: "Airplane Multi-Engine Sea (AMES)"
+        case .singleEngineSea: "Airplane Single-Engine Sea (ASES)"
+        case .rotorcraftHelicopter: "Rotorcraft — Helicopter"
+        case .glider: "Glider"
+        case .lighterThanAirAirship: "Lighter-Than-Air — Airship"
+        case .lighterThanAirBalloon: "Lighter-Than-Air — Balloon"
+        case .typeRating: "Type Rating"
+        case .flightInstructor: "Flight Instructor (CFI)"
+        case .flightInstructorInstrument: "Flight Instructor — Instrument (CFII)"
+        case .multiEngineInstructor: "Multi-Engine Instructor (MEI)"
+        }
+    }
+
+    enum Group: String, CaseIterable { case classRating = "Class Ratings", instrument = "Instrument Ratings", instructor = "Instructor Ratings", other = "Other" }
+
+    var group: Group {
+        switch self {
+        case .multiEngineLand, .multiEngineSea, .singleEngineSea, .rotorcraftHelicopter,
+             .glider, .lighterThanAirAirship, .lighterThanAirBalloon: .classRating
+        case .instrumentAirplane, .instrumentHelicopter: .instrument
+        case .flightInstructor, .flightInstructorInstrument, .multiEngineInstructor: .instructor
+        case .typeRating: .other
+        }
+    }
+}
+
 // MARK: - Endorsements
 
 enum EndorsementStatus: String, Codable, CaseIterable, Sendable {
