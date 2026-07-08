@@ -29,5 +29,22 @@ Implemented as `endOfCalendarMonth(afterAdding:to:)` /
 Kept the existing names to avoid churn; behavior matches the spec and tests.
 
 ## D5 — .draft creation-site sweep (H6)
-Sites enumerated and each verified to have a reachable finalize path:
-(to be completed during Workstream 3 / H6)
+Every `Flight(... status: .draft ...)` / `status = .draft` creation site, and its
+finalize path:
+1. `Flight.revertToDraft()` (Flight.swift) — intentional draft toggle; the logbook
+   editor re-finalizes. Reachable. ✅
+2. `FlightService.createDraft()` — new-flight button → FlightEditorView → Finalize.
+   Reachable. ✅
+3. `TrainingService.createFlightLessonDraft()` — LessonLogView flight mode opens
+   FlightEditorView. Reachable. ✅
+4. `TrainingService.createGroundLessonDraft()` — WAS the bug: LessonLogView ground
+   mode dismissed without a finalize path, so ground entries stayed drafts and
+   never counted. FIXED: ground now opens FlightEditorView for review/finalize
+   (same as flight lessons), and `FlightValidation` exempts ground-only entries
+   from the aircraft requirement so they can finalize. ✅
+(Endorsement.swift `status = .draft` is an endorsement, not a Flight — out of scope
+for the flight-draft sweep; endorsements have their own sign/finalize flow.)
+
+Stranded-draft launch prompt (existing orphan ground drafts): pending UI (does not
+change TrainingProgressEngine; auto-finalize of existing drafts intentionally NOT
+done per directive).

@@ -41,7 +41,9 @@ enum FlightValidation {
             errors.append("Enter total, simulator, or ground instruction time")
         }
 
-        if flight.aircraft == nil {
+        // H6: ground-only instruction needs no aircraft (FAA ground training is
+        // not aircraft-bound), so it can finalize and count toward ground totals.
+        if flight.aircraft == nil && !isGroundOnly(flight) {
             errors.append("Select an aircraft or training device")
         }
 

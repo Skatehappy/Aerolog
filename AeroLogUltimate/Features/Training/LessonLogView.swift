@@ -95,11 +95,10 @@ struct LessonLogView: View {
                     duration: groundDuration
                 )
             }
-            if mode == .flight {
-                createdFlight = flight
-            } else {
-                dismiss()
-            }
+            // H6: both flight and ground lessons open the editor for review and
+            // finalize on save — ground entries were previously left as drafts
+            // that never counted toward ground totals.
+            createdFlight = flight
         } catch {
             errorMessage = error.localizedDescription
         }
