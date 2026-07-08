@@ -1,5 +1,47 @@
 # AeroLog Ultimate — Release Notes
 
+## Version 1.1.0 (July 2026) — Regulatory Completeness & Remediation
+
+Addresses the full 1.0.0 execution-trace audit (C1–C4, H1–H6, M1–M6, L1–L5,
+F1–F4) plus class/category-scoped currency.
+
+### Critical — data integrity
+- **C1** CSV import reads full-stop day/night landings, holds, and approach
+  counts (numeric or ForeFlight Approach1–6), synthesizes approach records, and
+  warns when a file lacks full-stop columns; landing counts parse "3.0" → 3 (**L4**).
+- **C2** Backup restore reconciles to a single primary pilot (+ bootstrap repair).
+- **C3** Soft-deleted endorsements no longer grant currency.
+- **C4 / H5** Class/category-scoped currency (below).
+
+### High — regulatory math & backup fidelity
+- **H1** 61.56 / 61.57(c) / 61.57(d) use true calendar-month math.
+- **H2** Day-passenger counts night landings; tailwheel counts night full-stops.
+- **H3** Landing-currency expiry anchors on the Nth-most-recent landing.
+- **H4** Backup round-trips hobbs/tach, lesson tag, finalizedAt, edit history,
+  createdAt (backup v2; v1 still imports) (**L5**).
+- **H5** Landing credit no longer depends on sole-manipulator role.
+- **H6** Ground lessons finalize on save; launch prompt surfaces stranded drafts.
+
+### Class/category-scoped currency (C4 / H5)
+- Pilot ratings on the profile; per-class Passenger Carrying (Day/Night) and
+  per-category Instrument currency auto-created from flights; legacy unscoped
+  requirements migrated. Grouped dashboard; "Training toward" for dual-received
+  classes. Simulator flights contribute approaches/holds but not landings.
+
+### Medium
+- **M1** Report approach totals match the engine. **M2** Type/complex/high-perf
+  hours sum time in type/class. **M3** Night currency qualifies night full-stops.
+  **M4** Imports index once (no per-row scans). **M5** Restore duplicate-key
+  crash guard. **M6** Replace-all cleans orphan aircraft + attachment records/files.
+
+### Features & infrastructure
+- **F1** BasicMed. **F2** Flight-review/IPC source. **F3** Night full-stop
+  footnote. **F4** First-launch acknowledgment + dashboard footer.
+- **L1** Formal `VersionedSchema` (schema 1.4.0). **L2** encryption-exempt plist key.
+- Endorsements require signer name + certificate number to sign.
+
+---
+
 ## Version 1.0.0 (July 2026)
 
 First production release. Validated through automated pilot-scenario tests and CI build pipeline.

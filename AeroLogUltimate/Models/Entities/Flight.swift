@@ -133,6 +133,15 @@ final class Flight {
         (approaches ?? []).reduce(0) { $0 + $1.approachCount }
     }
 
+    /// Single-Engine Rule: the one place landings are totaled by category. Every
+    /// currency/report landing count routes through this — no local re-derivation.
+    func totalLandings(day: Bool = true, night: Bool = true, fullStopOnly: Bool = false) -> Int {
+        var total = 0
+        if day { total += fullStopOnly ? fullStopDayLandings : dayLandings }
+        if night { total += fullStopOnly ? fullStopNightLandings : nightLandings }
+        return total
+    }
+
     var hobbsTime: Double? {
         guard let start = hobbsStart, let end = hobbsEnd, end >= start else { return nil }
         return end - start

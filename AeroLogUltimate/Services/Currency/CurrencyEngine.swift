@@ -77,8 +77,8 @@ struct CurrencyEngine {
         let events = landingEvents(
             from: flights.filter { isSoleManipulator($0) && $0.flightDate >= windowStart },
             day: true,
-            fullStopOnly: false,
-            includeNight: true
+            night: true,
+            fullStopOnly: false
         )
 
         return landingCurrencyResult(
@@ -114,6 +114,7 @@ struct CurrencyEngine {
                     && ($0.nightTime > 0 || $0.conditions.contains(.night) || $0.fullStopNightLandings > 0)
             },
             day: false,
+            night: true,
             fullStopOnly: true
         )
 
@@ -258,7 +259,7 @@ struct CurrencyEngine {
                 && ($0.aircraft?.isTailwheel == true)
         }
 
-        let events = landingEvents(from: tailwheelFlights, day: true, fullStopOnly: true, includeNight: true)
+        let events = landingEvents(from: tailwheelFlights, day: true, night: true, fullStopOnly: true)
 
         return landingCurrencyResult(
             regulation: "14 CFR 61.57(a)(1)(ii)",
@@ -508,10 +509,10 @@ struct CurrencyEngine {
                 && matchesTypeRating($0, designator: designator)
         }
 
-        // M2: flights are already filtered to PIC — sum actual PIC time rather
-        // than max(pic, total), which overstated and mislabeled hours when
-        // picTime < totalTime.
-        let hours = matching.reduce(0) { $0 + $1.picTime }
+        // M2: sum total time in type and label it "time in type" (not PIC). The
+        // old max(pic,total) both overstated and mislabeled; the directive fixes
+        // the label rather than narrowing to PIC.
+        let hours = matching.reduce(0) { $0 + $1.totalTime }
 
         let isCurrent = designator.isEmpty ? !matching.isEmpty : (requiredHours > 0 ? hours >= requiredHours : !matching.isEmpty)
         let lastDate = matching.map(\.flightDate).max()
@@ -523,11 +524,11 @@ struct CurrencyEngine {
 
         let label = designator.isEmpty ? "Type rating" : designator
         let summary: String = if isCurrent, let last = lastDate {
-            "\(label) — PIC time \(TimeFormatting.display(hours))h, last \(formatted(last))"
+            "\(label) — time in type \(TimeFormatting.display(hours))h, last \(formatted(last))"
         } else if designator.isEmpty {
             "Set type designator on requirement"
         } else {
-            "\(label) — no qualifying PIC time in 12 months"
+            "\(label) — no qualifying time in type in 12 months"
         }
 
         let detail = CurrencyDetailPayload(
@@ -539,12 +540,12 @@ struct CurrencyEngine {
                     date: $0.flightDate,
                     description: $0.routeSummary,
                     flightSyncID: $0.syncMetadata?.syncID,
-                    contribution: TimeFormatting.display($0.picTime) + " PIC"
+                    contribution: TimeFormatting.display($0.totalTime) + " in type"
                 )
             },
             daysRemaining: expiresAt.map { CurrencyDateUtilities.daysUntil($0, from: referenceDate) },
             lastQualifyingDate: lastDate,
-            nextRequiredAction: isCurrent ? nil : "Log PIC time in \(label) aircraft"
+            nextRequiredAction: isCurrent ? nil : "Log time in \(label) aircraft"
         )
 
         return (status, summary, isCurrent ? nil : "Type rating proficiency recommended", expiresAt, windowStart, nil, detail)
@@ -567,8 +568,8 @@ struct CurrencyEngine {
                 && ($0.aircraft.map(predicate) == true)
         }
 
-        // M2: sum actual PIC time (already filtered to PIC), not max(pic, total).
-        let hours = matching.reduce(0) { $0 + $1.picTime }
+        // M2: sum total time in class and label as such (not PIC).
+        let hours = matching.reduce(0) { $0 + $1.totalTime }
         let isCurrent = hours >= requiredHours
         let lastDate = matching.map(\.flightDate).max()
         let expiresAt = lastDate.flatMap {
@@ -577,7 +578,7 @@ struct CurrencyEngine {
 
         let status = resolveStatus(isCurrent: isCurrent, expiresAt: expiresAt, leadDays: requirement.reminderLeadDays, hasData: true)
         let summary = isCurrent
-            ? "\(TimeFormatting.display(hours))h PIC in last \(windowDays) days"
+            ? "\(TimeFormatting.display(hours))h in class in last \(windowDays) days"
             : "\(TimeFormatting.display(hours))h of \(TimeFormatting.display(requiredHours))h required"
 
         let detail = CurrencyDetailPayload(
@@ -587,7 +588,7 @@ struct CurrencyEngine {
             daysRemaining: expiresAt.map { CurrencyDateUtilities.daysUntil($0, from: referenceDate) },
             progressFraction: min(1.0, hours / requiredHours),
             lastQualifyingDate: lastDate,
-            nextRequiredAction: isCurrent ? nil : "Log PIC time in qualifying aircraft"
+            nextRequiredAction: isCurrent ? nil : "Log time in qualifying aircraft"
         )
 
         return (status, summary, isCurrent ? nil : "Recent proficiency recommended", expiresAt, windowStart, nil, detail)
@@ -727,26 +728,16 @@ struct CurrencyEngine {
     private func landingEvents(
         from flights: [Flight],
         day: Bool,
-        fullStopOnly: Bool,
-        includeNight: Bool = false
+        night: Bool,
+        fullStopOnly: Bool
     ) -> [QualifyingEvent] {
         flights
             .sorted { $0.flightDate > $1.flightDate }
             .compactMap { flight -> QualifyingEvent? in
-                let count: Int = if day {
-                    // H2: 61.57(a) day-passenger and tailwheel currency also count
-                    // landings made at night — a night landing still satisfies the
-                    // 90-day takeoff/landing requirement.
-                    if fullStopOnly {
-                        flight.fullStopDayLandings + (includeNight ? flight.fullStopNightLandings : 0)
-                    } else {
-                        flight.dayLandings + (includeNight ? flight.nightLandings : 0)
-                    }
-                } else if fullStopOnly {
-                    flight.fullStopNightLandings
-                } else {
-                    flight.fullStopNightLandings > 0 ? flight.fullStopNightLandings : flight.nightLandings
-                }
+                // Single-Engine Rule + H2: all landing counts route through
+                // Flight.totalLandings. Day-passenger/tailwheel count night
+                // landings too; night-passenger counts night full-stops.
+                let count = flight.totalLandings(day: day, night: night, fullStopOnly: fullStopOnly)
                 guard count > 0 else { return nil }
                 return QualifyingEvent(
                     date: flight.flightDate,

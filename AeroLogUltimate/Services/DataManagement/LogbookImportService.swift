@@ -161,7 +161,7 @@ struct LogbookImportService {
                 || ($0.actualInstrumentTime ?? 0) > 0 || ($0.simulatedInstrumentTime ?? 0) > 0
         }
         if !hasCurrencyDetail && hasNightOrInstrument {
-            warnings.append("This file had no full-stop landing, hold, or approach columns, so night-passenger and instrument currency can't be computed from it. Those were left at zero — edit the affected flights to set full-stop landings and approaches.")
+            warnings.append("This file has no full-stop landing columns — night, tailwheel, and class landing currency cannot be computed from imported flights.")
         }
 
         if importedFlights == 0 && skipped > 0 {
