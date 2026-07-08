@@ -9,6 +9,9 @@ extension Notification.Name {
     /// Posted when a lesson/student change is committed so the training dashboard
     /// (a separate column on iPad) refreshes its totals and recent lessons.
     static let trainingDataChanged = Notification.Name("com.aerologultimate.trainingDataChanged")
+    /// Posted when a currency requirement changes (e.g. a manual attestation) so the
+    /// currency dashboard recalculates.
+    static let currencyDataChanged = Notification.Name("com.aerologultimate.currencyDataChanged")
 }
 
 enum AppShortcutNotifications {

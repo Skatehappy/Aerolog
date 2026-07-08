@@ -71,6 +71,9 @@ struct CurrencyDashboardView: View {
         }
         .task { refresh() }
         .refreshable { refresh() }
+        .onReceive(NotificationCenter.default.publisher(for: .currencyDataChanged)) { _ in
+            refresh()
+        }
     }
 
     @ViewBuilder

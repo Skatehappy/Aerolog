@@ -2,7 +2,21 @@ import SwiftUI
 
 /// Detailed breakdown for a single currency requirement.
 struct CurrencyDetailView: View {
+    @Environment(\.appEnvironment) private var environment
     let result: CurrencyCalculationResult
+
+    @State private var showManualPicker = false
+    @State private var manualDate = Date()
+
+    private var supportsManualAttestation: Bool {
+        switch result.currencyType {
+        case .passengerCarryingDay, .passengerCarryingNight, .tailwheel,
+             .instrument, .complex, .highPerformance, .custom:
+            true
+        default:
+            false
+        }
+    }
 
     var body: some View {
         ScrollView {
@@ -15,10 +29,70 @@ struct CurrencyDetailView: View {
                 if let action = result.detail.nextRequiredAction {
                     actionSection(action)
                 }
+                if supportsManualAttestation {
+                    manualAttestationSection
+                }
             }
             .padding()
         }
         .navigationTitle(result.requirementName)
+        .sheet(isPresented: $showManualPicker) {
+            manualPickerSheet
+        }
+    }
+
+    // Manual "current as of" attestation — for when a logbook import failed or
+    // lacked the columns needed to compute landing/approach currency.
+    private var manualAttestationSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Set Currency Manually")
+                .font(.headline)
+            if let manualDate = result.manualCurrentDate {
+                Text("Marked current as of \(manualDate.formatted(date: .abbreviated, time: .omitted)).")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Button("Clear Manual Attestation", role: .destructive) { save(nil) }
+            } else {
+                Text("If your logbook didn't import (or lacks full-stop landing / approach columns), record the date you last met this requirement. Logged flights still take over when they extend it.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Button(result.manualCurrentDate == nil ? "Mark Current As Of…" : "Change Date…") {
+                manualDate = result.manualCurrentDate ?? Date()
+                showManualPicker = true
+            }
+            .buttonStyle(.bordered)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var manualPickerSheet: some View {
+        NavigationStack {
+            Form {
+                DatePicker("Last met on", selection: $manualDate, in: ...Date(), displayedComponents: .date)
+                Text("This is a self-attestation. As pilot in command you remain responsible for verifying your currency against the FARs.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .navigationTitle("Mark Current")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { showManualPicker = false }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") { save(manualDate); showManualPicker = false }
+                }
+            }
+        }
+    }
+
+    private func save(_ date: Date?) {
+        try? environment?.currencyService.setManualCurrentDate(date, forRequirementSyncID: result.requirementSyncID)
+        NotificationCenter.default.post(name: .currencyDataChanged, object: nil)
     }
 
     private var header: some View {

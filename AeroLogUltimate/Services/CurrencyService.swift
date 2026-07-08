@@ -236,6 +236,14 @@ final class CurrencyService {
         try dataStore.save()
     }
 
+    /// Manual "current as of" attestation (import-failed fallback). Pass nil to clear.
+    func setManualCurrentDate(_ date: Date?, forRequirementSyncID syncID: UUID) throws {
+        guard let requirement = try allRequirements().first(where: { $0.syncMetadata?.syncID == syncID }) else { return }
+        requirement.manualCurrentDate = date
+        requirement.touch()
+        try dataStore.save()
+    }
+
     func deleteRequirement(_ requirement: CurrencyRequirement) throws {
         guard !requirement.isBuiltIn else { return }
         dataStore.delete(requirement)

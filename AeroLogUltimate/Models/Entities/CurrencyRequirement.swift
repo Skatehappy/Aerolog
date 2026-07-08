@@ -32,6 +32,12 @@ final class CurrencyRequirement {
     /// Reminder lead time in days before expiration.
     var reminderLeadDays: Int
 
+    /// Manual self-attestation: the date the pilot states they last met this
+    /// requirement, used when a logbook import failed/was incomplete so currency
+    /// can be established without per-flight data. Blended with flight-computed
+    /// currency (whichever expires later wins). Optional → additive migration.
+    var manualCurrentDate: Date?
+
     var notes: String?
 
     var createdAt: Date

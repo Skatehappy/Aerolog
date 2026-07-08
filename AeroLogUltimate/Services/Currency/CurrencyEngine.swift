@@ -61,7 +61,8 @@ struct CurrencyEngine {
             detail: result.6,
             calculatedAt: referenceDate,
             applicableClass: requirement.applicableClass,
-            applicableCategory: requirement.applicableCategory
+            applicableCategory: requirement.applicableCategory,
+            manualCurrentDate: requirement.manualCurrentDate
         )
     }
 
@@ -194,17 +195,22 @@ struct CurrencyEngine {
 
         let approachesMet = approachCount >= requiredApproaches
         let holdsMet = holdCount >= requiredHolds
-        let isCurrent = approachesMet && holdsMet
+        var isCurrent = approachesMet && holdsMet
 
-        let expiresAt: Date? = if isCurrent {
-            instrumentExpirationDate(
+        var expiresAt: Date? = isCurrent
+            ? instrumentExpirationDate(
                 flights: instrumentFlights,
                 requiredApproaches: requiredApproaches,
                 requiredHolds: requiredHolds,
                 windowMonths: windowMonths
             )
-        } else {
-            nil
+            : nil
+
+        // Manual attestation fallback (import failed/incomplete) — calendar-month.
+        if let manualDate = requirement.manualCurrentDate {
+            let manualExpiry = CurrencyDateUtilities.endOfCalendarMonth(afterAdding: windowMonths, to: manualDate)
+            if expiresAt == nil || manualExpiry > expiresAt! { expiresAt = manualExpiry }
+            if CurrencyDateUtilities.startOfDay(referenceDate) <= manualExpiry { isCurrent = true }
         }
 
         let daysRemaining = expiresAt.map { CurrencyDateUtilities.daysUntil($0, from: referenceDate) }
@@ -713,6 +719,12 @@ struct CurrencyEngine {
 
     private typealias CurrencyTuple = (CurrencyStatus, String, String?, Date?, Date?, Date?, CurrencyDetailPayload)
 
+    /// The expiry implied by a manual "current as of" attestation (rolling days).
+    private func manualAttestationExpiry(_ requirement: CurrencyRequirement, windowDays: Int) -> Date? {
+        guard let manualDate = requirement.manualCurrentDate else { return nil }
+        return CurrencyDateUtilities.calendar.date(byAdding: .day, value: windowDays, to: CurrencyDateUtilities.startOfDay(manualDate))
+    }
+
     private func landingCurrencyResult(
         regulation: String,
         required: Int,
@@ -726,16 +738,25 @@ struct CurrencyEngine {
     ) -> CurrencyTuple {
         let total = events.reduce(0) { $0 + $1.count }
 
-        let isCurrent = total >= required
+        var isCurrent = total >= required
         // H3: anchor expiry on the Nth-most-recent LANDING, not the Nth-most-recent
         // flight — expand each event's date by its landing count and pass the true
         // required count (a single flight with multiple landings anchored too early).
         let expandedDates = events.flatMap { Array(repeating: $0.date, count: $0.count) }
-        let expiresAt = CurrencyDateUtilities.rollingExpiration(
+        var expiresAt = CurrencyDateUtilities.rollingExpiration(
             eventDates: expandedDates,
             requiredCount: required,
             windowDays: windowDays
         )
+
+        // Manual attestation fallback: when a logbook import failed or lacked the
+        // needed columns, the pilot can mark themselves current as of a date. Blend
+        // it with the flight-computed result — whichever expires later wins.
+        let manualExpiry = manualAttestationExpiry(requirement, windowDays: windowDays)
+        if let manualExpiry {
+            if expiresAt == nil || manualExpiry > expiresAt! { expiresAt = manualExpiry }
+            if CurrencyDateUtilities.startOfDay(referenceDate) <= manualExpiry { isCurrent = true }
+        }
 
         let daysRemaining = expiresAt.map { CurrencyDateUtilities.daysUntil($0, from: referenceDate) }
         let status = resolveStatus(

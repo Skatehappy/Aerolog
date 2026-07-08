@@ -18,6 +18,9 @@ struct CurrencyCalculationResult: Identifiable, Equatable, Sendable {
     /// so the dashboard can group by class and category.
     var applicableClass: AircraftClass? = nil
     var applicableCategory: AircraftCategory? = nil
+    /// Manual "current as of" attestation on the requirement, surfaced so the
+    /// detail view can display and clear it.
+    var manualCurrentDate: Date? = nil
 
     var isActionRequired: Bool {
         status == .expired || status == .expiringSoon
