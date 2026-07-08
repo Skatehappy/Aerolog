@@ -23,9 +23,11 @@ final class CurrencyService {
         }
 
         let flights = try qualifyingFlights(for: profile)
-        // C4: auto-create per-class/category currency instances from the flights
-        // present and deprecate the legacy unscoped built-ins.
-        try ensureScopedRequirements(flights: flights)
+        // C4: auto-create per-class/category currency instances from the pilot's
+        // ratings AND the flights present, then deprecate legacy unscoped built-ins.
+        // Ratings-based creation lets a new user who hasn't imported a logbook still
+        // see (and add) all the currencies for the classes they're rated in.
+        try ensureScopedRequirements(pilot: profile, flights: flights)
 
         let requirements = try enabledRequirements()
         let endorsements = try endorsements(for: profile)
@@ -78,12 +80,38 @@ final class CurrencyService {
     /// category with instrument activity. On first scoped run, deprecate the legacy
     /// unscoped built-ins (isEnabled = false; never deleted — snapshots reference
     /// them), carrying their user-edited reminderLeadDays onto the new instances.
-    private func ensureScopedRequirements(flights: [Flight]) throws {
+    /// Classes the pilot is rated in (so their currencies appear without needing
+    /// logged flights). ASEL is the base airplane class with no distinct stored
+    /// rating — include it when the pilot flies airplanes (holds an airplane class
+    /// or airplane-instrument rating) or hasn't set any ratings yet.
+    private func ratedClasses(for pilot: PilotProfile) -> Set<AircraftClass> {
+        let ratings = Set(pilot.ratings)
+        var classes = Set<AircraftClass>()
+        for cls in AircraftClass.allCases {
+            if let rating = cls.matchingRating, ratings.contains(rating) { classes.insert(cls) }
+        }
+        let airplaneIndicators: Set<PilotRating> = [.multiEngineLand, .multiEngineSea, .singleEngineSea, .instrumentAirplane]
+        if ratings.isEmpty || !ratings.isDisjoint(with: airplaneIndicators) {
+            classes.insert(.singleEngineLand)
+        }
+        return classes
+    }
+
+    private func ratedInstrumentCategories(for pilot: PilotProfile) -> Set<AircraftCategory> {
+        let ratings = Set(pilot.ratings)
+        var categories = Set<AircraftCategory>()
+        if ratings.contains(.instrumentAirplane) { categories.insert(.airplane) }
+        if ratings.contains(.instrumentHelicopter) { categories.insert(.rotorcraft) }
+        return categories
+    }
+
+    private func ensureScopedRequirements(pilot: PilotProfile, flights: [Flight]) throws {
         let all = try allRequirements()
         let classesPresent = Set(flights.compactMap { $0.aircraft?.aircraftClass })
+            .union(ratedClasses(for: pilot))
         let instrumentCategories = Set(
             flights.filter(flightHasInstrumentActivity).compactMap { $0.aircraft?.category }
-        )
+        ).union(ratedInstrumentCategories(for: pilot))
         guard !classesPresent.isEmpty || !instrumentCategories.isEmpty else { return }
 
         let legacyDay = all.first { $0.currencyType == .passengerCarryingDay && $0.applicableClass == nil && $0.isBuiltIn }
