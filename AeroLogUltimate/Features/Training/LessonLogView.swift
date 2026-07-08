@@ -95,10 +95,17 @@ struct LessonLogView: View {
                     duration: groundDuration
                 )
             }
-            // H6: both flight and ground lessons open the editor for review and
-            // finalize on save — ground entries were previously left as drafts
-            // that never counted toward ground totals.
-            createdFlight = flight
+            if mode == .flight {
+                // Flight lessons open the flight editor to finish the entry.
+                createdFlight = flight
+            } else {
+                // H6 (owner override): a ground lesson isn't a flight — finalize it
+                // directly so it adds to ground-school totals and closes, without
+                // opening the flight editor. Ground-only entries are exempt from the
+                // aircraft/airport requirements in FlightValidation.
+                try service.finalize(flight)
+                dismiss()
+            }
         } catch {
             errorMessage = error.localizedDescription
         }

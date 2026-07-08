@@ -225,7 +225,14 @@ struct StudentDetailView: View {
     private func generateStudentReport() {
         guard let service = environment?.reportService else { return }
         do {
-            generatedReport = try service.generate(type: .studentProgress)
+            // Generate against the relationship's instructor (a CFI) rather than
+            // relying on primary-profile resolution, so the studentProgress report's
+            // CFI check resolves correctly. Student progress now populates because
+            // logged lessons finalize (H6) instead of being stranded as drafts.
+            generatedReport = try service.generate(
+                type: .studentProgress,
+                pilot: relationship?.instructor
+            )
             activeSheet = .report
         } catch {
             errorMessage = error.localizedDescription
