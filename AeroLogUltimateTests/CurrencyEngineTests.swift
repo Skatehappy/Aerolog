@@ -331,6 +331,83 @@ final class CurrencyEngineTests: XCTestCase {
         XCTAssertEqual(result.detail.daysRemaining ?? -999, 20, accuracy: 1)
     }
 
+    // MARK: - WS1 class/category scoping
+
+    private func makeAircraft(_ cls: AircraftClass, category: AircraftCategory = .airplane, sim: SimulatorLevel = .none) -> Aircraft {
+        let a = Aircraft(registration: "N\(cls.rawValue.prefix(4))")
+        a.aircraftClass = cls
+        a.category = category
+        a.simulatorLevel = sim
+        return a
+    }
+
+    /// C4: SEL landings must not satisfy an AMEL passenger row.
+    func testPerClassIsolation_C4() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        let req = CurrencyRequirement(currencyType: .passengerCarryingDay, displayName: "Day AMEL", lookbackDays: 90, isBuiltIn: true)
+        req.applicableClass = .multiEngineLand
+        req.requiredLandings = 3
+        let flight = makeFlight(daysAgo: 5, dayLandings: 3, role: .pic)
+        flight.aircraft = makeAircraft(.singleEngineLand)
+        flight.pilot = pilot
+        let result = engine.calculate(requirement: req, pilot: pilot, flights: [flight])
+        XCTAssertNotEqual(result.status, .current)
+    }
+
+    /// H5: dual-received landings count toward recency (role-independent).
+    func testDualReceivedLandingsCount_H5() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        let req = CurrencyRequirement(currencyType: .passengerCarryingDay, displayName: "Day AMEL", lookbackDays: 90, isBuiltIn: true)
+        req.applicableClass = .multiEngineLand
+        req.requiredLandings = 3
+        let flight = makeFlight(daysAgo: 5, dayLandings: 3, role: .dualReceived)
+        flight.aircraft = makeAircraft(.multiEngineLand)
+        flight.pilot = pilot
+        let result = engine.calculate(requirement: req, pilot: pilot, flights: [flight])
+        XCTAssertEqual(result.status, .current)
+    }
+
+    /// WS1.6: training-device landings are excluded, but approaches count.
+    func testSimulatorLandingsExcludedApproachesIncluded_WS1_6() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        let sim = makeAircraft(.singleEngineLand, sim: .aatd)
+        let flight = makeFlight(daysAgo: 5, dayLandings: 3, role: .pic)
+        flight.aircraft = sim
+        flight.actualInstrumentTime = 1.0
+        flight.holds = 1
+        let approach = InstrumentApproach(approachType: .ils, approachCount: 6)
+        approach.flight = flight
+        flight.approaches = [approach]
+        flight.pilot = pilot
+
+        let dayReq = CurrencyRequirement(currencyType: .passengerCarryingDay, displayName: "Day ASEL", lookbackDays: 90, isBuiltIn: true)
+        dayReq.applicableClass = .singleEngineLand
+        dayReq.requiredLandings = 3
+        XCTAssertNotEqual(engine.calculate(requirement: dayReq, pilot: pilot, flights: [flight]).status, .current)
+
+        let instReq = CurrencyRequirement(currencyType: .instrument, displayName: "Inst Airplane", lookbackDays: 180, isBuiltIn: true)
+        instReq.applicableCategory = .airplane
+        instReq.requiredApproaches = 6
+        XCTAssertEqual(engine.calculate(requirement: instReq, pilot: pilot, flights: [flight]).status, .current)
+    }
+
+    /// C4: airplane approaches must not satisfy a rotorcraft instrument row.
+    func testInstrumentPerCategoryIsolation_C4() {
+        let pilot = PilotProfile(isPrimaryProfile: true)
+        let req = CurrencyRequirement(currencyType: .instrument, displayName: "Inst Rotorcraft", lookbackDays: 180, isBuiltIn: true)
+        req.applicableCategory = .rotorcraft
+        req.requiredApproaches = 6
+        let flight = makeFlight(daysAgo: 10, role: .pic)
+        flight.aircraft = makeAircraft(.singleEngineLand, category: .airplane)
+        flight.actualInstrumentTime = 1.0
+        flight.holds = 1
+        let approach = InstrumentApproach(approachType: .ils, approachCount: 6)
+        approach.flight = flight
+        flight.approaches = [approach]
+        flight.pilot = pilot
+        XCTAssertNotEqual(engine.calculate(requirement: req, pilot: pilot, flights: [flight]).status, .current)
+    }
+
     private func makeFlight(
         daysAgo: Int,
         dayLandings: Int = 0,

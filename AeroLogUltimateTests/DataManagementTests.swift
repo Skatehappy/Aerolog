@@ -238,4 +238,28 @@ final class DataManagementTests: XCTestCase {
         let rows = try importer.parse(Data(csv.utf8))
         XCTAssertEqual(rows.first?.approachCount, 2)
     }
+
+    /// Final gate: a 5,000-row LogTen-style import must complete quickly (M4 index-
+    /// once path). The <10s CI threshold is enforced by the performance baseline.
+    func testLargeCSVImportPerformance() throws {
+        var csv = "Date,Aircraft,From,To,Total Time,PIC,Dual Received,Day Landings,Night FS,Approaches\n"
+        for i in 0..<5000 {
+            let month = String(format: "%02d", (i % 12) + 1)
+            let day = String(format: "%02d", (i % 28) + 1)
+            let time = i % 2 == 0 ? "1.5,0.0" : "0.0,1.5"   // alternate PIC / dual received
+            csv += "2023-\(month)-\(day),N\(1000 + i % 50),KPAO,KSQL,1.5,\(time),2,1,3\n"
+        }
+        let data = Data(csv.utf8)
+
+        measure {
+            do {
+                let store = try DataStore.makeInMemory()
+                let service = DataManagementService(dataStore: store, attachmentStorage: AttachmentStorageService())
+                let result = try service.importData(data, format: .csv)
+                XCTAssertEqual(result.importedFlights, 5000)
+            } catch {
+                XCTFail("Large import failed: \(error)")
+            }
+        }
+    }
 }
