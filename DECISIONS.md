@@ -48,3 +48,34 @@ for the flight-draft sweep; endorsements have their own sign/finalize flow.)
 Stranded-draft launch prompt (existing orphan ground drafts): pending UI (does not
 change TrainingProgressEngine; auto-finalize of existing drafts intentionally NOT
 done per directive).
+
+## D6 — PilotRating enum kept (not replaced)
+The directive's Workstream 1.1 lists a superset PilotRating enum (adds ASEL,
+private/commercial/ATP, etc.). A PilotRating enum ALREADY EXISTS and stores data in
+`PilotProfile.ratingsRaw`. Replacing it would break stored ratings and existing UI.
+Conservative choice: KEEP the existing enum, add `displayName`/`Group`/
+`AircraftClass.matchingRating`, and treat ASEL as the assumed base airplane rating
+(so SEL flights never raise a "training toward"/anomaly). Grouping uses Class /
+Instrument / Instructor (no Certificate group — certificates live on
+`certificateType`). Satisfies the C4/H5 intent (scoped currency + anomaly) without a
+destructive enum rewrite.
+
+## D7 — L1 formal VersionedSchema deferred
+The directive asks to bump AeroLogMigrationPlan to 1.4.0 and adopt a formal
+`VersionedSchema` + `SchemaMigrationPlan`. Rewriting the ModelContainer from plain
+Schema to a formal versioned plan is exactly the kind of change L1 itself warns can
+brick the store open if wrong — and it cannot be validated without a compiler in
+this session. Conservative choice: every schema change shipped in 1.1.0 so far is
+ADDITIVE-WITH-DEFAULTS (SwiftData lightweight migration remains safe); the formal
+VersionedSchema adoption is deferred to be done on the Mac with a compiler. The L1
+hard-gate comment is in place in SchemaMigrationPlan.swift.
+
+## D8 — Phase-2 remaining (not yet implemented; needs Mac + compiler)
+Delivered: WS1 (C4/H5) full, WS2 (C1-C3), WS3 (H1-H4, H6), WS4 (M1-M6), L1 note/L2/
+L4/L5, M2 reconcile, Single-Engine Rule, owner's manual in docs/, tests (WS1
+isolation, H1-3, C1 columns, 5000-row perf). REMAINING: F1 BasicMed, F2 review/IPC
+source, F4 first-launch acknowledgment sheet, stranded-draft launch prompt, in-app
+Settings→Help rendering the manual, "Maria Vasquez" scenario test, formal
+VersionedSchema (D7). These were checkpointed rather than shipped blind because each
+adds compile-risk surface that this Windows session cannot verify; recommend Mac
+compiles the current state first, then phase 2.
