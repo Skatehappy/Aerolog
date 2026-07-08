@@ -78,8 +78,8 @@ struct FlightEditorView: View {
             onConfirm: deleteFlight
         )
         .deleteConfirmation(
-            title: "Discard New Flight?",
-            message: "This entry hasn't been saved. Discarding removes it from your logbook.",
+            title: "Discard Draft?",
+            message: "This removes the draft flight from your logbook. Use Save Draft to keep it.",
             confirmLabel: "Discard",
             isPresented: $showDiscardConfirm,
             onConfirm: discardNewFlight
@@ -126,13 +126,13 @@ struct FlightEditorView: View {
     private var editorToolbar: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
             Button("Cancel") {
-                // A new flight is persisted the moment it's created (createDraft
-                // saves it), so cancelling must actively discard it — otherwise a
-                // stray draft is left behind. Empty drafts are discarded silently;
-                // if the user entered anything, confirm first to avoid dropping
-                // partially-filled work by accident. Editing an existing flight
-                // just dismisses without deleting.
-                guard isNew else {
+                // Cancel DISCARDS a draft — new or previously saved. Drafts are
+                // persisted the moment they're created (createDraft saves), and
+                // "Save Draft" / "Finalize" are the ways to KEEP one, so cancelling
+                // any draft removes it. Empty drafts go silently; if anything was
+                // entered, confirm first to avoid dropping work by accident.
+                // Editing a finalized entry just dismisses without deleting.
+                guard flight.isDraft else {
                     dismiss()
                     return
                 }

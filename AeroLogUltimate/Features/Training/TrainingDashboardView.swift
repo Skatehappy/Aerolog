@@ -60,6 +60,9 @@ struct TrainingDashboardView: View {
         }
         .task { refresh() }
         .refreshable { refresh() }
+        .onReceive(NotificationCenter.default.publisher(for: .trainingDataChanged)) { _ in
+            refresh()
+        }
     }
 
     private var cfiRequiredView: some View {

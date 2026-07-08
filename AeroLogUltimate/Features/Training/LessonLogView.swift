@@ -106,6 +106,9 @@ struct LessonLogView: View {
                 try environment?.flightService.finalize(flight)
                 dismiss()
             }
+            // Refresh the training dashboard (a separate column on iPad) so its
+            // totals and Recent Lessons pick up the new lesson.
+            NotificationCenter.default.post(name: .trainingDataChanged, object: nil)
         } catch {
             errorMessage = error.localizedDescription
         }

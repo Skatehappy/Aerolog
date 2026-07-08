@@ -6,6 +6,9 @@ extension Notification.Name {
     static let appShortcutToggleSidebar = Notification.Name("com.aerologultimate.shortcut.toggleSidebar")
     static let appShortcutSave = Notification.Name("com.aerologultimate.shortcut.save")
     static let appShortcutSelectTab = Notification.Name("com.aerologultimate.shortcut.selectTab")
+    /// Posted when a lesson/student change is committed so the training dashboard
+    /// (a separate column on iPad) refreshes its totals and recent lessons.
+    static let trainingDataChanged = Notification.Name("com.aerologultimate.trainingDataChanged")
 }
 
 enum AppShortcutNotifications {
