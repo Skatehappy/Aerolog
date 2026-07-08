@@ -133,6 +133,46 @@ enum ApproachType: String, Codable, CaseIterable, Sendable {
     case other
 }
 
+// MARK: - Medical mode & recency sources (F1/F2)
+
+enum MedicalMode: String, Codable, CaseIterable, Sendable {
+    case classMedical
+    case basicMed
+
+    var displayName: String {
+        switch self {
+        case .classMedical: "Class Medical"
+        case .basicMed: "BasicMed"
+        }
+    }
+}
+
+enum FlightReviewSource: String, Codable, CaseIterable, Sendable {
+    case flightReview
+    case checkride
+    case wingsPhase
+
+    var displayName: String {
+        switch self {
+        case .flightReview: "Flight Review"
+        case .checkride: "Checkride"
+        case .wingsPhase: "WINGS Phase"
+        }
+    }
+}
+
+enum IPCSource: String, Codable, CaseIterable, Sendable {
+    case ipc
+    case instrumentCheckride
+
+    var displayName: String {
+        switch self {
+        case .ipc: "IPC"
+        case .instrumentCheckride: "Instrument Checkride"
+        }
+    }
+}
+
 // MARK: - Certificates & Medical
 
 enum CertificateType: String, Codable, CaseIterable, Sendable {

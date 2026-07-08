@@ -10,11 +10,18 @@ struct PilotRecencySettingsView: View {
     @Query(filter: #Predicate<PilotProfile> { $0.isPrimaryProfile == true })
     private var primaryProfiles: [PilotProfile]
 
+    @State private var medicalMode: MedicalMode = .classMedical
     @State private var medicalExpiration: Date = .now
     @State private var medicalClass: MedicalClass = .third
     @State private var hasMedical = false
+    @State private var basicMedExam: Date = .now
+    @State private var hasBasicMedExam = false
+    @State private var basicMedCourse: Date = .now
+    @State private var hasBasicMedCourse = false
+    @State private var flightReviewSource: FlightReviewSource = .flightReview
     @State private var flightReviewDate: Date = .now
     @State private var hasFlightReview = false
+    @State private var ipcSource: IPCSource = .ipc
     @State private var ipcDate: Date = .now
     @State private var hasIPC = false
     @State private var cfiExpiration: Date = .now
@@ -26,19 +33,40 @@ struct PilotRecencySettingsView: View {
 
     var body: some View {
         Form {
-            Section("Medical Certificate") {
-                Picker("Class", selection: $medicalClass) {
-                    ForEach(MedicalClass.allCases, id: \.self) { cls in
-                        Text(cls.rawValue.capitalized).tag(cls)
+            Section("Medical") {
+                Picker("Medical Type", selection: $medicalMode) {
+                    ForEach(MedicalMode.allCases, id: \.self) { mode in
+                        Text(mode.displayName).tag(mode)
                     }
                 }
-                Toggle("Expiration Date Set", isOn: $hasMedical)
-                if hasMedical {
-                    DatePicker("Expires", selection: $medicalExpiration, displayedComponents: .date)
+                if medicalMode == .classMedical {
+                    Picker("Class", selection: $medicalClass) {
+                        ForEach(MedicalClass.allCases, id: \.self) { cls in
+                            Text(cls.rawValue.capitalized).tag(cls)
+                        }
+                    }
+                    Toggle("Expiration Date Set", isOn: $hasMedical)
+                    if hasMedical {
+                        DatePicker("Expires", selection: $medicalExpiration, displayedComponents: .date)
+                    }
+                } else {
+                    Toggle("Exam Date Set (48 mo)", isOn: $hasBasicMedExam)
+                    if hasBasicMedExam {
+                        DatePicker("Exam Date", selection: $basicMedExam, displayedComponents: .date)
+                    }
+                    Toggle("Course Date Set (24 cal mo)", isOn: $hasBasicMedCourse)
+                    if hasBasicMedCourse {
+                        DatePicker("Course Date", selection: $basicMedCourse, displayedComponents: .date)
+                    }
                 }
             }
 
             Section("Flight Review (61.56)") {
+                Picker("Source", selection: $flightReviewSource) {
+                    ForEach(FlightReviewSource.allCases, id: \.self) { source in
+                        Text(source.displayName).tag(source)
+                    }
+                }
                 Toggle("Last Flight Review Recorded", isOn: $hasFlightReview)
                 if hasFlightReview {
                     DatePicker("Date", selection: $flightReviewDate, displayedComponents: .date)
@@ -46,6 +74,11 @@ struct PilotRecencySettingsView: View {
             }
 
             Section("Instrument Proficiency Check") {
+                Picker("Source", selection: $ipcSource) {
+                    ForEach(IPCSource.allCases, id: \.self) { source in
+                        Text(source.displayName).tag(source)
+                    }
+                }
                 Toggle("Last IPC Recorded", isOn: $hasIPC)
                 if hasIPC {
                     DatePicker("Date", selection: $ipcDate, displayedComponents: .date)
@@ -87,11 +120,22 @@ struct PilotRecencySettingsView: View {
     private func loadFromProfile() {
         guard let pilot else { return }
         isCFI = pilot.isCFI
+        medicalMode = pilot.medicalMode
         if let exp = pilot.medicalExpirationDate {
             hasMedical = true
             medicalExpiration = exp
         }
         if let cls = pilot.medicalClass { medicalClass = cls }
+        if let exam = pilot.basicMedExamDate {
+            hasBasicMedExam = true
+            basicMedExam = exam
+        }
+        if let course = pilot.basicMedCourseDate {
+            hasBasicMedCourse = true
+            basicMedCourse = course
+        }
+        flightReviewSource = pilot.flightReviewSource
+        ipcSource = pilot.ipcSource
         if let bfr = pilot.lastFlightReviewDate {
             hasFlightReview = true
             flightReviewDate = bfr
@@ -119,8 +163,13 @@ struct PilotRecencySettingsView: View {
             return
         }
         pilot.isCFI = isCFI
+        pilot.medicalMode = medicalMode
         pilot.medicalClass = medicalClass
         pilot.medicalExpirationDate = hasMedical ? medicalExpiration : nil
+        pilot.basicMedExamDate = hasBasicMedExam ? basicMedExam : nil
+        pilot.basicMedCourseDate = hasBasicMedCourse ? basicMedCourse : nil
+        pilot.flightReviewSource = flightReviewSource
+        pilot.ipcSource = ipcSource
         pilot.lastFlightReviewDate = hasFlightReview ? flightReviewDate : nil
         pilot.lastIPCDate = hasIPC ? ipcDate : nil
         pilot.cfiExpirationDate = (isCFI && hasCFI) ? cfiExpiration : nil

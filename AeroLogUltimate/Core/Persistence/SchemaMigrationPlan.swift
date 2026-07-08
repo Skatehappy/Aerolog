@@ -13,10 +13,13 @@ import SwiftData
 /// open on update and make existing user data unreachable. Before shipping any
 /// such change, adopt `VersionedSchema` + a real `SchemaMigrationPlan` first.
 enum AeroLogMigrationPlan {
-    static let currentVersion = Schema.Version(1, 3, 0)
+    static let currentVersion = Schema.Version(1, 4, 0)
 
     // v1.1.0 adds WeightBalanceLog, FlightExpense, MaintenanceItem and optional fuel fields.
     // v1.2.0 adds Flight.editHistoryJSON for finalized-entry audit trail.
     // v1.3.0 adds Aircraft.isLSA and Aircraft.isMotorglider (Bool, default false —
     //        additive, handled by SwiftData lightweight migration; no custom stage).
+    // v1.4.0 adds PilotProfile.medicalMode (default .classMedical), basicMedExamDate
+    //        (optional), flightReviewSource (default .flightReview), ipcSource
+    //        (default .ipc). All additive-with-defaults → lightweight migration.
 }

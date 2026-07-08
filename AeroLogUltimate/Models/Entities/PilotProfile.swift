@@ -36,7 +36,13 @@ final class PilotProfile {
     var medicalClass: MedicalClass?
     var medicalIssueDate: Date?
     var medicalExpirationDate: Date?
+    // F1 BasicMed (schema 1.4.0, additive with defaults).
+    var medicalMode: MedicalMode = .classMedical
+    var basicMedExamDate: Date?
     var basicMedCourseDate: Date?
+    // F2 recency sources (schema 1.4.0, additive with defaults).
+    var flightReviewSource: FlightReviewSource = .flightReview
+    var ipcSource: IPCSource = .ipc
 
     // MARK: Recency Events (supplement logbook-derived currency)
 

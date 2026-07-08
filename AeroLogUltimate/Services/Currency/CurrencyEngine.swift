@@ -431,6 +431,11 @@ struct CurrencyEngine {
         requirement: CurrencyRequirement,
         pilot: PilotProfile
     ) -> CurrencyTuple {
+        // F1: BasicMed pilots track an exam (48 months, exact date per CMEC) and a
+        // course (24 calendar months); the row is limited by whichever expires first.
+        if pilot.medicalMode == .basicMed {
+            return calculateBasicMed(requirement: requirement, pilot: pilot)
+        }
         guard let expiration = pilot.medicalExpirationDate else {
             let detail = CurrencyDetailPayload(nextRequiredAction: "Enter medical certificate expiration in pilot profile")
             return (.unknown, "Medical expiration not set", "Add your medical certificate date", nil, nil, nil, detail)
@@ -462,6 +467,46 @@ struct CurrencyEngine {
             nextRequiredAction: isCurrent ? nil : "Obtain a new medical certificate"
         )
 
+        return (status, summary, warning, expiresAt, nil, nil, detail)
+    }
+
+    private func calculateBasicMed(
+        requirement: CurrencyRequirement,
+        pilot: PilotProfile
+    ) -> CurrencyTuple {
+        guard let exam = pilot.basicMedExamDate, let course = pilot.basicMedCourseDate else {
+            let detail = CurrencyDetailPayload(nextRequiredAction: "Enter your BasicMed exam and course dates in pilot profile")
+            return (.unknown, "BasicMed dates not set", "Add BasicMed exam and course dates", nil, nil, nil, detail)
+        }
+        // Exam: 48 months, exact date (per CMEC). Course: 24 CALENDAR months (H1).
+        let examExpires = CurrencyDateUtilities.calendar.date(byAdding: .month, value: 48, to: CurrencyDateUtilities.startOfDay(exam)) ?? exam
+        let courseExpires = CurrencyDateUtilities.endOfCalendarMonth(afterAdding: 24, to: course)
+        let expiresAt = min(examExpires, courseExpires)
+        let isCurrent = CurrencyDateUtilities.startOfDay(referenceDate) <= expiresAt
+        let daysRemaining = CurrencyDateUtilities.daysUntil(expiresAt, from: referenceDate)
+        let status = resolveStatus(isCurrent: isCurrent, expiresAt: expiresAt, leadDays: requirement.reminderLeadDays, hasData: true)
+        let limiting = examExpires <= courseExpires ? "exam" : "course"
+
+        let summary = isCurrent
+            ? "BasicMed valid until \(formatted(expiresAt)) (\(limiting) limiting)"
+            : "BasicMed expired \(formatted(expiresAt))"
+        let warning: String? = if isCurrent && daysRemaining <= requirement.reminderLeadDays {
+            "BasicMed \(limiting) expires in \(daysRemaining) day(s)"
+        } else if !isCurrent {
+            "BasicMed requirements must be renewed"
+        } else {
+            nil
+        }
+        let detail = CurrencyDetailPayload(
+            regulationReference: "14 CFR Part 68 (BasicMed)",
+            qualifyingEvents: [
+                QualifyingEvent(date: exam, description: "BasicMed medical exam (CMEC)", contribution: "Valid 48 months"),
+                QualifyingEvent(date: course, description: "BasicMed course", contribution: "Valid 24 calendar months")
+            ],
+            daysRemaining: daysRemaining,
+            progressFraction: isCurrent ? 1.0 : 0.0,
+            nextRequiredAction: isCurrent ? nil : "Renew BasicMed \(limiting)"
+        )
         return (status, summary, warning, expiresAt, nil, nil, detail)
     }
 
