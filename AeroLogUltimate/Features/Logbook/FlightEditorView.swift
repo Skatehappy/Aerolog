@@ -13,7 +13,6 @@ struct FlightEditorView: View {
     @State private var useMultiLeg = false
     @State private var showAircraftPicker = false
     @State private var showDeleteConfirm = false
-    @State private var showDiscardConfirm = false
     @State private var validationErrors: [String] = []
     @State private var validationWarnings: [String] = []
     @State private var showValidationAlert = false
@@ -77,13 +76,6 @@ struct FlightEditorView: View {
             isPresented: $showDeleteConfirm,
             onConfirm: deleteFlight
         )
-        .deleteConfirmation(
-            title: "Discard Draft?",
-            message: "This removes the draft flight from your logbook. Use Save Draft to keep it.",
-            confirmLabel: "Discard",
-            isPresented: $showDiscardConfirm,
-            onConfirm: discardNewFlight
-        )
         .alert("Validation", isPresented: $showValidationAlert) {
             if validationErrors.isEmpty {
                 Button("Finalize Anyway") { performFinalize() }
@@ -129,17 +121,14 @@ struct FlightEditorView: View {
                 // Cancel DISCARDS a draft — new or previously saved. Drafts are
                 // persisted the moment they're created (createDraft saves), and
                 // "Save Draft" / "Finalize" are the ways to KEEP one, so cancelling
-                // any draft removes it. Empty drafts go silently; if anything was
-                // entered, confirm first to avoid dropping work by accident.
-                // Editing a finalized entry just dismisses without deleting.
-                guard flight.isDraft else {
-                    dismiss()
-                    return
-                }
-                if flight.totalTime == 0 && flight.departureICAO.isEmpty {
+                // any draft removes it. Discard directly (no confirmation alert):
+                // FlightEditorView already stacks several alerts and SwiftUI only
+                // presents one, so a discard-confirm alert silently never fired and
+                // the draft was left behind. Editing a finalized entry just dismisses.
+                if flight.isDraft {
                     discardNewFlight()
                 } else {
-                    showDiscardConfirm = true
+                    dismiss()
                 }
             }
         }
@@ -223,9 +212,16 @@ struct FlightEditorView: View {
     /// Uses permanentlyDelete (not the soft-delete path) because the entry was
     /// never intentionally saved — it shouldn't leave a sync tombstone behind.
     private func discardNewFlight() {
-        if let service = environment?.flightService {
-            try? service.permanentlyDelete(flight)
-        } else {
+        do {
+            if let service = environment?.flightService {
+                try service.permanentlyDelete(flight)
+            } else {
+                modelContext.delete(flight)
+                try modelContext.save()
+            }
+        } catch {
+            // Fall back to a direct context delete so the draft is removed even if
+            // the service call throws — a cancelled draft must never linger.
             modelContext.delete(flight)
             try? modelContext.save()
         }

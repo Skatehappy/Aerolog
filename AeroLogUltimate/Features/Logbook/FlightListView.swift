@@ -85,6 +85,11 @@ struct FlightListView: View {
                                 ? Color.accentColor.opacity(0.12)
                                 : Color.clear
                         )
+                        .swipeActions(edge: .trailing) {
+                            Button(flight.isDraft ? "Delete Draft" : "Delete", role: .destructive) {
+                                deleteFromList(flight)
+                            }
+                        }
                     }
                 }
                 .listStyle(.plain)
@@ -139,6 +144,23 @@ struct FlightListView: View {
         .onChange(of: focusSearchRequest) { _, _ in
             isSearchPresented = true
             isSearchFocused = true
+        }
+    }
+
+    /// Swipe-to-delete from the logbook: drafts are hard-deleted (clears the old
+    /// abandoned "double" drafts); finalized entries are removed via the service.
+    private func deleteFromList(_ flight: Flight) {
+        if selectedFlight?.persistentModelID == flight.persistentModelID {
+            selectedFlight = nil
+        }
+        do {
+            if flight.isDraft {
+                try environment?.flightService.permanentlyDelete(flight)
+            } else {
+                try environment?.flightService.delete(flight, force: true)
+            }
+        } catch {
+            // Best-effort; leave the row if deletion fails.
         }
     }
 
