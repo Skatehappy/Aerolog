@@ -33,6 +33,16 @@ struct CompactRootView: View {
             }
             tabRoot(.currency, title: "Currency", systemImage: "checkmark.shield") {
                 CurrencyDashboardView(selectedResult: $selectedCurrency)
+                    // iPhone has no detail column, so a tapped currency card only set the
+                    // binding and nothing happened. Push the detail when one is selected.
+                    .navigationDestination(isPresented: Binding(
+                        get: { selectedCurrency != nil },
+                        set: { if !$0 { selectedCurrency = nil } }
+                    )) {
+                        if let selectedCurrency {
+                            CurrencyDetailView(result: selectedCurrency)
+                        }
+                    }
             }
             tabRoot(.endorsements, title: "Endorsements", systemImage: "signature") {
                 EndorsementListView(selectedEndorsement: $selectedEndorsement)

@@ -297,7 +297,12 @@ struct CurrencyDashboardView: View {
             summary = try service.calculateDashboard()
             customRequirements = try service.allRequirements().filter { $0.currencyType == .custom }
             heldRatings = Set((try? environment?.pilotProfileService.primaryProfile()?.ratings) ?? [])
-            if selectedResult == nil {
+            // Keep the selected result fresh across refreshes (e.g. after a manual
+            // attestation posts .currencyDataChanged) so the detail reflects the change.
+            if let sel = selectedResult,
+               let fresh = summary?.results.first(where: { $0.requirementSyncID == sel.requirementSyncID }) {
+                selectedResult = fresh
+            } else if selectedResult == nil {
                 selectedResult = summary?.attentionItems.first
             }
         } catch {

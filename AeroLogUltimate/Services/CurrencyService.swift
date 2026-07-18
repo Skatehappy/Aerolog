@@ -1,6 +1,18 @@
 import Foundation
 import SwiftData
 
+/// Errors surfaced by the currency service so callers can report them instead of
+/// failing silently (the recurring silent-`try?` bug class).
+enum CurrencyServiceError: LocalizedError {
+    case requirementNotFound
+    var errorDescription: String? {
+        switch self {
+        case .requirementNotFound:
+            "Couldn't find that currency requirement to update. Pull to refresh and try again."
+        }
+    }
+}
+
 /// Orchestrates currency calculation, snapshot persistence, and dashboard queries.
 @MainActor
 final class CurrencyService {
@@ -238,7 +250,10 @@ final class CurrencyService {
 
     /// Manual "current as of" attestation (import-failed fallback). Pass nil to clear.
     func setManualCurrentDate(_ date: Date?, forRequirementSyncID syncID: UUID) throws {
-        guard let requirement = try allRequirements().first(where: { $0.syncMetadata?.syncID == syncID }) else { return }
+        guard let requirement = try allRequirements().first(where: { $0.syncMetadata?.syncID == syncID }) else {
+            // Previously returned silently, so a failed attestation looked like a no-op.
+            throw CurrencyServiceError.requirementNotFound
+        }
         requirement.manualCurrentDate = date
         requirement.touch()
         try dataStore.save()

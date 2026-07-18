@@ -3,10 +3,22 @@ import SwiftUI
 /// Detailed breakdown for a single currency requirement.
 struct CurrencyDetailView: View {
     @Environment(\.appEnvironment) private var environment
-    let result: CurrencyCalculationResult
+    let inputResult: CurrencyCalculationResult
 
+    @State private var override: CurrencyCalculationResult?
     @State private var showManualPicker = false
     @State private var manualDate = Date()
+    @State private var errorMessage: String?
+
+    init(result: CurrencyCalculationResult) { self.inputResult = result }
+
+    /// After a manual attestation we recompute and show the fresh result in place;
+    /// `override` is cleared when the parent selects a different requirement so the
+    /// reused view can't show a stale currency (iPad split-view detail reuse).
+    private var result: CurrencyCalculationResult {
+        if let override, override.requirementSyncID == inputResult.requirementSyncID { return override }
+        return inputResult
+    }
 
     private var supportsManualAttestation: Bool {
         switch result.currencyType {
@@ -39,6 +51,16 @@ struct CurrencyDetailView: View {
         .sheet(isPresented: $showManualPicker) {
             manualPickerSheet
         }
+        .alert("Error", isPresented: .init(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
+        // Parent reused this view for a different requirement — drop the stale override.
+        .onChange(of: inputResult.id) { _, _ in override = nil }
     }
 
     // Manual "current as of" attestation — for when a logbook import failed or
@@ -91,8 +113,18 @@ struct CurrencyDetailView: View {
     }
 
     private func save(_ date: Date?) {
-        try? environment?.currencyService.setManualCurrentDate(date, forRequirementSyncID: result.requirementSyncID)
-        NotificationCenter.default.post(name: .currencyDataChanged, object: nil)
+        do {
+            try environment?.currencyService.setManualCurrentDate(date, forRequirementSyncID: inputResult.requirementSyncID)
+            // Recompute so this screen reflects the attestation immediately (the result
+            // passed in is a snapshot; without this the status/date looked unchanged).
+            if let updated = try environment?.currencyService.calculateDashboard().results
+                .first(where: { $0.requirementSyncID == inputResult.requirementSyncID }) {
+                override = updated
+            }
+            NotificationCenter.default.post(name: .currencyDataChanged, object: nil)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     private var header: some View {
