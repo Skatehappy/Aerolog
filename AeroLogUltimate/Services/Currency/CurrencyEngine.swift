@@ -635,10 +635,16 @@ struct CurrencyEngine {
 
         // M2: sum total time in class and label as such (not PIC).
         let hours = matching.reduce(0) { $0 + $1.totalTime }
-        let isCurrent = hours >= requiredHours
+        var isCurrent = hours >= requiredHours
         let lastDate = matching.map(\.flightDate).max()
-        let expiresAt = lastDate.flatMap {
+        var expiresAt = lastDate.flatMap {
             CurrencyDateUtilities.calendar.date(byAdding: .day, value: windowDays, to: CurrencyDateUtilities.startOfDay($0))
+        }
+
+        // Manual "current as of" attestation — blend so the pilot can mark this current.
+        if let manualExpiry = manualAttestationExpiry(requirement, windowDays: windowDays) {
+            if expiresAt == nil || manualExpiry > expiresAt! { expiresAt = manualExpiry }
+            if CurrencyDateUtilities.startOfDay(referenceDate) <= manualExpiry { isCurrent = true }
         }
 
         let status = resolveStatus(isCurrent: isCurrent, expiresAt: expiresAt, leadDays: requirement.reminderLeadDays, hasData: true)
@@ -694,8 +700,14 @@ struct CurrencyEngine {
         if let req = requirement.requiredApproaches { checks.append(approaches >= req) }
         if let req = requirement.requiredFlightHours { checks.append(hours >= req) }
 
-        let isCurrent = checks.isEmpty ? false : checks.allSatisfy { $0 }
-        let status: CurrencyStatus = checks.isEmpty ? .unknown : (isCurrent ? .current : .expired)
+        var isCurrent = checks.isEmpty ? false : checks.allSatisfy { $0 }
+        var expiresAt: Date? = nil
+        // Manual "current as of" attestation — a custom requirement can be marked current.
+        if let manualExpiry = manualAttestationExpiry(requirement, windowDays: requirement.lookbackDays) {
+            expiresAt = manualExpiry
+            if CurrencyDateUtilities.startOfDay(referenceDate) <= manualExpiry { isCurrent = true }
+        }
+        let status: CurrencyStatus = isCurrent ? .current : (checks.isEmpty ? .unknown : .expired)
 
         let summary = isCurrent ? "Custom requirement met" : "Custom requirement not met"
 
@@ -712,7 +724,7 @@ struct CurrencyEngine {
             progressFraction: checks.isEmpty ? 0 : (isCurrent ? 1.0 : 0.5)
         )
 
-        return (status, summary, isCurrent ? nil : "Review custom requirement criteria", nil, windowStart, windowEnd, detail)
+        return (status, summary, isCurrent ? nil : "Review custom requirement criteria", expiresAt, windowStart, windowEnd, detail)
     }
 
     // MARK: - Shared Helpers

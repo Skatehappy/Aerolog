@@ -76,11 +76,20 @@ struct CurrencyDashboardView: View {
         }
     }
 
+    /// Tapping a status box jumps to the first currency of that status: it selects it
+    /// (so the iPad detail column shows it) and scrolls the list to it.
+    private func jump(to status: CurrencyStatus, proxy: ScrollViewProxy) {
+        guard let summary, let target = summary.results.first(where: { $0.status == status }) else { return }
+        selectedResult = target
+        withAnimation { proxy.scrollTo(target.id, anchor: .top) }
+    }
+
     @ViewBuilder
     private func dashboardContent(_ summary: CurrencyDashboardSummary) -> some View {
+        ScrollViewReader { proxy in
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                summaryHeader(summary)
+                summaryHeader(summary, proxy: proxy)
                 if !summary.anomalyWarnings.isEmpty {
                     anomalyBanner(summary.anomalyWarnings)
                 }
@@ -98,19 +107,20 @@ struct CurrencyDashboardView: View {
             }
             .padding()
         }
+        }
     }
 
-    private func summaryHeader(_ summary: CurrencyDashboardSummary) -> some View {
+    private func summaryHeader(_ summary: CurrencyDashboardSummary, proxy: ScrollViewProxy) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Currency Overview")
                 .font(.title2.weight(.bold))
 
             HStack(spacing: 12) {
-                SummaryPill(count: summary.currentCount, label: "Current", color: .green)
-                SummaryPill(count: summary.expiringSoonCount, label: "Expiring", color: .orange)
-                SummaryPill(count: summary.expiredCount, label: "Expired", color: .red)
+                SummaryPill(count: summary.currentCount, label: "Current", color: .green) { jump(to: .current, proxy: proxy) }
+                SummaryPill(count: summary.expiringSoonCount, label: "Expiring", color: .orange) { jump(to: .expiringSoon, proxy: proxy) }
+                SummaryPill(count: summary.expiredCount, label: "Expired", color: .red) { jump(to: .expired, proxy: proxy) }
                 if summary.unknownCount > 0 {
-                    SummaryPill(count: summary.unknownCount, label: "Setup", color: .yellow)
+                    SummaryPill(count: summary.unknownCount, label: "Setup", color: .yellow) { jump(to: .unknown, proxy: proxy) }
                 }
             }
 
@@ -166,6 +176,7 @@ struct CurrencyDashboardView: View {
             CurrencyStatusCard(result: result, isSelected: selectedResult?.id == result.id)
         }
         .buttonStyle(.plain)
+        .id(result.id)
     }
 
     /// C4: class/category-grouped sections for scoped passenger/instrument currency.
@@ -250,6 +261,7 @@ struct CurrencyDashboardView: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .id(result.id)
                     }
                 }
             }
@@ -316,19 +328,23 @@ private struct SummaryPill: View {
     let count: Int
     let label: String
     let color: Color
+    let action: () -> Void
 
     var body: some View {
-        VStack(spacing: 4) {
-            Text("\(count)")
-                .font(.title2.weight(.bold))
-                .monospacedDigit()
-            Text(label)
-                .font(.caption2)
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Text("\(count)")
+                    .font(.title2.weight(.bold))
+                    .monospacedDigit()
+                Text(label)
+                    .font(.caption2)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(color.opacity(0.12))
+            .foregroundStyle(color)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
-        .background(color.opacity(0.12))
-        .foregroundStyle(color)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .buttonStyle(.plain)
     }
 }
