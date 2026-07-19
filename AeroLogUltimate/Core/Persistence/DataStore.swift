@@ -122,11 +122,15 @@ final class DataStore {
         if shouldInsert(.cfiCertificate) {
             builtIns.append(CurrencyRequirement(currencyType: .cfiCertificate, displayName: "CFI Certificate", lookbackDays: 0, isBuiltIn: true))
         }
+        // Complex / High-Performance are NOT FAA currencies: 14 CFR 61.31(e) and 61.31(f)
+        // are ONE-TIME logbook endorsements with no recurrency. These built-ins are an
+        // optional PERSONAL PROFICIENCY aid only — labeled "(Advisory)" and rendered so
+        // they never report "Expired"/"Not current". See RegulatoryConstants.plist.
         if shouldInsert(.complex) {
-            builtIns.append(CurrencyRequirement(currencyType: .complex, displayName: "Complex Aircraft Proficiency", lookbackDays: 90, isBuiltIn: true))
+            builtIns.append(CurrencyRequirement(currencyType: .complex, displayName: "Complex Aircraft Proficiency (Advisory)", lookbackDays: 90, isBuiltIn: true))
         }
         if shouldInsert(.highPerformance) {
-            builtIns.append(CurrencyRequirement(currencyType: .highPerformance, displayName: "High Performance Proficiency", lookbackDays: 90, isBuiltIn: true))
+            builtIns.append(CurrencyRequirement(currencyType: .highPerformance, displayName: "High Performance Proficiency (Advisory)", lookbackDays: 90, isBuiltIn: true))
         }
         if shouldInsert(.typeRating) {
             builtIns.append(CurrencyRequirement(currencyType: .typeRating, displayName: "Type Rating Proficiency", lookbackDays: 365, isBuiltIn: true))

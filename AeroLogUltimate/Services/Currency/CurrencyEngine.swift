@@ -647,22 +647,28 @@ struct CurrencyEngine {
             if CurrencyDateUtilities.startOfDay(referenceDate) <= manualExpiry { isCurrent = true }
         }
 
-        let status = resolveStatus(isCurrent: isCurrent, expiresAt: expiresAt, leadDays: requirement.reminderLeadDays, hasData: true)
+        // ADVISORY ONLY. 14 CFR 61.31(e)/(f) are one-time endorsements — there is NO FAA
+        // recurrency for complex or high-performance airplanes. This tracker must never
+        // report the pilot as "Expired"/"Not current". When the self-selected personal
+        // proficiency threshold is met we surface .current (a positive nudge); otherwise
+        // .notApplicable (neutral "N/A"), never .expired. No required action is implied.
+        let regRef = requirement.currencyType == .complex ? "14 CFR 61.31(e)" : "14 CFR 61.31(f)"
+        let status: CurrencyStatus = isCurrent ? .current : .notApplicable
         let summary = isCurrent
-            ? "\(TimeFormatting.display(hours))h in class in last \(windowDays) days"
-            : "\(TimeFormatting.display(hours))h of \(TimeFormatting.display(requiredHours))h required"
+            ? "\(TimeFormatting.display(hours))h in class in last \(windowDays) days — personal proficiency (advisory)"
+            : "Advisory only — \(regRef) is a one-time endorsement, not a currency. No FAA recurrency applies."
 
         let detail = CurrencyDetailPayload(
-            regulationReference: requirement.currencyType == .complex ? "14 CFR 61.31(e)" : "14 CFR 61.31(f)",
+            regulationReference: "\(regRef) — one-time endorsement (advisory proficiency, no FAA recurrency)",
             requiredFlightHours: requiredHours,
             countedFlightHours: hours,
             daysRemaining: expiresAt.map { CurrencyDateUtilities.daysUntil($0, from: referenceDate) },
             progressFraction: min(1.0, hours / requiredHours),
             lastQualifyingDate: lastDate,
-            nextRequiredAction: isCurrent ? nil : "Log time in qualifying aircraft"
+            nextRequiredAction: nil
         )
 
-        return (status, summary, isCurrent ? nil : "Recent proficiency recommended", expiresAt, windowStart, nil, detail)
+        return (status, summary, nil, expiresAt, windowStart, nil, detail)
     }
 
     // MARK: - Custom

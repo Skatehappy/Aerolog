@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  RegulatoryConstants.plist — provenance record for the FAA regulatory constants AeroLog
+  relies on. Phase 3 Regulatory Fix (2026-07-19). These are PROVENANCE ONLY: the numeric
+  values were verified against primary sources (14 CFR via Cornell LII / eCFR) and MUST NOT
+  be changed here without re-verification. RegulatoryProvenanceTests.swift asserts that the
+  engine/DataStore constants match this file so a silent drift fails the test suite.
+-->
+<plist version="1.0">
+<dict>
+  <key>schemaVersion</key>
+  <string>1.0.0</string>
+  <key>verifiedOn</key>
+  <string>2026-07-19</string>
+  <key>verificationMethod</key>
+  <string>Perplexity MCP against primary sources (14 CFR, Cornell LII / eCFR); values unchanged, provenance recorded.</string>
+  <key>currencies</key>
+  <array>
+    <dict>
+      <key>id</key><string>passengerCarryingDay</string>
+      <key>citation</key><string>14 CFR 61.57(a)</string>
+      <key>rule</key><string>3 takeoffs and 3 landings within the preceding 90 days, same category/class/type.</string>
+      <key>lookbackDays</key><integer>90</integer>
+      <key>requiredLandings</key><integer>3</integer>
+      <key>recurrent</key><true/>
+    </dict>
+    <dict>
+      <key>id</key><string>passengerCarryingNight</string>
+      <key>citation</key><string>14 CFR 61.57(b)</string>
+      <key>rule</key><string>3 takeoffs and 3 full-stop landings, 1 hour after sunset to 1 hour before sunrise, within the preceding 90 days.</string>
+      <key>lookbackDays</key><integer>90</integer>
+      <key>requiredLandings</key><integer>3</integer>
+      <key>requiredNightLandings</key><integer>3</integer>
+      <key>recurrent</key><true/>
+    </dict>
+    <dict>
+      <key>id</key><string>instrument</string>
+      <key>citation</key><string>14 CFR 61.57(c)</string>
+      <key>rule</key><string>6 instrument approaches, holding procedures, and intercepting/tracking courses within the preceding 6 calendar months; 6-month grace period under 61.57(d); IPC required after 12 calendar months.</string>
+      <key>lookbackCalendarMonths</key><integer>6</integer>
+      <key>requiredApproaches</key><integer>6</integer>
+      <key>recurrent</key><true/>
+    </dict>
+    <dict>
+      <key>id</key><string>flightReview</string>
+      <key>citation</key><string>14 CFR 61.56</string>
+      <key>rule</key><string>Flight review (1h ground + 1h flight) within the preceding 24 calendar months.</string>
+      <key>lookbackCalendarMonths</key><integer>24</integer>
+      <key>recurrent</key><true/>
+    </dict>
+    <dict>
+      <key>id</key><string>medicalBasicMedExam</string>
+      <key>citation</key><string>14 CFR 68.7 / Part 68</string>
+      <key>rule</key><string>BasicMed comprehensive medical examination every 48 calendar months.</string>
+      <key>lookbackCalendarMonths</key><integer>48</integer>
+      <key>recurrent</key><true/>
+    </dict>
+    <dict>
+      <key>id</key><string>medicalBasicMedCourse</string>
+      <key>citation</key><string>14 CFR 68.3 / Part 68</string>
+      <key>rule</key><string>BasicMed medical education course every 24 calendar months.</string>
+      <key>lookbackCalendarMonths</key><integer>24</integer>
+      <key>recurrent</key><true/>
+    </dict>
+  </array>
+  <key>medicalCertificate</key>
+  <dict>
+    <key>citation</key><string>14 CFR 61.23</string>
+    <key>note</key><string>Medical certificate validity durations (61.23) are IMMUNE — AeroLog does not hardcode them; it tracks the pilot-entered certificate class and expiry. No regulatory constant to verify beyond BasicMed (Part 68).</string>
+  </dict>
+  <key>advisoryNonCurrencies</key>
+  <array>
+    <dict>
+      <key>id</key><string>complex</string>
+      <key>citation</key><string>14 CFR 61.31(e)</string>
+      <key>rule</key><string>ONE-TIME logbook endorsement to act as PIC of a complex airplane. NO recurrency, no 90-day or hourly recency requirement. Tracked in-app as an ADVISORY personal-proficiency aid only; must never report Expired/Not current.</string>
+      <key>recurrent</key><false/>
+      <key>advisoryLookbackDays</key><integer>90</integer>
+    </dict>
+    <dict>
+      <key>id</key><string>highPerformance</string>
+      <key>citation</key><string>14 CFR 61.31(f)</string>
+      <key>rule</key><string>ONE-TIME logbook endorsement to act as PIC of a high-performance airplane (more than 200 hp). NO recurrency. Tracked in-app as an ADVISORY personal-proficiency aid only; must never report Expired/Not current.</string>
+      <key>recurrent</key><false/>
+      <key>advisoryLookbackDays</key><integer>90</integer>
+    </dict>
+  </array>
+</dict>
+</plist>
